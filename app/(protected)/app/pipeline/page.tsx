@@ -1,9 +1,6 @@
+import { PipelineKanban, type PipelineDeal } from './pipeline-kanban'
 import { createClient } from '@/lib/supabase/server'
 import { requireWorkspace } from '@/lib/workspace'
-
-const stages = [
-  ['new', 'Novo'], ['contacted', 'Contato'], ['qualified', 'Qualificado'], ['proposal', 'Proposta'], ['negotiation', 'Negociação'],
-] as const
 
 export default async function PipelinePage() {
   const workspace = await requireWorkspace()
@@ -12,19 +9,42 @@ export default async function PipelinePage() {
     .from('deals')
     .select('id,title,stage,value,probability,last_activity_at')
     .eq('workspace_id', workspace.id)
-    .not('stage', 'in', '(won,lost)')
     .order('updated_at', { ascending: false })
+
   if (error) throw new Error(`Failed to load pipeline: ${error.message}`)
+
+  const pipelineDeals: PipelineDeal[] = (deals || []).map((deal) => ({
+    id: deal.id,
+    title: deal.title,
+    stage: deal.stage,
+    value: Number(deal.value || 0),
+    probability: deal.probability,
+    last_activity_at: deal.last_activity_at,
+  }))
+
+  const openValue = pipelineDeals
+    .filter((deal) => !['won', 'lost'].includes(deal.stage))
+    .reduce((sum, deal) => sum + deal.value, 0)
 
   return (
     <>
-      <div className="section-head"><div><div className="brand">REVENUE</div><h1 style={{ marginTop: 8 }}>Pipeline</h1></div></div>
-      <div className="pipeline">
-        {stages.map(([stage, label]) => {
-          const stageDeals = (deals || []).filter((deal) => deal.stage === stage)
-          return <section className="column" key={stage}><strong>{label}</strong><span className="muted" style={{ float: 'right' }}>{stageDeals.length}</span>{stageDeals.map((deal) => <article className="deal" key={deal.id}><strong>{deal.title}</strong><span>{new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(deal.value || 0))}</span><p className="muted" style={{ margin: '8px 0 0', fontSize: 12 }}>{deal.probability}% de probabilidade</p></article>)}</section>
-        })}
+      <div className="section-head">
+        <div>
+          <div className="brand">REVENUE</div>
+          <h1 style={{ marginTop: 8 }}>Pipeline</h1>
+          <p className="muted">
+            {pipelineDeals.length} oportunidades · {new Intl.NumberFormat('pt-BR', {
+              style: 'currency',
+              currency: 'BRL',
+            }).format(openValue)} em pipeline aberto
+          </p>
+        </div>
       </div>
+
+      <PipelineKanban
+        initialDeals={pipelineDeals}
+        canEdit={workspace.role !== 'viewer'}
+      />
     </>
   )
 }
