@@ -1,0 +1,35 @@
+name: Database Security Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  database-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase database
+        run: supabase db start
+
+      - name: Rebuild database from migrations
+        run: supabase db reset --local
+
+      - name: Lint PostgreSQL schema
+        run: supabase db lint --local --fail-on error
+
+      - name: Run pgTAP / RLS tests
+        run: supabase test db --local
