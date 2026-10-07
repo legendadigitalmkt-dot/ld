@@ -17,7 +17,7 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
         <form action={createWorkspace} className="stack">
           <label>Empresa<input name="name" required minLength={2} maxLength={120} placeholder="Clínica Viva" /></label>
           <label>Segmento<input name="segment" maxLength={120} placeholder="Clínica de estética" /></label>
-          <button className="button">Criar workspace</button>
+          <button className="button" type="submit">Criar workspace</button>
         </form>
       </section>
     </main>
