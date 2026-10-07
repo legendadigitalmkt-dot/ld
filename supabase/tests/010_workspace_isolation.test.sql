@@ -74,10 +74,10 @@ select lives_ok(
 );
 
 select results_eq(
-  $delete from public.contacts
+  $q$delete from public.contacts
     where workspace_id = '10000000-0000-4000-8000-000000000001'
-    returning 1$,
-  $values (1) limit 0$,
+    returning 1$q$,
+  $q$select 1 where false$q$,
   'sales A cannot delete CRM contacts'
 );
 
