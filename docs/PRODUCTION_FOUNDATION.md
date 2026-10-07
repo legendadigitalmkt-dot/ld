@@ -37,3 +37,22 @@ Workspace creation and future membership invitations use the server-only admin c
 - Autopilot agents.
 
 Those depend on a verified tenant/auth foundation and should not be layered onto the demo adapter.
+
+
+## Hosted development validation — 2026-10-07
+
+Project: `LD Growth OS Dev` in `sa-east-1`.
+
+- Migration applied successfully.
+- 13 public tables present with RLS enabled.
+- Supabase security advisors: 0 findings.
+- Hosted transactional smoke test: 8/8 passed.
+- Auth user -> profile trigger verified.
+- Workspace A reads only Workspace A.
+- Workspace B reads only Workspace B.
+- Cross-tenant insert blocked by RLS.
+- Sales delete affected 0 rows.
+- Cross-tenant workspace metadata hidden.
+- Test transaction rolled back; no smoke-test tenant/customer rows persisted.
+
+Performance advisors reported unindexed foreign keys. These are non-blocking for correctness and should be handled in the next database optimization migration before scale testing.
