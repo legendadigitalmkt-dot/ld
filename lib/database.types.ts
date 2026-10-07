@@ -161,6 +161,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          intake_key: string | null
           last_interaction_at: string | null
           name: string
           owner_user_id: string | null
@@ -175,6 +176,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          intake_key?: string | null
           last_interaction_at?: string | null
           name: string
           owner_user_id?: string | null
@@ -189,6 +191,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          intake_key?: string | null
           last_interaction_at?: string | null
           name?: string
           owner_user_id?: string | null
@@ -810,7 +813,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_lead_with_deal: {
+        Args: {
+          p_intake_key?: string
+          p_name: string
+          p_phone?: string
+          p_source?: string
+          p_workspace_id: string
+        }
+        Returns: {
+          contact_id: string
+          deal_id: string
+        }[]
+      }
     }
     Enums: {
       contact_status: "lead" | "customer" | "inactive"
