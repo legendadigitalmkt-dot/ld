@@ -826,6 +826,29 @@ export type Database = {
           deal_id: string
         }[]
       }
+      move_deal_stage: {
+        Args: {
+          p_deal_id: string
+          p_stage: Database["public"]["Enums"]["deal_stage"]
+          p_workspace_id: string
+        }
+        Returns: {
+          current_stage: Database["public"]["Enums"]["deal_stage"]
+          deal_id: string
+          lost_at: string
+          previous_stage: Database["public"]["Enums"]["deal_stage"]
+          probability: number
+          won_at: string
+        }[]
+      }
+      update_deal_value: {
+        Args: { p_deal_id: string; p_value: number; p_workspace_id: string }
+        Returns: {
+          current_value: number
+          deal_id: string
+          previous_value: number
+        }[]
+      }
     }
     Enums: {
       contact_status: "lead" | "customer" | "inactive"
