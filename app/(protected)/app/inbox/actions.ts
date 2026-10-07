@@ -46,7 +46,7 @@ export async function sendInboxMessage(formData: FormData) {
     fail(conversationId, 'Conecte o WhatsApp antes de enviar mensagens.')
   }
 
-  let sent
+  let sent: Awaited<ReturnType<typeof sendWhatsAppText>>
   try {
     sent = await sendWhatsAppText({
       phoneNumberId: connection.external_resource_id,
