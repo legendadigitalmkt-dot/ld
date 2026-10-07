@@ -39,7 +39,7 @@ input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgb
 .topbar { min-height: 68px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; background: rgba(5,11,24,.68); backdrop-filter: blur(18px); }
 .content { padding: 28px; max-width: 1500px; margin: 0 auto; }
 .grid { display: grid; gap: 16px; }
-.metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .card { background: rgba(8,20,38,.82); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
 .metric strong { display: block; font-size: 28px; margin-top: 8px; }
 .metric span { color: var(--muted); font-size: 13px; }
@@ -82,4 +82,138 @@ textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(36,107,25
   .inbox-list { max-height: 320px; }
   .message-bubble { max-width: 88%; }
   .inbox-composer { grid-template-columns: 1fr; }
+}
+
+.dashboard-secondary { grid-template-columns: 2fr 1fr; margin-top: 16px; }
+.dashboard-big-number { font-size: 34px; margin-bottom: 0; }
+
+.pipeline-kanban {
+  grid-template-columns: repeat(7, minmax(230px, 1fr));
+  gap: 12px;
+  padding-bottom: 14px;
+  scroll-snap-type: x proximity;
+}
+.pipeline-column {
+  min-height: 420px;
+  scroll-snap-align: start;
+  transition: border-color .15s ease, background .15s ease;
+}
+.pipeline-column-success { border-color: rgba(74, 222, 128, .28); }
+.pipeline-column-danger { border-color: rgba(255, 107, 129, .26); }
+.pipeline-column-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.pipeline-column-head strong { display: block; }
+.pipeline-column-head small { display: block; color: var(--muted); margin-top: 4px; }
+.pipeline-count {
+  display: inline-flex;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 8px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #10213a;
+  color: #d9e6f6;
+  font-size: 12px;
+  font-weight: 800;
+}
+.pipeline-card-list { display: grid; align-content: start; gap: 10px; min-height: 340px; }
+.pipeline-deal {
+  margin-top: 0;
+  cursor: grab;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.pipeline-deal:hover {
+  transform: translateY(-1px);
+  border-color: rgba(36, 107, 253, .5);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .18);
+}
+.pipeline-deal:active { cursor: grabbing; }
+.deal-value-button {
+  display: block;
+  width: fit-content;
+  border: 0;
+  padding: 0;
+  margin: 0 0 9px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 750;
+  font-size: 15px;
+}
+.deal-value-button:disabled { cursor: default; opacity: .75; }
+.deal-value-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.deal-value-form input { min-width: 0; padding: 8px 9px; }
+.mini-button {
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 9px;
+  background: var(--blue);
+  color: white;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+}
+.mini-button.secondary { background: #10213a; border: 1px solid var(--line); }
+.deal-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  margin: 8px 0 10px;
+}
+.deal-stage-select { gap: 5px; }
+.deal-stage-select span { font-size: 11px; color: var(--muted); }
+.deal-stage-select select { padding: 8px 10px; font-size: 12px; }
+.pipeline-empty {
+  display: grid;
+  place-items: center;
+  min-height: 90px;
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px dashed rgba(143, 161, 186, .2);
+  border-radius: 10px;
+  color: #64748b;
+  text-align: center;
+  font-size: 12px;
+}
+.pipeline-help { margin-top: 8px; font-size: 12px; }
+.pipeline-error { margin-bottom: 12px; }
+
+@media (max-width: 1000px) {
+  .dashboard-secondary { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .pipeline-kanban { grid-template-columns: repeat(7, minmax(82vw, 1fr)); }
+  .pipeline-column { min-height: 360px; }
+  .deal-value-form { grid-template-columns: 1fr 1fr; }
+  .deal-value-form input { grid-column: 1 / -1; }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.pipeline-column {
+  min-width: 0;
+  margin: 0;
 }
