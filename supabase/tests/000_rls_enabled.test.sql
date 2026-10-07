@@ -1,0 +1,18 @@
+begin;
+create extension if not exists pgtap with schema extensions;
+select plan(13);
+select extensions.ok((select relrowsecurity from pg_class where oid='public.workspaces'::regclass), 'workspaces RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.profiles'::regclass), 'profiles RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.workspace_members'::regclass), 'workspace_members RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.contacts'::regclass), 'contacts RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.deals'::regclass), 'deals RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.tasks'::regclass), 'tasks RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.conversations'::regclass), 'conversations RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.messages'::regclass), 'messages RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.knowledge_entries'::regclass), 'knowledge RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.automations'::regclass), 'automations RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.activities'::regclass), 'activities RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.integration_connections'::regclass), 'integrations RLS enabled');
+select extensions.ok((select relrowsecurity from pg_class where oid='public.workspace_invites'::regclass), 'invites RLS enabled');
+select * from finish();
+rollback;
