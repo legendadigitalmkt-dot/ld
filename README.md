@@ -1,61 +1,65 @@
-# LD Growth OS V1
+# LD Growth OS
 
-Functional V1 demo/pilot foundation for **Legenda Digital — AI Growth Operating System**.
+**Legenda Digital — AI Growth Operating System**
 
-## What is already implemented
-- Overview with business metrics and opportunity-risk calculation
+This repository is the product codebase for LD Growth OS. The active production-foundation work lives on `feat/production-foundation`.
+
+## Production Foundation stack
+
+- Next.js 16 / React 19
+- TypeScript
+- Supabase Auth
+- PostgreSQL
+- Row Level Security (RLS)
+- Server Actions for trusted mutations
+- Multi-tenant workspaces with RBAC
+
+## Current product surface
+
+- Authentication: sign-up, sign-in, sign-out and auth callback
+- First-workspace onboarding
+- Protected app shell
+- Overview
 - Contacts / CRM
-- Drag-and-drop sales pipeline
-- Inbox demo with conversation context and outbound messages
-- Tasks and priorities
-- Automation rules + manual runner
-- Knowledge Base / Business Context Layer
-- Follow-up AI draft generation
-- Ask Legenda executive copilot
-- Analytics / pipeline intelligence
-- Workspace-scoped API design
-- Persistent local demo database
-- Supabase/Postgres production schema with RLS policies
+- Pipeline
+- Tasks
+- Team visibility
+- Hardened multi-tenant database model
+- Database tests for RLS and cross-tenant isolation
 
-## Run now
-Requires Node.js 20+ and **no npm install**.
+## Local setup
+
+Requires Node.js 22+ and a Supabase project/local Supabase stack.
 
 ```bash
-node server.mjs
+cp .env.example .env.local
+npm install
+npm run dev
 ```
 
-Open `http://localhost:3000`.
+Configure the Supabase values in `.env.local` and apply:
 
-The app creates `data/db.json` from `data/seed.json` on first run. Use **Restaurar demo** in the UI to reset the dataset.
-
-## Optional real AI
-The demo works without an AI key. To enable a real provider adapter, set both environment variables server-side:
-
-```bash
-OPENAI_API_KEY=...
-OPENAI_MODEL=...
-node server.mjs
+```
+supabase/migrations/001_production_foundation.sql
 ```
 
-The server uses the Responses API. No API key is exposed to the browser.
+For database test prerequisites and commands, see `supabase/tests/README.md`.
 
-## Important status
-This repository is intentionally split into two concerns:
+## Security boundary
 
-1. **Runnable product demo** — local Node/JSON adapter, suitable for UX validation and demonstrations.
-2. **Production target** — Supabase Auth/Postgres/RLS, official channel integrations, billing, background workers and operational controls.
+The browser uses only the Supabase publishable key. The Service Role Key is server-only and bypasses RLS, so it must never be exposed through a `NEXT_PUBLIC_` variable or client component.
 
-Do **not** process real customer data with the local JSON adapter. Read `docs/COMMERCIAL_READINESS.md` before a paid pilot.
+Ordinary CRM reads/writes run with the authenticated user session and remain subject to PostgreSQL RLS. Trusted tenant-bootstrap/member-administration operations use a server-only admin client after explicit authentication/authorization.
 
-## Files
-- `server.mjs` — local application/API runtime + AI adapter
-- `public/` — complete UI
-- `data/seed.json` — demo company dataset
-- `supabase/migrations/001_initial.sql` — multi-tenant production schema and RLS
-- `docs/ARCHITECTURE.md` — target architecture
-- `docs/COMMERCIAL_READINESS.md` — launch gates
-- `docs/ROADMAP_NEXT.md` — next implementation sprints
-- `tests/` — smoke tests
+## Launch status
 
-## Product principle
-V1 proves: **lead → context → pipeline → follow-up → action → revenue**.
+This branch is **Production Foundation**, not commercial launch approval.
+
+Before real customer data:
+- CI must pass.
+- RLS tests must pass against the target migration.
+- Supabase production auth/redirect configuration must be verified.
+- At least two independent workspaces must be used for adversarial tenant-isolation testing.
+- Operational monitoring, backup/recovery and privacy/export/delete procedures must be active.
+
+See `docs/PRODUCTION_FOUNDATION.md` and `docs/COMMERCIAL_READINESS.md`.
