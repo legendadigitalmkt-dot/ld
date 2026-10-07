@@ -73,11 +73,11 @@ select lives_ok(
   'sales A can create a CRM contact in workspace A'
 );
 
-select throws_ok(
-  $$delete from public.contacts
-    where workspace_id = '10000000-0000-4000-8000-000000000001'$$,
-  '42501',
-  null,
+select results_eq(
+  $delete from public.contacts
+    where workspace_id = '10000000-0000-4000-8000-000000000001'
+    returning 1$,
+  $values (1) limit 0$,
   'sales A cannot delete CRM contacts'
 );
 
