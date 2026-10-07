@@ -17,7 +17,7 @@ export function AppShell({ workspace, children }: { workspace: CurrentWorkspace;
           <Link href="/app/settings/members">⚙ <span className="nav-label">Equipe</span></Link>
         </nav>
         <div className="sidebar-footer">
-          <form action={signOut}><button className="button secondary" style={{ width: '100%' }}>Sair</button></form>
+          <form action={signOut}><button className="button secondary" type="submit" style={{ width: '100%' }}>Sair</button></form>
         </div>
       </aside>
       <section className="main">
