@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "biome lint .",
     "typecheck": "tsc --noEmit",
-    "db:test": "supabase test db"
+    "db:test": "supabase test db",
+    "test": "node --experimental-strip-types --test tests/*.test.ts"
   },
   "engines": {
     "node": ">=22.13.0"
