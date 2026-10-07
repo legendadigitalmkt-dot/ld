@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto'
 import { createClient } from '@/lib/supabase/server'
 import { requireWorkspace } from '@/lib/workspace'
 import { createContact } from './actions'
@@ -16,7 +17,7 @@ export default async function ContactsPage() {
   return (
     <>
       <div className="section-head"><div><div className="brand">CRM</div><h1 style={{ marginTop: 8 }}>Contatos</h1></div></div>
-      <form action={createContact} className="card inline-form" style={{ marginBottom: 16 }}>
+      <form action={createContact} className="card inline-form" style={{ marginBottom: 16 }}><input type="hidden" name="intakeKey" value={randomUUID()} />
         <label>Nome<input name="name" required placeholder="Nome do lead" /></label>
         <label>Telefone<input name="phone" placeholder="+55..." /></label>
         <label>Origem<select name="source" defaultValue="Manual"><option>Manual</option><option>WhatsApp</option><option>Instagram</option><option>Meta Ads</option><option>Google</option><option>Indicação</option></select></label>
