@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "biome lint .",
     "typecheck": "tsc --noEmit",
     "db:test": "supabase test db",
-    "test": "node --experimental-strip-types --test tests/*.test.ts"
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "prebuild": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\""
   },
   "engines": {
     "node": ">=22.13.0"
