@@ -20,7 +20,7 @@ export async function inviteMember(formData: FormData) {
   const email = String(formData.get('email') || '').trim().toLowerCase()
   const role = String(formData.get('role') || 'viewer') as WorkspaceRole
 
-  if (!email || !email.includes('@')) fail('Informe um e-mail válido.')
+  if (!email?.includes('@')) fail('Informe um e-mail válido.')
   if (!allowedRoles.includes(role)) fail('Papel inválido.')
   if (role === 'owner' && workspace.role !== 'owner') fail('Somente um owner pode convidar outro owner.')
 

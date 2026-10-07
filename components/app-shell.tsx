@@ -11,10 +11,12 @@ export function AppShell({ workspace, children }: { workspace: CurrentWorkspace;
         <div className="workspace-name muted" style={{ fontSize: 12 }}>{workspace.role}</div>
         <nav>
           <Link href="/app">⌂ <span className="nav-label">Overview</span></Link>
+          <Link href="/app/inbox">◫ <span className="nav-label">Inbox</span></Link>
           <Link href="/app/contacts">◎ <span className="nav-label">Contacts</span></Link>
           <Link href="/app/pipeline">◇ <span className="nav-label">Pipeline</span></Link>
           <Link href="/app/tasks">✓ <span className="nav-label">Tasks</span></Link>
           <Link href="/app/settings/members">⚙ <span className="nav-label">Equipe</span></Link>
+          <Link href="/app/settings/integrations">↗ <span className="nav-label">Integrações</span></Link>
         </nav>
         <div className="sidebar-footer">
           <form action={signOut}><button className="button secondary" type="submit" style={{ width: '100%' }}>Sair</button></form>
@@ -23,7 +25,7 @@ export function AppShell({ workspace, children }: { workspace: CurrentWorkspace;
       <section className="main">
         <header className="topbar">
           <strong>Growth OS</strong>
-          <span className="muted">Production Foundation</span>
+          <span className="muted">V1 · WhatsApp Channel</span>
         </header>
         <main className="content">{children}</main>
       </section>
