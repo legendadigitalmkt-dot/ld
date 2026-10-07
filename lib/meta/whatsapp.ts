@@ -1,6 +1,5 @@
 import 'server-only'
 
-import { createHmac, timingSafeEqual } from 'node:crypto'
 import {
   getAppUrl,
   getMetaAppSecret,
@@ -8,6 +7,7 @@ import {
   getMetaWebhookVerifyToken,
   getMetaWhatsAppAccessToken,
 } from '@/lib/env'
+import { verifyHmacSha256 } from '@/lib/meta/webhook-signature'
 
 type MetaErrorPayload = {
   error?: {
@@ -61,14 +61,7 @@ async function metaRequest<T>(path: string, init: RequestInit = {}): Promise<T> 
 export function verifyWhatsAppWebhookSignature(rawBody: Uint8Array, signatureHeader: string | null) {
   if (!signatureHeader?.startsWith('sha256=')) return false
 
-  const expected = createHmac('sha256', getMetaAppSecret()).update(rawBody).digest()
-  const providedHex = signatureHeader.slice('sha256='.length)
-
-  if (!/^[a-f0-9]{64}$/i.test(providedHex)) return false
-  const provided = Buffer.from(providedHex, 'hex')
-  if (provided.length !== expected.length) return false
-
-  return timingSafeEqual(expected, provided)
+  return verifyHmacSha256(rawBody, signatureHeader, getMetaAppSecret())
 }
 
 export function verifyWhatsAppWebhookChallenge(mode: string | null, token: string | null) {
