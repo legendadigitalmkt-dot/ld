@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { requireUser } from '@/lib/auth'
 import {
   getWhatsAppBusinessPhoneNumbers,
+  type WhatsAppPhoneNumber,
   getWhatsAppWebhookUrl,
   subscribeWhatsAppBusinessAccount,
 } from '@/lib/meta/whatsapp'
@@ -26,7 +27,7 @@ export async function connectWhatsApp(formData: FormData) {
     fail('Informe WABA ID e Phone Number ID válidos.')
   }
 
-  let phone
+  let phone: WhatsAppPhoneNumber | undefined
   try {
     const phones = await getWhatsAppBusinessPhoneNumbers(wabaId)
     phone = phones.find((item) => item.id === phoneNumberId)
