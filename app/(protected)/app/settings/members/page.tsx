@@ -51,7 +51,7 @@ export default async function MembersPage({
             </select>
           </label>
           <div />
-          <button className="button">Convidar</button>
+          <button className="button" type="submit">Convidar</button>
         </form>
       ) : null}
 
