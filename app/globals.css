@@ -201,3 +201,19 @@ textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(36,107,25
   .deal-value-form { grid-template-columns: 1fr 1fr; }
   .deal-value-form input { grid-column: 1 / -1; }
 }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.pipeline-column {
+  min-width: 0;
+  margin: 0;
+}
