@@ -131,6 +131,8 @@ export function PipelineKanban({
             <section
               className={`column pipeline-column ${stage.tone ? `pipeline-column-${stage.tone}` : ''}`}
               key={stage.id}
+              role="group"
+              aria-label={`Estágio ${stage.label}`}
               onDragOver={(event) => {
                 if (canEdit) event.preventDefault()
               }}
@@ -178,7 +180,6 @@ export function PipelineKanban({
                           name="value"
                           inputMode="decimal"
                           defaultValue={Number(deal.value || 0).toFixed(2)}
-                          autoFocus
                         />
                         <button className="mini-button" type="submit">Salvar</button>
                         <button
