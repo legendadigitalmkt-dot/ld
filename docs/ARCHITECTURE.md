@@ -1,22 +1,39 @@
-# LD Growth OS V1 — Architecture
+# LD Growth OS — Architecture
 
-## Goal
+## Product loop
 The V1 proves one business loop: **lead enters → team sees context → opportunity is tracked → idle deals are detected → follow-up is generated → pipeline advances**.
 
-## Current runnable implementation
-The repository ships with a zero-dependency Node 20+ runtime so the product demo runs immediately without external accounts. `server.mjs` exposes workspace-scoped JSON APIs and persists demo data to `data/db.json`. The browser client is a responsive SPA under `public/`.
+## Application
+- Next.js 16 App Router
+- React 19 + TypeScript
+- Server Components for authenticated data reads
+- Server Actions / Route Handlers for trusted mutations
+- `proxy.ts` for Supabase session refresh and route protection
 
-This local adapter is intentionally replaceable. It is useful for product validation and sales demos; it is **not the production authentication/data layer**.
+## Identity and tenant boundary
+- Supabase Auth
+- `workspaces` are the tenant boundary
+- `workspace_members` maps users to tenants
+- roles: owner, admin, sales, support, viewer
+- every business entity carries `workspace_id`
+- PostgreSQL RLS is authoritative; UI checks are not treated as a security boundary
 
-## Production target
-- Web application: React/Next.js App Router or equivalent SSR architecture.
-- Authentication and database: Supabase Auth + Postgres.
-- Tenant isolation: `workspace_id` on every business entity + Row Level Security.
-- AI: provider abstraction; first adapter uses the OpenAI Responses API server-side.
-- Messaging: WhatsApp Cloud API via server-side webhook + outbound send service.
-- Background execution: queue/worker for automation timers, webhook processing, retries and agent actions.
-- Billing: external billing provider with entitlement table/webhooks.
-- Observability: structured logs, error tracking, audit trail, latency and AI-cost metrics.
+## Database
+- Supabase Postgres
+- explicit grants + Row Level Security
+- SECURITY DEFINER helpers live in a non-exposed `private` schema with empty `search_path`
+- composite foreign keys prevent cross-workspace relationships
+- pgTAP tests exercise cross-tenant read/write denial
+- migrations are timestamped and version-controlled
+
+## Server-only privilege
+The Supabase Service Role Key bypasses RLS. It is only loaded by `lib/supabase/admin.ts`, which is marked `server-only`.
+
+It is reserved for operations that cannot safely be exposed to ordinary sessions, including:
+- first tenant bootstrap
+- membership invitations / administration
+- future webhook ingestion after signature verification
+- controlled administrative maintenance
 
 ## Core bounded contexts
 1. **Identity** — user, profile, workspace, membership, role.
@@ -28,11 +45,15 @@ This local adapter is intentionally replaceable. It is useful for product valida
 7. **Knowledge** — business facts used by AI.
 8. **Intelligence** — metrics, follow-up risk and Ask Legenda.
 
-## AI safety model
-- AI cannot be authoritative for clinical, legal, financial or other regulated decisions.
-- V1 follow-ups are generated as drafts. Autopilot is intentionally out of scope.
-- The AI prompt explicitly forbids inventing prices/promises.
-- Production must store AI action logs and require human approval for consequential outbound actions until reliability is measured.
+## Next adapters
+- WhatsApp Cloud API: verified webhook + outbound service + idempotency.
+- AI: server-side provider abstraction using the OpenAI Responses API.
+- Billing: checkout/webhooks mapped to entitlement records.
+- Workers: durable queue for delayed automations, retries and agent jobs.
+- Observability: structured logs, error tracking, audit events, latency and AI-cost metrics.
 
-## Adapter boundary
-The browser should never receive service-role credentials or OpenAI secrets. The current API shape can be preserved while replacing the local JSON adapter with server-side Supabase queries and authenticated sessions.
+## AI safety model
+- Follow-up AI remains draft-first in V1.
+- No autonomous consequential outbound action before evaluation data exists.
+- Business knowledge constrains generated responses; models may not invent prices or commitments.
+- Clinical, legal, financial and other regulated decisions remain human-controlled.
