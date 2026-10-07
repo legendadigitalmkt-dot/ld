@@ -1,0 +1,61 @@
+{
+  "workspaces": [
+    {
+      "id": "ws_clinica_viva",
+      "name": "Clínica Viva",
+      "slug": "clinica-viva",
+      "segment": "Clínica de estética",
+      "timezone": "America/Sao_Paulo",
+      "createdAt": "2026-10-01T12:00:00.000Z"
+    }
+  ],
+  "members": [
+    {"id":"mem_1","workspaceId":"ws_clinica_viva","name":"Marina Costa","email":"marina@clinicaviva.demo","role":"owner"},
+    {"id":"mem_2","workspaceId":"ws_clinica_viva","name":"Pedro Lima","email":"pedro@clinicaviva.demo","role":"sales"}
+  ],
+  "contacts": [
+    {"id":"ct_1","workspaceId":"ws_clinica_viva","name":"Ana Beatriz","phone":"+5515999123456","email":"ana@example.com","source":"Instagram","status":"lead","tags":["botox","quente"],"ownerId":"mem_1","lastInteractionAt":"2026-10-07T09:25:00.000Z","createdAt":"2026-10-05T13:10:00.000Z"},
+    {"id":"ct_2","workspaceId":"ws_clinica_viva","name":"Carlos Mendes","phone":"+5515999765432","email":"carlos@example.com","source":"WhatsApp","status":"lead","tags":["harmonização"],"ownerId":"mem_2","lastInteractionAt":"2026-10-05T12:00:00.000Z","createdAt":"2026-10-04T14:00:00.000Z"},
+    {"id":"ct_3","workspaceId":"ws_clinica_viva","name":"Juliana Rocha","phone":"+5515999558899","email":"juliana@example.com","source":"Google","status":"customer","tags":["laser","cliente"],"ownerId":"mem_1","lastInteractionAt":"2026-10-06T18:20:00.000Z","createdAt":"2026-09-21T11:00:00.000Z"},
+    {"id":"ct_4","workspaceId":"ws_clinica_viva","name":"Renata Alves","phone":"+5515999221100","email":"renata@example.com","source":"Indicação","status":"lead","tags":["preenchimento"],"ownerId":"mem_2","lastInteractionAt":"2026-10-03T16:20:00.000Z","createdAt":"2026-10-03T15:45:00.000Z"},
+    {"id":"ct_5","workspaceId":"ws_clinica_viva","name":"Luciana Prado","phone":"+5515999443322","email":"luciana@example.com","source":"Meta Ads","status":"lead","tags":["bioestimulador","quente"],"ownerId":"mem_1","lastInteractionAt":"2026-10-07T10:15:00.000Z","createdAt":"2026-10-07T09:58:00.000Z"}
+  ],
+  "deals": [
+    {"id":"dl_1","workspaceId":"ws_clinica_viva","contactId":"ct_1","title":"Botox — Ana Beatriz","stage":"qualified","value":1200,"probability":55,"ownerId":"mem_1","lastActivityAt":"2026-10-07T09:25:00.000Z","createdAt":"2026-10-05T13:15:00.000Z"},
+    {"id":"dl_2","workspaceId":"ws_clinica_viva","contactId":"ct_2","title":"Harmonização — Carlos Mendes","stage":"proposal","value":3800,"probability":65,"ownerId":"mem_2","lastActivityAt":"2026-10-05T12:00:00.000Z","createdAt":"2026-10-04T14:05:00.000Z"},
+    {"id":"dl_3","workspaceId":"ws_clinica_viva","contactId":"ct_4","title":"Preenchimento — Renata Alves","stage":"contacted","value":1650,"probability":35,"ownerId":"mem_2","lastActivityAt":"2026-10-03T16:20:00.000Z","createdAt":"2026-10-03T15:50:00.000Z"},
+    {"id":"dl_4","workspaceId":"ws_clinica_viva","contactId":"ct_5","title":"Bioestimulador — Luciana Prado","stage":"new","value":2400,"probability":25,"ownerId":"mem_1","lastActivityAt":"2026-10-07T10:15:00.000Z","createdAt":"2026-10-07T10:05:00.000Z"},
+    {"id":"dl_5","workspaceId":"ws_clinica_viva","contactId":"ct_3","title":"Pacote Laser — Juliana Rocha","stage":"won","value":2100,"probability":100,"ownerId":"mem_1","lastActivityAt":"2026-10-06T18:20:00.000Z","createdAt":"2026-09-29T15:50:00.000Z","wonAt":"2026-10-02T17:30:00.000Z"}
+  ],
+  "tasks": [
+    {"id":"tk_1","workspaceId":"ws_clinica_viva","title":"Retornar Carlos sobre proposta","contactId":"ct_2","dealId":"dl_2","assigneeId":"mem_2","dueAt":"2026-10-07T14:00:00.000Z","status":"open","priority":"high","createdAt":"2026-10-06T12:00:00.000Z"},
+    {"id":"tk_2","workspaceId":"ws_clinica_viva","title":"Confirmar horário da Ana","contactId":"ct_1","dealId":"dl_1","assigneeId":"mem_1","dueAt":"2026-10-07T16:30:00.000Z","status":"open","priority":"medium","createdAt":"2026-10-07T10:00:00.000Z"},
+    {"id":"tk_3","workspaceId":"ws_clinica_viva","title":"Reativar Renata","contactId":"ct_4","dealId":"dl_3","assigneeId":"mem_2","dueAt":"2026-10-07T17:30:00.000Z","status":"open","priority":"high","createdAt":"2026-10-06T13:00:00.000Z"}
+  ],
+  "conversations": [
+    {"id":"cv_1","workspaceId":"ws_clinica_viva","contactId":"ct_1","channel":"whatsapp","status":"open","unread":1,"lastMessageAt":"2026-10-07T09:25:00.000Z"},
+    {"id":"cv_2","workspaceId":"ws_clinica_viva","contactId":"ct_2","channel":"whatsapp","status":"open","unread":0,"lastMessageAt":"2026-10-05T12:00:00.000Z"},
+    {"id":"cv_3","workspaceId":"ws_clinica_viva","contactId":"ct_5","channel":"instagram","status":"open","unread":2,"lastMessageAt":"2026-10-07T10:15:00.000Z"}
+  ],
+  "messages": [
+    {"id":"msg_1","workspaceId":"ws_clinica_viva","conversationId":"cv_1","direction":"in","author":"Ana Beatriz","text":"Oi! Vocês têm horário para botox amanhã no fim da tarde?","createdAt":"2026-10-07T09:20:00.000Z"},
+    {"id":"msg_2","workspaceId":"ws_clinica_viva","conversationId":"cv_1","direction":"out","author":"Marina Costa","text":"Oi, Ana! Temos algumas opções. Vou confirmar os horários e já te retorno.","createdAt":"2026-10-07T09:25:00.000Z"},
+    {"id":"msg_3","workspaceId":"ws_clinica_viva","conversationId":"cv_2","direction":"in","author":"Carlos Mendes","text":"Recebi a proposta. Vou analisar e te falo.","createdAt":"2026-10-05T12:00:00.000Z"},
+    {"id":"msg_4","workspaceId":"ws_clinica_viva","conversationId":"cv_3","direction":"in","author":"Luciana Prado","text":"Vi o anúncio do bioestimulador. Qual o valor e como funciona?","createdAt":"2026-10-07T10:12:00.000Z"},
+    {"id":"msg_5","workspaceId":"ws_clinica_viva","conversationId":"cv_3","direction":"in","author":"Luciana Prado","text":"Tem avaliação antes?","createdAt":"2026-10-07T10:15:00.000Z"}
+  ],
+  "knowledge": [
+    {"id":"kb_1","workspaceId":"ws_clinica_viva","title":"Botox","category":"service","content":"Aplicação de toxina botulínica. Avaliação individual obrigatória. Valores a partir de R$ 900, variando conforme áreas e necessidade clínica.","updatedAt":"2026-10-05T10:00:00.000Z"},
+    {"id":"kb_2","workspaceId":"ws_clinica_viva","title":"Bioestimulador de colágeno","category":"service","content":"Tratamento injetável para estimular colágeno. Requer avaliação prévia. Plano normalmente definido em consulta.","updatedAt":"2026-10-05T10:00:00.000Z"},
+    {"id":"kb_3","workspaceId":"ws_clinica_viva","title":"Política de agendamento","category":"policy","content":"Agendamentos são confirmados após validação de disponibilidade. Cancelamentos devem ser comunicados com antecedência mínima de 24 horas.","updatedAt":"2026-10-05T10:00:00.000Z"}
+  ],
+  "automations": [
+    {"id":"au_1","workspaceId":"ws_clinica_viva","name":"Lead sem resposta","trigger":"lead_idle","condition":{"hours":24},"action":"create_followup_task","enabled":true,"runs":12},
+    {"id":"au_2","workspaceId":"ws_clinica_viva","name":"Oportunidade parada","trigger":"deal_idle","condition":{"hours":48},"action":"flag_deal","enabled":true,"runs":7}
+  ],
+  "activities": [
+    {"id":"ac_1","workspaceId":"ws_clinica_viva","type":"deal_won","text":"Juliana Rocha fechou Pacote Laser — R$ 2.100","createdAt":"2026-10-02T17:30:00.000Z"},
+    {"id":"ac_2","workspaceId":"ws_clinica_viva","type":"lead_created","text":"Luciana Prado entrou via Meta Ads","createdAt":"2026-10-07T09:58:00.000Z"},
+    {"id":"ac_3","workspaceId":"ws_clinica_viva","type":"message","text":"Ana Beatriz respondeu no WhatsApp","createdAt":"2026-10-07T09:20:00.000Z"}
+  ]
+}
