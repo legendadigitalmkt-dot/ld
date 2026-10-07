@@ -20,7 +20,7 @@ export default async function ContactsPage() {
         <label>Nome<input name="name" required placeholder="Nome do lead" /></label>
         <label>Telefone<input name="phone" placeholder="+55..." /></label>
         <label>Origem<select name="source" defaultValue="Manual"><option>Manual</option><option>WhatsApp</option><option>Instagram</option><option>Meta Ads</option><option>Google</option><option>Indicação</option></select></label>
-        <button className="button">Adicionar</button>
+        <button className="button" type="submit">Adicionar</button>
       </form>
       <section className="card table-wrap">
         <table><thead><tr><th>Contato</th><th>Origem</th><th>Status</th><th>Última interação</th></tr></thead><tbody>
