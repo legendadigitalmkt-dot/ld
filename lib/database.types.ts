@@ -105,6 +105,57 @@ export type Database = {
           },
         ]
       }
+      contact_channels: {
+        Row: {
+          channel: string
+          contact_id: string
+          created_at: string
+          display_value: string | null
+          external_id: string
+          id: string
+          metadata: Json
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          channel: string
+          contact_id: string
+          created_at?: string
+          display_value?: string | null
+          external_id: string
+          id?: string
+          metadata?: Json
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          channel?: string
+          contact_id?: string
+          created_at?: string
+          display_value?: string | null
+          external_id?: string
+          id?: string
+          metadata?: Json
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_channels_contact_same_workspace"
+            columns: ["contact_id", "workspace_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id", "workspace_id"]
+          },
+          {
+            foreignKeyName: "contact_channels_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contacts: {
         Row: {
           created_at: string
@@ -277,9 +328,12 @@ export type Database = {
       }
       integration_connections: {
         Row: {
+          connected_at: string | null
           created_at: string
           external_account_id: string | null
+          external_resource_id: string | null
           id: string
+          last_error: string | null
           metadata: Json
           provider: string
           status: string
@@ -287,9 +341,12 @@ export type Database = {
           workspace_id: string
         }
         Insert: {
+          connected_at?: string | null
           created_at?: string
           external_account_id?: string | null
+          external_resource_id?: string | null
           id?: string
+          last_error?: string | null
           metadata?: Json
           provider: string
           status?: string
@@ -297,9 +354,12 @@ export type Database = {
           workspace_id: string
         }
         Update: {
+          connected_at?: string | null
           created_at?: string
           external_account_id?: string | null
+          external_resource_id?: string | null
           id?: string
+          last_error?: string | null
           metadata?: Json
           provider?: string
           status?: string
@@ -357,16 +417,84 @@ export type Database = {
           },
         ]
       }
+      message_status_events: {
+        Row: {
+          created_at: string
+          error_code: string | null
+          error_message: string | null
+          external_message_id: string
+          id: string
+          message_id: string
+          metadata: Json
+          occurred_at: string
+          recipient_wa_id: string | null
+          status: Database["public"]["Enums"]["message_delivery_status"]
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          error_code?: string | null
+          error_message?: string | null
+          external_message_id: string
+          id?: string
+          message_id: string
+          metadata?: Json
+          occurred_at: string
+          recipient_wa_id?: string | null
+          status: Database["public"]["Enums"]["message_delivery_status"]
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          error_code?: string | null
+          error_message?: string | null
+          external_message_id?: string
+          id?: string
+          message_id?: string
+          metadata?: Json
+          occurred_at?: string
+          recipient_wa_id?: string | null
+          status?: Database["public"]["Enums"]["message_delivery_status"]
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_status_events_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_status_events_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           author_name: string | null
           body: string
           conversation_id: string
           created_at: string
+          delivery_status:
+            | Database["public"]["Enums"]["message_delivery_status"]
+            | null
           direction: Database["public"]["Enums"]["message_direction"]
+          error_code: string | null
+          error_message: string | null
           external_message_id: string | null
           id: string
+          message_type: string
+          metadata: Json
+          recipient_wa_id: string | null
+          reply_to_external_message_id: string | null
+          sender_wa_id: string | null
           sent_at: string
+          status_updated_at: string | null
           workspace_id: string
         }
         Insert: {
@@ -374,10 +502,21 @@ export type Database = {
           body: string
           conversation_id: string
           created_at?: string
+          delivery_status?:
+            | Database["public"]["Enums"]["message_delivery_status"]
+            | null
           direction: Database["public"]["Enums"]["message_direction"]
+          error_code?: string | null
+          error_message?: string | null
           external_message_id?: string | null
           id?: string
+          message_type?: string
+          metadata?: Json
+          recipient_wa_id?: string | null
+          reply_to_external_message_id?: string | null
+          sender_wa_id?: string | null
           sent_at?: string
+          status_updated_at?: string | null
           workspace_id: string
         }
         Update: {
@@ -385,10 +524,21 @@ export type Database = {
           body?: string
           conversation_id?: string
           created_at?: string
+          delivery_status?:
+            | Database["public"]["Enums"]["message_delivery_status"]
+            | null
           direction?: Database["public"]["Enums"]["message_direction"]
+          error_code?: string | null
+          error_message?: string | null
           external_message_id?: string | null
           id?: string
+          message_type?: string
+          metadata?: Json
+          recipient_wa_id?: string | null
+          reply_to_external_message_id?: string | null
+          sender_wa_id?: string | null
           sent_at?: string
+          status_updated_at?: string | null
           workspace_id?: string
         }
         Relationships: [
@@ -489,6 +639,59 @@ export type Database = {
           },
           {
             foreignKeyName: "tasks_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      webhook_events: {
+        Row: {
+          error_message: string | null
+          event_key: string
+          event_type: string
+          external_resource_id: string | null
+          id: string
+          metadata: Json
+          payload_hash: string
+          processed_at: string | null
+          processing_status: string
+          provider: string
+          received_at: string
+          workspace_id: string | null
+        }
+        Insert: {
+          error_message?: string | null
+          event_key: string
+          event_type: string
+          external_resource_id?: string | null
+          id?: string
+          metadata?: Json
+          payload_hash: string
+          processed_at?: string | null
+          processing_status?: string
+          provider: string
+          received_at?: string
+          workspace_id?: string | null
+        }
+        Update: {
+          error_message?: string | null
+          event_key?: string
+          event_type?: string
+          external_resource_id?: string | null
+          id?: string
+          metadata?: Json
+          payload_hash?: string
+          processed_at?: string | null
+          processing_status?: string
+          provider?: string
+          received_at?: string
+          workspace_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_events_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -620,6 +823,13 @@ export type Database = {
         | "won"
         | "lost"
       member_role: "owner" | "admin" | "sales" | "support" | "viewer"
+      message_delivery_status:
+        | "pending"
+        | "sent"
+        | "delivered"
+        | "read"
+        | "failed"
+        | "deleted"
       message_direction: "in" | "out"
       task_priority: "low" | "medium" | "high"
       task_status: "open" | "done"
@@ -761,6 +971,14 @@ export const Constants = {
         "lost",
       ],
       member_role: ["owner", "admin", "sales", "support", "viewer"],
+      message_delivery_status: [
+        "pending",
+        "sent",
+        "delivered",
+        "read",
+        "failed",
+        "deleted",
+      ],
       message_direction: ["in", "out"],
       task_priority: ["low", "medium", "high"],
       task_status: ["open", "done"],
