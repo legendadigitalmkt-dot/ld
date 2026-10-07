@@ -128,11 +128,9 @@ export function PipelineKanban({
           const stageDeals = deals.filter((deal) => deal.stage === stage.id)
 
           return (
-            <section
+            <fieldset
               className={`column pipeline-column ${stage.tone ? `pipeline-column-${stage.tone}` : ''}`}
               key={stage.id}
-              role="group"
-              aria-label={`Estágio ${stage.label}`}
               onDragOver={(event) => {
                 if (canEdit) event.preventDefault()
               }}
@@ -143,6 +141,7 @@ export function PipelineKanban({
                 setDraggedDealId(null)
               }}
             >
+              <legend className="sr-only">Estágio ${stage.label}</legend>
               <header className="pipeline-column-head">
                 <div>
                   <strong>{stage.label}</strong>
@@ -235,7 +234,7 @@ export function PipelineKanban({
                   <div className="pipeline-empty">Arraste uma oportunidade para cá</div>
                 ) : null}
               </div>
-            </section>
+            </fieldset>
           )
         })}
       </div>
