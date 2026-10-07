@@ -1,27 +1,34 @@
 'use server'
 
+import { randomUUID } from 'node:crypto'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { requireUser } from '@/lib/auth'
 import { requireWorkspace } from '@/lib/workspace'
 
 export async function createContact(formData: FormData) {
-  const [user, workspace] = await Promise.all([requireUser(), requireWorkspace()])
-  const name = String(formData.get('name') || '').trim().slice(0, 120)
+  const workspace = await requireWorkspace()
+  const name = String(formData.get('name') || '').trim().slice(0, 160)
   const phone = String(formData.get('phone') || '').trim().slice(0, 40) || null
   const source = String(formData.get('source') || 'Manual').trim().slice(0, 80)
+  const submittedKey = String(formData.get('intakeKey') || '').trim()
+  const intakeKey = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(submittedKey)
+    ? submittedKey
+    : randomUUID()
+
   if (name.length < 2) return
 
   const supabase = await createClient()
-  const { error } = await supabase.from('contacts').insert({
-    workspace_id: workspace.id,
-    name,
-    phone,
-    source,
-    owner_user_id: user.id,
-    last_interaction_at: new Date().toISOString(),
+  const { error } = await supabase.rpc('create_lead_with_deal', {
+    p_workspace_id: workspace.id,
+    p_name: name,
+    p_phone: phone,
+    p_source: source,
+    p_intake_key: intakeKey,
   })
-  if (error) throw new Error(`Failed to create contact: ${error.message}`)
+
+  if (error) throw new Error(`Failed to create lead: ${error.message}`)
+
   revalidatePath('/app/contacts')
+  revalidatePath('/app/pipeline')
   revalidatePath('/app')
 }
