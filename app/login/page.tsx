@@ -17,8 +17,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <label>E-mail<input required name="email" type="email" autoComplete="email" /></label>
           <label>Senha<input required name="password" type="password" minLength={8} autoComplete="current-password" /></label>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <button className="button" formAction={signIn}>Entrar</button>
-            <button className="button secondary" formAction={signUp}>Criar conta</button>
+            <button className="button" type="submit" formAction={signIn}>Entrar</button>
+            <button className="button secondary" type="submit" formAction={signUp}>Criar conta</button>
           </div>
         </form>
       </section>
