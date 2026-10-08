@@ -813,11 +813,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      growth_overview: { Args: { p_workspace_id: string; p_days?: number }; Returns: Json }
+      create_workspace_task: { Args: { p_workspace_id: string; p_title: string; p_priority?: Database["public"]["Enums"]["task_priority"]; p_due_at?: string | null; p_contact_id?: string | null; p_deal_id?: string | null }; Returns: string }
+      set_workspace_task_status: { Args: { p_workspace_id: string; p_task_id: string; p_status: Database["public"]["Enums"]["task_status"] }; Returns: string }
+
       create_lead_with_deal: {
         Args: {
           p_intake_key?: string
           p_name: string
-          p_phone?: string
+          p_phone?: string | null
           p_source?: string
           p_workspace_id: string
         }

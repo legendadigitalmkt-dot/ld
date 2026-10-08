@@ -1,34 +1,92 @@
-import Link from 'next/link'
-import { signOut } from '@/app/login/actions'
-import type { CurrentWorkspace } from '@/lib/workspace'
+import Link from "next/link";
+import { requireUser } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
+import {
+	getAccessibleWorkspaces,
+	isWorkspaceAdmin,
+	type CurrentWorkspace,
+} from "@/lib/workspace";
+import { roleLabels } from "@/lib/operational";
+import { Icon, GrowthMark } from "@/components/ui/icons";
+import { AppNavigation } from "@/components/app/navigation";
+import { AppControls, WorkspacePicker } from "@/components/app/controls";
+import styles from "@/components/app/app.module.css";
 
-export function AppShell({ workspace, children }: { workspace: CurrentWorkspace; children: React.ReactNode }) {
-  return (
-    <div className="shell">
-      <aside className="sidebar">
-        <div className="brand">LD</div>
-        <div className="workspace-name" style={{ marginTop: 12, fontWeight: 800 }}>{workspace.name}</div>
-        <div className="workspace-name muted" style={{ fontSize: 12 }}>{workspace.role}</div>
-        <nav>
-          <Link href="/app">⌂ <span className="nav-label">Overview</span></Link>
-          <Link href="/app/inbox">◫ <span className="nav-label">Inbox</span></Link>
-          <Link href="/app/contacts">◎ <span className="nav-label">Contacts</span></Link>
-          <Link href="/app/pipeline">◇ <span className="nav-label">Pipeline</span></Link>
-          <Link href="/app/tasks">✓ <span className="nav-label">Tasks</span></Link>
-          <Link href="/app/settings/members">⚙ <span className="nav-label">Equipe</span></Link>
-          <Link href="/app/settings/integrations">↗ <span className="nav-label">Integrações</span></Link>
-        </nav>
-        <div className="sidebar-footer">
-          <form action={signOut}><button className="button secondary" type="submit" style={{ width: '100%' }}>Sair</button></form>
-        </div>
-      </aside>
-      <section className="main">
-        <header className="topbar">
-          <strong>Growth OS</strong>
-          <span className="muted">V1 · WhatsApp Channel</span>
-        </header>
-        <main className="content">{children}</main>
-      </section>
-    </div>
-  )
+export async function AppShell({
+	workspace,
+	children,
+}: {
+	workspace: CurrentWorkspace;
+	children: React.ReactNode;
+}) {
+	const supabase = await createClient();
+	const [user, workspaces, overdue, unread] = await Promise.all([
+		requireUser(),
+		getAccessibleWorkspaces(),
+		supabase
+			.from("tasks")
+			.select("id", { count: "exact", head: true })
+			.eq("workspace_id", workspace.id)
+			.eq("status", "open")
+			.lt("due_at", new Date().toISOString()),
+		supabase
+			.from("conversations")
+			.select("id", { count: "exact", head: true })
+			.eq("workspace_id", workspace.id)
+			.gt("unread_count", 0),
+	]);
+	return (
+		<div className={styles.appShell}>
+			<a href="#growth-main" className={styles.skipLink}>
+				Pular para o conteúdo
+			</a>
+			<aside className={styles.sidebar}>
+				<Link
+					href="/app"
+					className={styles.brand}
+					aria-label="Growth OS — visão geral"
+				>
+					<GrowthMark />
+					<div>
+						<strong>Growth OS</strong>
+						<small>by Legenda Digital</small>
+					</div>
+				</Link>
+				<div className={styles.workspaceCard}>
+					<span>WORKSPACE</span>
+					<strong>{workspace.name}</strong>
+					<small>{roleLabels[workspace.role]}</small>
+				</div>
+				<AppNavigation admin={isWorkspaceAdmin(workspace.role)} />
+				<div className={styles.sidebarBottom}>
+					<WorkspacePicker
+						workspace={workspace}
+						workspaces={workspaces}
+						instance="sidebar"
+					/>
+					<Link href="/" className={styles.portalLink}>
+						Conheça o produto <Icon name="arrow" />
+					</Link>
+				</div>
+			</aside>
+			<section className={styles.mainArea}>
+				<header>
+					<AppControls
+						key={workspace.id}
+						workspace={workspace}
+						workspaces={workspaces}
+						email={user.email}
+						notices={{
+							overdue: overdue.count || 0,
+							unread: unread.count || 0,
+							available: !overdue.error && !unread.error,
+						}}
+					/>
+				</header>
+				<main id="growth-main" className={styles.content}>
+					{children}
+				</main>
+			</section>
+		</div>
+	);
 }
