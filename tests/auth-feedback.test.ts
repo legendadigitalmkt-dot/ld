@@ -14,6 +14,8 @@ test('unconfirmed emails are not reported as wrong passwords', () => {
   assert.match(authErrorMessage({ code: 'invalid_credentials' }), /E-mail ou senha inválidos/)
   assert.match(authErrorMessage({ status: 429 }), /Muitas tentativas/)
   assert.match(authErrorMessage({ code: 'unknown', status: 503 }), /Não foi possível/)
+  assert.match(authErrorMessage({ code: 'bad_code_verifier' }), /mesmo navegador/)
+  assert.match(authErrorMessage({ code: 'otp_expired' }), /link expirou/)
 })
 
 test('callback blocks external and protocol-relative destinations', () => {
