@@ -10,7 +10,11 @@ trimmed and normalized.
 Keep the existing Supabase project and workspace. Do not recreate accounts to reset
 their passwords: repeated sign-up does not change an existing account's password.
 
-Set `NEXT_PUBLIC_APP_URL` to the public HTTPS app origin. In Supabase Auth URL
+Set `NEXT_PUBLIC_APP_URL` to the public HTTPS app origin.
+Callback redirects use this configured origin instead of the internal Node request
+host (which can be `0.0.0.0:3000` behind Hostinger's proxy).
+
+In Supabase Auth URL
 Configuration, allow both callback destinations:
 
 - `https://app.legendadigital.com.br/auth/callback?next=/onboarding`
@@ -33,6 +37,10 @@ requested. No email template change is required.
 6. Sign in with the new password and verify access to the original workspace.
 7. Signed-out access to `/reset-password` must redirect to `/forgot-password`.
 8. `/auth/callback` must never redirect to an external host supplied in `next`.
+
+Recovery cookies are staged until Supabase accepts the email request. A failed or
+rate-limited retry leaves the previous link's verifier unchanged. Only the latest
+successfully requested link should be used, in the same browser that requested it.
 
 Recovery requests keep a neutral success message to avoid revealing whether an
 email belongs to an account. All password changes use the authenticated Supabase

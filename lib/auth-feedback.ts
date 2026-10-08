@@ -23,6 +23,7 @@ export function authErrorMessage(error: AuthFailure) {
     case 'otp_expired':
     case 'flow_state_expired':
     case 'flow_state_not_found':
+    case 'bad_code_verifier':
       return 'O link expirou ou foi aberto em outro navegador. Solicite um novo link e abra no mesmo navegador.'
     default:
       if (error.status === 429) return 'Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.'
