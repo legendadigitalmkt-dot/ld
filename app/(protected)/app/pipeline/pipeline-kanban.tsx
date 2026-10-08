@@ -154,6 +154,7 @@ export function PipelineKanban({
                 {stageDeals.map((deal) => (
                   <article
                     className="deal pipeline-deal"
+                    id={`deal-${deal.id}`}
                     key={deal.id}
                     draggable={canEdit && !isPending}
                     onDragStart={(event) => {
