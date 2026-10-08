@@ -80,7 +80,14 @@ export function getWhatsAppWebhookUrl() {
 }
 
 export type MetaDiagnosticResult = {
-  operation: 'phone' | 'waba' | 'waba_phone_numbers'
+  operation:
+    | 'token_identity'
+    | 'token_permissions'
+    | 'visible_businesses'
+    | 'assigned_wabas'
+    | 'phone'
+    | 'waba'
+    | 'waba_phone_numbers'
   ok: boolean
   summary: string
 }
@@ -88,9 +95,14 @@ export type MetaDiagnosticResult = {
 async function diagnoseMetaOperation(
   operation: MetaDiagnosticResult['operation'],
   request: () => Promise<unknown>,
+  summarize?: (payload: unknown) => string,
 ): Promise<MetaDiagnosticResult> {
   try {
     const payload = await request()
+    if (summarize) {
+      return { operation, ok: true, summary: summarize(payload) }
+    }
+
     const record = payload && typeof payload === 'object' ? payload as Record<string, unknown> : {}
     const data = Array.isArray(record.data) ? record.data : null
     const id = typeof record.id === 'string' ? record.id : null
@@ -108,8 +120,67 @@ async function diagnoseMetaOperation(
   }
 }
 
+function summarizeIdentity(payload: unknown) {
+  const record = payload && typeof payload === 'object' ? payload as Record<string, unknown> : {}
+  const id = typeof record.id === 'string' ? record.id : 'desconhecido'
+  const name = typeof record.name === 'string' ? record.name : null
+  return name ? `OK — identidade ${name} (ID ${id}).` : `OK — identidade ID ${id}.`
+}
+
+function summarizePermissionList(payload: unknown) {
+  const record = payload && typeof payload === 'object' ? payload as Record<string, unknown> : {}
+  const data = Array.isArray(record.data) ? record.data : []
+  const granted = data
+    .filter((item) => item && typeof item === 'object' && (item as Record<string, unknown>).status === 'granted')
+    .map((item) => (item as Record<string, unknown>).permission)
+    .filter((permission): permission is string => typeof permission === 'string')
+    .sort()
+
+  return granted.length
+    ? `OK — permissões concedidas: ${granted.join(', ')}.`
+    : 'OK — a Meta não retornou permissões com status granted.'
+}
+
+function summarizeResourceList(payload: unknown, label: string) {
+  const record = payload && typeof payload === 'object' ? payload as Record<string, unknown> : {}
+  const data = Array.isArray(record.data) ? record.data : []
+  const resources = data
+    .filter((item) => item && typeof item === 'object')
+    .map((item) => {
+      const resource = item as Record<string, unknown>
+      const id = typeof resource.id === 'string' ? resource.id : null
+      const name = typeof resource.name === 'string' ? resource.name : null
+      return id ? (name ? `${name} (${id})` : id) : null
+    })
+    .filter((item): item is string => Boolean(item))
+
+  return resources.length
+    ? `OK — ${label}: ${resources.join(', ')}.`
+    : `OK — nenhuma ${label.toLowerCase()} retornada.`
+}
+
 export async function diagnoseWhatsAppMetaAssets(wabaId: string, phoneNumberId: string) {
   return Promise.all([
+    diagnoseMetaOperation(
+      'token_identity',
+      () => metaRequest('me?fields=id,name'),
+      summarizeIdentity,
+    ),
+    diagnoseMetaOperation(
+      'token_permissions',
+      () => metaRequest('me/permissions'),
+      summarizePermissionList,
+    ),
+    diagnoseMetaOperation(
+      'visible_businesses',
+      () => metaRequest('me/businesses?fields=id,name'),
+      (payload) => summarizeResourceList(payload, 'negócios visíveis'),
+    ),
+    diagnoseMetaOperation(
+      'assigned_wabas',
+      () => metaRequest('me/assigned_whatsapp_business_accounts?fields=id,name'),
+      (payload) => summarizeResourceList(payload, 'WABAs atribuídas'),
+    ),
     diagnoseMetaOperation('phone', () =>
       metaRequest(`${encodeURIComponent(phoneNumberId)}?fields=id,display_phone_number,verified_name,quality_rating`),
     ),
