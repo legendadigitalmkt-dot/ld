@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { requireUser } from '@/lib/auth'
 import {
   getWhatsAppBusinessPhoneNumbers,
+  getWhatsAppPhoneNumber,
   type WhatsAppPhoneNumber,
   getWhatsAppWebhookUrl,
   subscribeWhatsAppBusinessAccount,
@@ -29,6 +30,11 @@ export async function connectWhatsApp(formData: FormData) {
 
   let phone: WhatsAppPhoneNumber | undefined
   try {
+    const directPhone = await getWhatsAppPhoneNumber(phoneNumberId)
+    if (directPhone.id !== phoneNumberId) {
+      fail('A Meta retornou um Phone Number ID diferente do informado.')
+    }
+
     const phones = await getWhatsAppBusinessPhoneNumbers(wabaId)
     phone = phones.find((item) => item.id === phoneNumberId)
     if (!phone) fail('O Phone Number ID não pertence ao WABA informado ou o token não possui acesso.')

@@ -52,7 +52,14 @@ async function metaRequest<T>(path: string, init: RequestInit = {}): Promise<T> 
   if (!response.ok) {
     const meta = payload as MetaErrorPayload
     const message = meta.error?.message || `Meta Graph API request failed with HTTP ${response.status}`
-    throw new Error(message)
+    const code = meta.error?.code
+    const subcode = meta.error?.error_subcode
+    const suffix = [
+      typeof code === 'number' ? `code ${code}` : null,
+      typeof subcode === 'number' ? `subcode ${subcode}` : null,
+      meta.error?.fbtrace_id ? `fbtrace ${meta.error.fbtrace_id}` : null,
+    ].filter(Boolean).join(', ')
+    throw new Error(suffix ? `${message} [${suffix}]` : message)
   }
 
   return payload
@@ -72,11 +79,30 @@ export function getWhatsAppWebhookUrl() {
   return `${getAppUrl().replace(/\/$/, '')}/api/webhooks/meta/whatsapp`
 }
 
-export async function getWhatsAppBusinessPhoneNumbers(wabaId: string) {
-  const result = await metaRequest<{ data?: WhatsAppPhoneNumber[] }>(
-    `${encodeURIComponent(wabaId)}/phone_numbers?fields=id,display_phone_number,verified_name,quality_rating`,
+export async function getWhatsAppPhoneNumber(phoneNumberId: string) {
+  return metaRequest<WhatsAppPhoneNumber>(
+    `${encodeURIComponent(phoneNumberId)}?fields=id,display_phone_number,verified_name,quality_rating`,
   )
-  return result.data || []
+}
+
+export async function getWhatsAppBusinessPhoneNumbers(wabaId: string) {
+  try {
+    const result = await metaRequest<{ data?: WhatsAppPhoneNumber[] }>(
+      `${encodeURIComponent(wabaId)}/phone_numbers?fields=id,display_phone_number,verified_name,quality_rating`,
+    )
+    return result.data || []
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Falha desconhecida da Meta.'
+    if (message.includes('nonexisting field (phone_numbers)')) {
+      throw new Error(
+        'A Meta não reconheceu o ID informado como uma WhatsApp Business Account (WABA). ' +
+        'Confirme o WABA ID em Meta for Developers > WhatsApp > Configuração da API; ' +
+        'não use o ID do portfólio empresarial nem o Phone Number ID. Detalhe da Meta: ' +
+        message,
+      )
+    }
+    throw error
+  }
 }
 
 export async function subscribeWhatsAppBusinessAccount(wabaId: string) {
