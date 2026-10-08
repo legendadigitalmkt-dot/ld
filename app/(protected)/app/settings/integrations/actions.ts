@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { requireUser } from '@/lib/auth'
 import {
+  diagnoseWhatsAppMetaAssets,
   getWhatsAppBusinessPhoneNumbers,
   getWhatsAppPhoneNumber,
   type WhatsAppPhoneNumber,
@@ -15,6 +16,21 @@ import { isWorkspaceAdmin, requireWorkspace } from '@/lib/workspace'
 
 function fail(message: string): never {
   redirect(`/app/settings/integrations?error=${encodeURIComponent(message)}`)
+}
+
+export async function diagnoseWhatsApp(formData: FormData) {
+  const workspace = await requireWorkspace()
+  if (!isWorkspaceAdmin(workspace.role)) fail('Somente owners e admins podem executar o diagnóstico.')
+
+  const wabaId = String(formData.get('wabaId') || '').trim()
+  const phoneNumberId = String(formData.get('phoneNumberId') || '').trim()
+  if (!/^\d+$/.test(wabaId) || !/^\d+$/.test(phoneNumberId)) {
+    fail('Informe WABA ID e Phone Number ID válidos antes de executar o diagnóstico.')
+  }
+
+  const results = await diagnoseWhatsAppMetaAssets(wabaId, phoneNumberId)
+  const encoded = Buffer.from(JSON.stringify(results), 'utf8').toString('base64url')
+  redirect(`/app/settings/integrations?diagnostic=${encodeURIComponent(encoded)}`)
 }
 
 export async function connectWhatsApp(formData: FormData) {
