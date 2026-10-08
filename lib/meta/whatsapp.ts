@@ -79,6 +79,49 @@ export function getWhatsAppWebhookUrl() {
   return `${getAppUrl().replace(/\/$/, '')}/api/webhooks/meta/whatsapp`
 }
 
+export type MetaDiagnosticResult = {
+  operation: 'phone' | 'waba' | 'waba_phone_numbers'
+  ok: boolean
+  summary: string
+}
+
+async function diagnoseMetaOperation(
+  operation: MetaDiagnosticResult['operation'],
+  request: () => Promise<unknown>,
+): Promise<MetaDiagnosticResult> {
+  try {
+    const payload = await request()
+    const record = payload && typeof payload === 'object' ? payload as Record<string, unknown> : {}
+    const data = Array.isArray(record.data) ? record.data : null
+    const id = typeof record.id === 'string' ? record.id : null
+    return {
+      operation,
+      ok: true,
+      summary: data ? `OK — ${data.length} recurso(s) retornado(s).` : id ? `OK — objeto ${id} acessível.` : 'OK — recurso acessível.',
+    }
+  } catch (error) {
+    return {
+      operation,
+      ok: false,
+      summary: error instanceof Error ? error.message : 'Falha desconhecida da Meta.',
+    }
+  }
+}
+
+export async function diagnoseWhatsAppMetaAssets(wabaId: string, phoneNumberId: string) {
+  return Promise.all([
+    diagnoseMetaOperation('phone', () =>
+      metaRequest(`${encodeURIComponent(phoneNumberId)}?fields=id,display_phone_number,verified_name,quality_rating`),
+    ),
+    diagnoseMetaOperation('waba', () =>
+      metaRequest(`${encodeURIComponent(wabaId)}?fields=id,name`),
+    ),
+    diagnoseMetaOperation('waba_phone_numbers', () =>
+      metaRequest(`${encodeURIComponent(wabaId)}/phone_numbers?fields=id,display_phone_number`),
+    ),
+  ])
+}
+
 export async function getWhatsAppPhoneNumber(phoneNumberId: string) {
   return metaRequest<WhatsAppPhoneNumber>(
     `${encodeURIComponent(phoneNumberId)}?fields=id,display_phone_number,verified_name,quality_rating`,

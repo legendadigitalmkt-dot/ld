@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { getWhatsAppWebhookUrl } from '@/lib/meta/whatsapp'
 import { createClient } from '@/lib/supabase/server'
 import { isWorkspaceAdmin, requireWorkspace } from '@/lib/workspace'
-import { connectWhatsApp } from './actions'
+import { connectWhatsApp, diagnoseWhatsApp } from './actions'
 
 export default async function IntegrationsPage({
   searchParams,
@@ -15,6 +15,14 @@ export default async function IntegrationsPage({
   const params = await searchParams
   const errorMessage = typeof params.error === 'string' ? params.error : null
   const message = typeof params.message === 'string' ? params.message : null
+  let diagnostic: Array<{ operation: string; ok: boolean; summary: string }> = []
+  if (typeof params.diagnostic === 'string') {
+    try {
+      diagnostic = JSON.parse(Buffer.from(params.diagnostic, 'base64url').toString('utf8'))
+    } catch {
+      diagnostic = []
+    }
+  }
 
   const supabase = await createClient()
   const { data: connection, error } = await supabase
@@ -63,6 +71,32 @@ export default async function IntegrationsPage({
         <p className="muted" style={{ marginBottom: 6 }}>Callback URL</p>
         <code className="code-line">{getWhatsAppWebhookUrl()}</code>
       </section>
+
+      <form action={diagnoseWhatsApp} className="card stack" style={{ marginBottom: 16 }}>
+        <h2>Diagnóstico seguro da Meta</h2>
+        <p className="muted">
+          Executa três leituras server-side usando o token já configurado. O token nunca é exibido, enviado ao navegador ou persistido.
+        </p>
+        <label>
+          WABA ID
+          <input name="wabaId" required inputMode="numeric" defaultValue={connection?.external_account_id || ''} />
+        </label>
+        <label>
+          Phone Number ID
+          <input name="phoneNumberId" required inputMode="numeric" defaultValue={connection?.external_resource_id || ''} />
+        </label>
+        <button className="button" type="submit">Executar diagnóstico</button>
+        {diagnostic.length ? (
+          <div className="stack">
+            {diagnostic.map((item) => (
+              <div className="code-line" key={item.operation}>
+                <strong>{item.ok ? 'OK' : 'FALHA'} — {item.operation}</strong><br />
+                {item.summary}
+              </div>
+            ))}
+          </div>
+        ) : null}
+      </form>
 
       <form action={connectWhatsApp} className="card stack">
         <h2>{connection ? 'Atualizar conexão' : 'Conectar WhatsApp'}</h2>
