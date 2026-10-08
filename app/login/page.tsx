@@ -1,4 +1,5 @@
 import { signIn, signUp } from './actions'
+import Link from 'next/link'
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const params = await searchParams
@@ -13,7 +14,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <p className="muted">Entre para acessar o workspace da sua empresa.</p>
         {error ? <p className="error">{error}</p> : null}
         {message ? <p className="card">{message}</p> : null}
-        <form className="stack">
+        <form className="stack" action={signIn}>
           <label>E-mail<input required name="email" type="email" autoComplete="email" /></label>
           <label>Senha<input required name="password" type="password" minLength={8} autoComplete="current-password" /></label>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -21,6 +22,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             <button className="button secondary" type="submit" formAction={signUp}>Criar conta</button>
           </div>
         </form>
+        <p><Link href="/forgot-password">Esqueci minha senha</Link></p>
       </section>
     </main>
   )
