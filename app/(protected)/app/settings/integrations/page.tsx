@@ -75,7 +75,7 @@ export default async function IntegrationsPage({
       <form action={diagnoseWhatsApp} className="card stack" style={{ marginBottom: 16 }}>
         <h2>Diagnóstico seguro da Meta</h2>
         <p className="muted">
-          Executa três leituras server-side usando o token já configurado. O token nunca é exibido, enviado ao navegador ou persistido.
+          Executa sete leituras server-side para verificar identidade, permissões, ativos visíveis e a WABA informada. O token nunca é exibido, enviado ao navegador ou persistido; somente resultados sanitizados são apresentados.
         </p>
         <label>
           WABA ID
