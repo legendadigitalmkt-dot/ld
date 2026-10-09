@@ -14,6 +14,7 @@ export type IconName =
 	| "team"
 	| "reports"
 	| "integrations"
+	| "settings"
 	| "ai"
 	| "shield"
 	| "clock"
@@ -53,6 +54,7 @@ const paths: Record<IconName, string[]> = {
 		"M10 13a5 5 0 0 0 7 .5l4-4a5 5 0 0 0-7-7l-2 2",
 		"M14 11a5 5 0 0 0-7-.5l-4 4a5 5 0 0 0 7 7l2-2",
 	],
+	settings: ["M4 7h16", "M4 17h16", "M9 4v6", "M15 14v6"],
 	ai: [
 		"m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z",
 		"M20 2v4",

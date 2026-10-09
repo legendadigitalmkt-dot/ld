@@ -158,6 +158,7 @@ export type Database = {
       }
       contacts: {
         Row: {
+          company: string | null
           created_at: string
           email: string | null
           id: string
@@ -173,6 +174,7 @@ export type Database = {
           workspace_id: string
         }
         Insert: {
+          company?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -188,6 +190,7 @@ export type Database = {
           workspace_id: string
         }
         Update: {
+          company?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -813,6 +816,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      contact_context: { Args: { p_workspace_id: string; p_contact_id: string; p_history_page?: number }; Returns: Json }
+      update_contact_profile: { Args: { p_workspace_id: string; p_contact_id: string; p_expected_updated_at: string; p_name: string; p_company: string | null; p_email: string | null; p_phone: string | null; p_source: string; p_status: Database["public"]["Enums"]["contact_status"]; p_tags: string[]; p_owner_user_id: string | null }; Returns: string }
+      add_contact_note: { Args: { p_workspace_id: string; p_contact_id: string; p_body: string; p_request_id: string }; Returns: string }
+      update_workspace_profile: { Args: { p_workspace_id: string; p_expected_updated_at: string; p_name: string; p_segment: string | null; p_timezone: string }; Returns: string }
       growth_overview: { Args: { p_workspace_id: string; p_days?: number }; Returns: Json }
       create_workspace_task: { Args: { p_workspace_id: string; p_title: string; p_priority?: Database["public"]["Enums"]["task_priority"]; p_due_at?: string | null; p_contact_id?: string | null; p_deal_id?: string | null }; Returns: string }
       set_workspace_task_status: { Args: { p_workspace_id: string; p_task_id: string; p_status: Database["public"]["Enums"]["task_status"] }; Returns: string }

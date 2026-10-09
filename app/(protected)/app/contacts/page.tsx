@@ -27,16 +27,22 @@ export default async function ContactsPage({
 		1,
 		Math.min(10000, Math.trunc(Number(params.page)) || 1),
 	);
+	const tag =
+		typeof params.tag === "string" ? params.tag.trim().slice(0, 32) : "";
 	const canEdit = workspace.role !== "viewer";
 	const supabase = await createClient();
 	let query = supabase
 		.from("contacts")
-		.select("id,name,phone,email,source,status,last_interaction_at", {
-			count: "exact",
-		})
+		.select(
+			"id,name,company,phone,email,source,status,tags,last_interaction_at",
+			{
+				count: "exact",
+			},
+		)
 		.eq("workspace_id", workspace.id);
 	if (search) query = query.ilike("name", `%${escapeSearch(search)}%`);
 	if (status !== "all") query = query.eq("status", status);
+	if (tag) query = query.contains("tags", [tag]);
 	const focusedContact =
 		typeof params.contact === "string" && uuidPattern.test(params.contact)
 			? params.contact
@@ -52,7 +58,7 @@ export default async function ContactsPage({
 		.range((page - 1) * 50, page * 50 - 1);
 	if (error) throw new Error("Não foi possível carregar os contatos.");
 	const url = (next: number) =>
-		`/app/contacts?${new URLSearchParams({ q: search, status, page: String(next) })}`;
+		`/app/contacts?${new URLSearchParams({ q: search, status, tag, page: String(next) })}`;
 	const total = count || 0;
 	return (
 		<>
@@ -65,7 +71,12 @@ export default async function ContactsPage({
 					</p>
 				</div>
 			</div>
-			<form method="get" action="/app/contacts" className={styles.filterBar}>
+			<form
+				method="get"
+				action="/app/contacts"
+				className={styles.filterBar}
+				style={{ gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))" }}
+			>
 				<label>
 					Buscar por nome
 					<input
@@ -85,10 +96,19 @@ export default async function ContactsPage({
 						<option value="inactive">Inativo</option>
 					</select>
 				</label>
+				<label>
+					Tag exata
+					<input
+						name="tag"
+						maxLength={32}
+						defaultValue={tag}
+						placeholder="Ex.: prioridade"
+					/>
+				</label>
 				<button className="button secondary" type="submit">
 					Aplicar filtros
 				</button>
-				{search || status !== "all" ? (
+				{search || tag || status !== "all" ? (
 					<Link href="/app/contacts" className="button secondary">
 						Limpar
 					</Link>
@@ -168,7 +188,15 @@ export default async function ContactsPage({
 							{contacts.map((contact) => (
 								<tr key={contact.id}>
 									<td>
-										<strong>{contact.name}</strong>
+										<Link href={`/app/contacts/${contact.id}`}>
+											<strong>{contact.name} →</strong>
+										</Link>
+										{contact.company ? (
+											<>
+												<br />
+												<span className="muted">{contact.company}</span>
+											</>
+										) : null}
 										<br />
 										<span className="muted">
 											{contact.phone || contact.email || "Sem canal cadastrado"}
@@ -206,12 +234,12 @@ export default async function ContactsPage({
 			) : (
 				<section className={styles.empty}>
 					<strong>
-						{search || status !== "all"
+						{search || tag || status !== "all"
 							? "Nenhum contato com esses filtros."
 							: "Sua base de contatos começa aqui."}
 					</strong>
 					<p>
-						{search || status !== "all"
+						{search || tag || status !== "all"
 							? "Ajuste a busca ou limpe os filtros."
 							: "Cadastre um lead para iniciar o acompanhamento comercial."}
 					</p>

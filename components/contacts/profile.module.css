@@ -1,0 +1,393 @@
+.profileHero {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 24px;
+	margin-bottom: 24px;
+}
+.identity {
+	display: flex;
+	gap: 18px;
+	align-items: center;
+	min-width: 0;
+}
+.initials {
+	display: grid;
+	place-items: center;
+	width: 64px;
+	height: 64px;
+	flex-shrink: 0;
+	border-radius: 20px;
+	background: linear-gradient(135deg, #754cff50, #00d9ff20);
+	border: 1px solid #754cff70;
+	font-size: 22px;
+	font-weight: 700;
+}
+.identity h1 {
+	margin: 6px 0 7px;
+	font-size: clamp(25px, 3vw, 35px);
+	letter-spacing: -0.04em;
+	overflow-wrap: anywhere;
+}
+.identity p {
+	margin: 0;
+	color: #9aaac2;
+	font-size: 13px;
+	overflow-wrap: anywhere;
+}
+.kicker {
+	font-size: 10px;
+	color: #00d9ff;
+	letter-spacing: 0.17em;
+	font-weight: 700;
+}
+.heroActions,
+.formActions {
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+.profileNav {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	margin-bottom: 24px;
+}
+.profileNav a {
+	padding: 10px 14px;
+	border: 1px solid #233451;
+	border-radius: 9px;
+	font-size: 12px;
+	color: #b9c8df;
+	background: #0b1428;
+}
+.profileNav a:hover {
+	color: #fff;
+	border-color: #00d9ff70;
+}
+.layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1.5fr) minmax(310px, 1fr);
+	gap: 20px;
+	align-items: start;
+}
+.column {
+	display: grid;
+	gap: 20px;
+	min-width: 0;
+}
+.panel {
+	padding: 24px;
+	border: 1px solid #1b2a45;
+	border-radius: 16px;
+	background: linear-gradient(135deg, #0d1830, #091225);
+	scroll-margin-top: 100px;
+	min-width: 0;
+}
+.panel h2 {
+	margin: 0 0 6px;
+	font-size: 17px;
+	letter-spacing: -0.02em;
+}
+.panel > p {
+	margin: 0 0 20px;
+	color: #9aaac2;
+	font-size: 12px;
+	line-height: 1.65;
+}
+.facts {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
+	margin: 22px 0 0;
+}
+.facts > div {
+	min-width: 0;
+}
+.facts dt {
+	font-size: 10px;
+	letter-spacing: 0.05em;
+	color: #9aaac2;
+	margin-bottom: 6px;
+}
+.facts dd {
+	font-size: 13px;
+	line-height: 1.65;
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+.tags {
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	margin-top: 16px;
+}
+.tags span {
+	font-size: 10px;
+	padding: 5px 8px;
+	background: #754cff20;
+	border: 1px solid #754cff50;
+	color: #c4b4ff;
+	border-radius: 7px;
+}
+.metrics {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 10px;
+	margin-top: 20px;
+}
+.metric {
+	padding: 15px 12px;
+	border: 1px solid #233451;
+	border-radius: 11px;
+	background: #071021;
+}
+.metric span {
+	display: block;
+	font-size: 10px;
+	color: #9aaac2;
+	margin-bottom: 8px;
+}
+.metric strong {
+	font-size: 21px;
+	overflow-wrap: anywhere;
+}
+.metric small {
+	font-size: 11px;
+	color: #9aaac2;
+	display: block;
+	margin-top: 5px;
+}
+.record {
+	display: flex;
+	justify-content: space-between;
+	align-items: start;
+	gap: 15px;
+	padding: 15px 0;
+	border-bottom: 1px solid #1b2a45;
+	font-size: 12px;
+	overflow-wrap: anywhere;
+}
+.record:last-child {
+	border-bottom: 0;
+}
+.record strong {
+	display: block;
+	font-size: 13px;
+	font-weight: 600;
+	color: #f7faff;
+}
+.record small {
+	display: block;
+	color: #9aaac2;
+	margin-top: 7px;
+	line-height: 1.6;
+}
+a.record:hover strong {
+	color: #00d9ff;
+}
+.recordValue {
+	text-align: right;
+	white-space: nowrap;
+	color: #b9ccff;
+}
+.empty {
+	padding: 15px 0;
+	font-size: 12px;
+	color: #9aaac2;
+	line-height: 1.7;
+}
+.note {
+	padding: 17px 0;
+	border-bottom: 1px solid #1b2a45;
+}
+.note:last-child {
+	border-bottom: 0;
+}
+.note p {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	line-height: 1.75;
+	font-size: 13px;
+	margin: 0 0 9px;
+}
+.note small,
+.history small {
+	font-size: 10px;
+	line-height: 1.6;
+	color: #9aaac2;
+}
+.history {
+	list-style: none;
+	padding: 0;
+	margin: 20px 0 0;
+}
+.history li {
+	position: relative;
+	border-left: 1px solid #233451;
+	padding: 0 0 22px 20px;
+	margin-left: 4px;
+}
+.history li::before {
+	content: "";
+	position: absolute;
+	left: -4px;
+	top: 5px;
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+	background: #00d9ff;
+	box-shadow: 0 0 10px #00d9ff40;
+}
+.history strong {
+	font-size: 11px;
+	color: #a9beff;
+	font-weight: 500;
+}
+.history p {
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+	font-size: 13px;
+	line-height: 1.7;
+	margin: 7px 0;
+}
+.editForm fieldset {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 17px;
+	border: 0;
+	padding: 0;
+	margin: 0 0 14px;
+	min-width: 0;
+}
+.editForm label,
+.noteForm label {
+	display: grid;
+	gap: 7px;
+	font-size: 12px;
+	color: #c2cee1;
+	min-width: 0;
+}
+.editForm small {
+	color: #9aaac2;
+	font-size: 10px;
+	font-weight: 400;
+	line-height: 1.6;
+}
+.wide {
+	grid-column: 1 / -1;
+}
+.hint {
+	font-size: 10px !important;
+	color: #9aaac2 !important;
+	line-height: 1.7 !important;
+	margin: 12px 0 18px !important;
+}
+.noteForm {
+	margin-bottom: 20px;
+}
+.noteForm textarea {
+	resize: vertical;
+	min-height: 120px;
+	line-height: 1.7;
+}
+.noteForm .formActions {
+	margin-top: 12px;
+	justify-content: space-between;
+}
+.formActions small {
+	font-size: 10px;
+	color: #9aaac2;
+}
+.error {
+	background: #fa608015;
+	border: 1px solid #fa608050;
+	color: #ffc0cd;
+	padding: 13px;
+	border-radius: 10px;
+	font-size: 12px;
+	line-height: 1.7;
+}
+.success {
+	padding: 14px 17px;
+	color: #b8f5e7;
+	background: #19dfc515;
+	border: 1px solid #19dfc540;
+	border-radius: 10px;
+	font-size: 12px;
+	margin-bottom: 20px;
+}
+.pagination {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 11px;
+	color: #9aaac2;
+	margin-top: 20px;
+	gap: 12px;
+}
+.pagination a {
+	color: #bbcaff;
+	padding: 9px 0;
+}
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+@media (max-width: 1100px) {
+	.layout {
+		grid-template-columns: 1fr;
+	}
+	.profileHero {
+		flex-direction: column;
+	}
+	.column {
+		width: 100%;
+	}
+}
+@media (max-width: 600px) {
+	.panel {
+		padding: 19px;
+	}
+	.identity {
+		align-items: flex-start;
+	}
+	.initials {
+		width: 48px;
+		height: 48px;
+		border-radius: 15px;
+		font-size: 16px;
+	}
+	.facts,
+	.editForm fieldset {
+		grid-template-columns: 1fr;
+	}
+	.metrics {
+		grid-template-columns: 1fr 1fr;
+	}
+	.metrics .metric:last-child {
+		grid-column: 1 / -1;
+	}
+	.heroActions {
+		width: 100%;
+	}
+	.heroActions a {
+		flex: 1;
+		text-align: center;
+	}
+	.recordValue {
+		white-space: normal;
+		min-width: 80px;
+	}
+	.pagination {
+		flex-wrap: wrap;
+	}
+}

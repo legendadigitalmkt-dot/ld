@@ -39,4 +39,11 @@ export const appNavigation: {
 		group: "Workspace",
 		admin: true,
 	},
+	{
+		href: "/app/settings",
+		label: "Configurações",
+		icon: "settings",
+		group: "Workspace",
+		admin: true,
+	},
 ];

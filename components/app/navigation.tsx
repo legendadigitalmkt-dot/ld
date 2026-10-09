@@ -22,8 +22,8 @@ export function AppNavigation({
 						.filter((item) => item.group === group && (!item.admin || admin))
 						.map((item) => {
 							const current =
-								item.href === "/app"
-									? pathname === "/app"
+								item.href === "/app" || item.href === "/app/settings"
+									? pathname === item.href
 									: pathname.startsWith(item.href);
 							return (
 								<Link
