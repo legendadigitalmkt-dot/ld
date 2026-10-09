@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { requireWorkspace } from "@/lib/workspace";
-import { sendInboxMessage } from "./actions";
+import { InboxComposer, InboxLiveRefresh } from "@/components/inbox/composer";
+import { getCurrentWhatsAppConnection } from "@/lib/meta/whatsapp-connection";
+import { getApprovedWhatsAppTemplates } from "@/lib/meta/whatsapp";
+import {
+	whatsappDeliveryLabel,
+	whatsappFailureMessage,
+} from "@/lib/meta/whatsapp-policy";
+import type { WhatsAppTemplate } from "@/lib/meta/whatsapp-templates";
 import { uuidPattern } from "@/lib/workspace-selection";
 
 function formatTime(value: string | null, timezone: string) {
@@ -91,7 +98,7 @@ export default async function InboxPage({
 		? await supabase
 				.from("messages")
 				.select(
-					"id,direction,author_name,body,message_type,delivery_status,error_message,sent_at,external_message_id",
+					"id,direction,author_name,body,message_type,delivery_status,error_code,error_message,sent_at,external_message_id",
 					{ count: "exact" },
 				)
 				.eq("workspace_id", workspace.id)
@@ -102,6 +109,35 @@ export default async function InboxPage({
 		: { data: [], error: null, count: 0 };
 
 	if (messagesError) throw new Error("Não foi possível carregar as mensagens.");
+	const { data: latestInbound, error: inboundError } = selectedId
+		? await supabase
+				.from("messages")
+				.select("sent_at")
+				.eq("workspace_id", workspace.id)
+				.eq("conversation_id", selectedId)
+				.eq("direction", "in")
+				.order("sent_at", { ascending: false })
+				.limit(1)
+				.maybeSingle()
+		: { data: null, error: null };
+	if (inboundError)
+		throw new Error("Não foi possível verificar a janela de atendimento.");
+	const connection =
+		selectedId && workspace.role !== "viewer"
+			? await getCurrentWhatsAppConnection()
+			: null;
+	let templates: WhatsAppTemplate[] = [];
+	let templateError: string | null = null;
+	if (connection?.external_account_id) {
+		try {
+			templates = await getApprovedWhatsAppTemplates(
+				connection.external_account_id,
+			);
+		} catch {
+			templateError =
+				"Não foi possível carregar os templates aprovados. Peça a um administrador para executar o diagnóstico da Meta e atualizar a conversa.";
+		}
+	}
 
 	return (
 		<>
@@ -112,6 +148,7 @@ export default async function InboxPage({
 					<p className="muted">
 						Conversas persistidas diretamente da WhatsApp Cloud API.
 					</p>
+					<InboxLiveRefresh />
 				</div>
 				<Link href="/app/settings/integrations" className="button secondary">
 					Configurar canal
@@ -201,11 +238,26 @@ export default async function InboxPage({
 												{formatTime(message.sent_at, workspace.timezone)}
 											</span>
 											{message.direction === "out" ? (
-												<span title={message.error_message || undefined}>
-													{message.delivery_status || "pending"}
+												<span>
+													{whatsappDeliveryLabel(message.delivery_status)}
 												</span>
 											) : null}
 										</footer>
+										{message.delivery_status === "failed" ? (
+											<p className="message-failure">
+												<strong>
+													{message.error_code
+														? `Meta ${message.error_code} · `
+														: ""}
+													Falha de entrega
+												</strong>
+												<br />
+												{whatsappFailureMessage(
+													message.error_code,
+													message.error_message,
+												)}
+											</p>
+										) : null}
 									</article>
 								))}
 							</div>
@@ -216,23 +268,16 @@ export default async function InboxPage({
 							) : null}
 
 							{workspace.role !== "viewer" ? (
-								<form action={sendInboxMessage} className="inbox-composer">
-									<input
-										type="hidden"
-										name="conversationId"
-										value={selected.id}
-									/>
-									<textarea
-										name="body"
-										required
-										maxLength={4096}
-										placeholder="Digite uma mensagem..."
-										rows={3}
-									/>
-									<button className="button" type="submit">
-										Enviar
-									</button>
-								</form>
+								<InboxComposer
+									key={selected.id}
+									conversationId={selected.id}
+									lastInboundAt={latestInbound?.sent_at || null}
+									initialNow={Date.now()}
+									timezone={workspace.timezone}
+									connected={Boolean(connection)}
+									templates={templates}
+									templateError={templateError}
+								/>
 							) : null}
 						</>
 					) : (

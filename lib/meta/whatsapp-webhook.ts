@@ -347,7 +347,7 @@ function statusError(status: UnknownRecord) {
   const error = records(status.errors)[0] || {}
   return {
     code: error.code != null ? String(error.code) : null,
-    message: string(error.title) || string(error.message) || null,
+    message: [string(error.title) || string(error.message), string(record(error.error_data).details)].filter(Boolean).join(' — ').slice(0, 1000) || null,
   }
 }
 
