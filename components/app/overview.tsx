@@ -399,7 +399,7 @@ export function OverviewView({
 											href={
 												canEdit
 													? `/app/tasks?contact=${item.id}`
-													: `/app/contacts?contact=${item.id}`
+													: `/app/contacts/${item.id}`
 											}
 										>
 											<div>
@@ -467,7 +467,11 @@ export function OverviewView({
 						<ol className={styles.timeline}>
 							{data.activities.map((item) => (
 								<li key={item.id}>
-									<p>{item.text}</p>
+									<p>
+										{item.text.length > 220
+											? `${item.text.slice(0, 220)}…`
+											: item.text}
+									</p>
 									<time dateTime={item.created_at}>
 										{dateTime(item.created_at, timezone)}
 									</time>

@@ -72,7 +72,7 @@ export async function searchWorkspace(
 					id: item.id,
 					title: item.name,
 					kind: "Contato",
-					href: `/app/contacts?contact=${item.id}`,
+					href: `/app/contacts/${item.id}`,
 				}),
 			),
 			...(deals.data || []).map(
