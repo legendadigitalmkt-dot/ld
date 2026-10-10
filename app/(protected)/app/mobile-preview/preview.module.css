@@ -19,11 +19,12 @@
 	min-width: 150px;
 }
 .frame {
+	box-sizing: content-box;
 	border: 1px solid #496180;
 	border-radius: 22px;
 	overflow: hidden;
 	background: #060c19;
-	max-width: 100%;
+	max-width: calc(100% - 2px);
 	margin: 30px auto;
 	box-shadow: 0 20px 50px #0005;
 }
