@@ -5,6 +5,7 @@ import { isWorkspaceAdmin, requireWorkspace } from "@/lib/workspace";
 import { whatsappFailureMessage } from "@/lib/meta/whatsapp-policy";
 import { connectWhatsApp, diagnoseWhatsApp } from "./actions";
 import { growthAIConfigured } from "@/lib/growth-ai-provider";
+import { getWorkspaceModules } from "@/lib/product";
 import Link from "next/link";
 
 export default async function IntegrationsPage({
@@ -13,6 +14,7 @@ export default async function IntegrationsPage({
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
 	const workspace = await requireWorkspace();
+	const modules = await getWorkspaceModules(workspace.id);
 	if (!isWorkspaceAdmin(workspace.role)) redirect("/app");
 
 	const params = await searchParams;
@@ -234,83 +236,97 @@ export default async function IntegrationsPage({
 				) : null}
 			</section>
 
-			<form
-				action={diagnoseWhatsApp}
-				className="card stack"
-				style={{ marginBottom: 16 }}
-			>
-				<h2>Diagnóstico seguro da Meta</h2>
-				<p className="muted">
-					Executa oito leituras no servidor para verificar identidade,
-					permissões, ativos e templates aprovados da WABA. O token nunca é
-					exibido ou enviado ao navegador. A descoberta geral de negócios pode
-					exigir permissões adicionais; confira também o acesso direto ao número
-					e à WABA.
-				</p>
-				<label>
-					WABA ID
-					<input
-						name="wabaId"
-						required
-						inputMode="numeric"
-						defaultValue={connection?.external_account_id || ""}
-					/>
-				</label>
-				<label>
-					Phone Number ID
-					<input
-						name="phoneNumberId"
-						required
-						inputMode="numeric"
-						defaultValue={connection?.external_resource_id || ""}
-					/>
-				</label>
-				<button className="button" type="submit">
-					Executar diagnóstico
-				</button>
-				{diagnostic.length ? (
-					<div className="stack">
-						{diagnostic.map((item) => (
-							<div className="code-line" key={item.operation}>
-								<strong>
-									{item.ok ? "OK" : "FALHA"} — {item.operation}
-								</strong>
-								<br />
-								{item.summary}
+			{!modules.whatsapp.enabled ? (
+				<section className="card stack">
+					<h2>WhatsApp pausado neste workspace</h2>
+					<p>
+						A disponibilidade foi definida pela plataforma. O histórico
+						permanece preservado; os webhooks existentes continuam recebendo
+						eventos.
+					</p>
+				</section>
+			) : (
+				<>
+					<form
+						action={diagnoseWhatsApp}
+						className="card stack"
+						style={{ marginBottom: 16 }}
+					>
+						<h2>Diagnóstico seguro da Meta</h2>
+						<p className="muted">
+							Executa oito leituras no servidor para verificar identidade,
+							permissões, ativos e templates aprovados da WABA. O token nunca é
+							exibido ou enviado ao navegador. A descoberta geral de negócios
+							pode exigir permissões adicionais; confira também o acesso direto
+							ao número e à WABA.
+						</p>
+						<label>
+							WABA ID
+							<input
+								name="wabaId"
+								required
+								inputMode="numeric"
+								defaultValue={connection?.external_account_id || ""}
+							/>
+						</label>
+						<label>
+							Phone Number ID
+							<input
+								name="phoneNumberId"
+								required
+								inputMode="numeric"
+								defaultValue={connection?.external_resource_id || ""}
+							/>
+						</label>
+						<button className="button" type="submit">
+							Executar diagnóstico
+						</button>
+						{diagnostic.length ? (
+							<div className="stack">
+								{diagnostic.map((item) => (
+									<div className="code-line" key={item.operation}>
+										<strong>
+											{item.ok ? "OK" : "FALHA"} — {item.operation}
+										</strong>
+										<br />
+										{item.summary}
+									</div>
+								))}
 							</div>
-						))}
-					</div>
-				) : null}
-			</form>
+						) : null}
+					</form>
 
-			<form action={connectWhatsApp} className="card stack">
-				<h2>{connection ? "Atualizar conexão" : "Conectar WhatsApp"}</h2>
-				<p className="muted">
-					O token fica somente no ambiente do servidor. O LD valida se o número
-					pertence ao WABA e inscreve o app em <code>/subscribed_apps</code>.
-				</p>
-				<label>
-					WhatsApp Business Account ID (WABA ID)
-					<input
-						name="wabaId"
-						required
-						inputMode="numeric"
-						defaultValue={connection?.external_account_id || ""}
-					/>
-				</label>
-				<label>
-					Phone Number ID
-					<input
-						name="phoneNumberId"
-						required
-						inputMode="numeric"
-						defaultValue={connection?.external_resource_id || ""}
-					/>
-				</label>
-				<button className="button" type="submit">
-					Validar e conectar
-				</button>
-			</form>
+					<form action={connectWhatsApp} className="card stack">
+						<h2>{connection ? "Atualizar conexão" : "Conectar WhatsApp"}</h2>
+						<p className="muted">
+							O token fica somente no ambiente do servidor. O LD valida se o
+							número pertence ao WABA e inscreve o app em{" "}
+							<code>/subscribed_apps</code>.
+						</p>
+						<label>
+							WhatsApp Business Account ID (WABA ID)
+							<input
+								name="wabaId"
+								required
+								inputMode="numeric"
+								defaultValue={connection?.external_account_id || ""}
+							/>
+						</label>
+						<label>
+							Phone Number ID
+							<input
+								name="phoneNumberId"
+								required
+								inputMode="numeric"
+								defaultValue={connection?.external_resource_id || ""}
+							/>
+						</label>
+						<button className="button" type="submit">
+							Validar e conectar
+						</button>
+					</form>
+				</>
+			)}
 		</>
 	);
 }

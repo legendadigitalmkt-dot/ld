@@ -1,7 +1,7 @@
 "use server";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { createClient } from "@/lib/supabase/server";
 import {
 	readActivationLead,
@@ -17,7 +17,7 @@ export async function createActivationLead(
 	_previous: ActivationState,
 	data: FormData,
 ): Promise<ActivationState> {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	if (workspace.role === "viewer")
 		return { error: "Sua conta permite apenas consultar os primeiros passos." };
 	let input: ReturnType<typeof readActivationLead>;
@@ -50,7 +50,7 @@ export async function createActivationOpportunity(
 	_previous: ActivationState,
 	data: FormData,
 ): Promise<ActivationState> {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	if (workspace.role === "viewer")
 		return { error: "Sua conta permite apenas consultar os primeiros passos." };
 	const contactId = String(data.get("contactId") || "");
@@ -97,7 +97,7 @@ export async function createActivationTask(
 	_previous: ActivationState,
 	data: FormData,
 ): Promise<ActivationState> {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	if (workspace.role === "viewer")
 		return { error: "Sua conta permite apenas consultar os primeiros passos." };
 	const contactId = String(data.get("contactId") || "");

@@ -13,6 +13,8 @@ import { AppNavigation } from "@/components/app/navigation";
 import { MobileNavigation } from "@/components/app/mobile-navigation";
 import { AppControls, WorkspacePicker } from "@/components/app/controls";
 import styles from "@/components/app/app.module.css";
+import { getWorkspaceModules } from "@/lib/product";
+import { enabledModules } from "@/lib/product-view";
 
 export async function AppShell({
 	workspace,
@@ -23,6 +25,8 @@ export async function AppShell({
 }) {
 	const supabase = await createClient();
 	const control = await getPlatformContext();
+	const modules = await getWorkspaceModules(workspace.id);
+	const availableModules = enabledModules(modules);
 	const [user, workspaces, overdue, unread] = await Promise.all([
 		requireUser(),
 		getAccessibleWorkspaces(),
@@ -60,7 +64,10 @@ export async function AppShell({
 					<strong>{workspace.name}</strong>
 					<small>{roleLabels[workspace.role]}</small>
 				</div>
-				<AppNavigation admin={isWorkspaceAdmin(workspace.role)} />
+				<AppNavigation
+					admin={isWorkspaceAdmin(workspace.role)}
+					enabledModules={availableModules}
+				/>
 				<div className={styles.sidebarBottom}>
 					{control.eligible ? (
 						<Link href="/control-center" className={styles.portalLink}>
@@ -81,6 +88,7 @@ export async function AppShell({
 				<header>
 					<AppControls
 						platformAccess={control.eligible}
+						enabledModules={availableModules}
 						key={workspace.id}
 						workspace={workspace}
 						workspaces={workspaces}
@@ -88,7 +96,11 @@ export async function AppShell({
 						notices={{
 							overdue: overdue.count || 0,
 							unread: unread.count || 0,
-							available: !overdue.error && !unread.error,
+							available:
+								modules.crm.enabled &&
+								modules.whatsapp.enabled &&
+								!overdue.error &&
+								!unread.error,
 						}}
 					/>
 				</header>
@@ -96,7 +108,7 @@ export async function AppShell({
 					{children}
 				</main>
 			</section>
-			<MobileNavigation />
+			<MobileNavigation enabledModules={availableModules} />
 		</div>
 	);
 }

@@ -10,7 +10,8 @@ import {
 	type SearchItem,
 } from "@/app/(protected)/app/shell-actions";
 import { Icon, GrowthMark } from "@/components/ui/icons";
-import { appNavigation } from "@/lib/app-navigation";
+import { appNavigation, visibleAppNavigation } from "@/lib/app-navigation";
+import type { ModuleCode } from "@/lib/product-view";
 import { roleLabels } from "@/lib/operational";
 import type { CurrentWorkspace } from "@/lib/workspace";
 import { AppNavigation } from "./navigation";
@@ -22,12 +23,14 @@ export function AppControls({
 	email,
 	notices,
 	platformAccess = false,
+	enabledModules,
 }: {
 	workspace: CurrentWorkspace;
 	workspaces: CurrentWorkspace[];
 	email: string | null;
 	notices: { overdue: number; unread: number; available: boolean };
 	platformAccess?: boolean;
+	enabledModules: ModuleCode[];
 }) {
 	const admin = ["owner", "admin"].includes(workspace.role);
 	const pathname = usePathname();
@@ -103,7 +106,7 @@ export function AppControls({
 			clearTimeout(timer);
 		};
 	}, [query, searchOpen]);
-	const commands = appNavigation.filter(
+	const commands = visibleAppNavigation(admin, enabledModules).filter(
 		(item) =>
 			(!item.admin || admin) &&
 			item.label
@@ -207,7 +210,11 @@ export function AppControls({
 					<strong>{workspace.name}</strong>
 					<small>{roleLabels[workspace.role]}</small>
 				</div>
-				<AppNavigation admin={admin} close={() => setMenuOpen(false)} />
+				<AppNavigation
+					admin={admin}
+					enabledModules={enabledModules}
+					close={() => setMenuOpen(false)}
+				/>
 				{platformAccess ? (
 					<Link
 						href="/control-center"

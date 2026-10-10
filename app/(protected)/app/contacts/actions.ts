@@ -4,10 +4,10 @@ import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 
 export async function createContact(formData: FormData) {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	const name = String(formData.get("name") || "")
 		.trim()
 		.slice(0, 160);

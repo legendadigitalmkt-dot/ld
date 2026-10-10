@@ -12,7 +12,7 @@ export function ControlNav({
 	const pathname = usePathname();
 	return (
 		<nav className={styles.nav} aria-label="Navegação do Control Center">
-			{["Controle", "Plataforma", "Governança"]
+			{["Controle", "Produto", "Plataforma", "Governança"]
 				.filter((group) => navigation.some((item) => item.group === group))
 				.map((group) => (
 					<div key={group}>

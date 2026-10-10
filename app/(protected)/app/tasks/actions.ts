@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { createClient } from "@/lib/supabase/server";
 import { readTaskInput, taskReturnPath } from "@/lib/task-input";
 import { uuidPattern } from "@/lib/workspace-selection";
@@ -14,7 +14,7 @@ function fail(
 }
 export async function createTask(formData: FormData) {
 	const returnPath = taskReturnPath(formData);
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	if (workspace.role === "viewer")
 		fail("Sua conta permite apenas visualizar tarefas.", returnPath);
 	let input: ReturnType<typeof readTaskInput>;
@@ -52,7 +52,7 @@ export async function createTask(formData: FormData) {
 }
 export async function setTaskStatus(formData: FormData) {
 	const returnPath = taskReturnPath(formData);
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	if (workspace.role === "viewer")
 		fail("Sua conta permite apenas visualizar tarefas.", returnPath);
 	const taskId = String(formData.get("taskId") || "");

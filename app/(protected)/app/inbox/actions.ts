@@ -16,7 +16,7 @@ import {
 import { prepareTemplateMessage } from "@/lib/meta/whatsapp-templates";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { uuidPattern } from "@/lib/workspace-selection";
 import type { InboxSendState } from "@/components/inbox/composer";
 
@@ -25,7 +25,7 @@ class InboxInputError extends Error {}
 async function sendContext(formData: FormData) {
 	const [user, workspace] = await Promise.all([
 		requireUser(),
-		requireWorkspace(),
+		requireModule("whatsapp"),
 	]);
 	if (workspace.role === "viewer")
 		throw new InboxInputError("Seu papel não permite enviar mensagens.");

@@ -8,6 +8,7 @@ import {
 	type AdminActionState,
 } from "@/lib/control-view";
 import { createClient } from "@/lib/supabase/server";
+import { moduleCode, ruleRevision, ruleState } from "@/lib/product-view";
 
 function text(form: FormData, key: string) {
 	const value = form.get(key);
@@ -20,6 +21,34 @@ function stateError(error: unknown): AdminActionState {
 				? error.message
 				: "Não foi possível concluir a ação.",
 	};
+}
+
+export async function setControlFeatureRule(
+	_previous: AdminActionState,
+	form: FormData,
+): Promise<AdminActionState> {
+	await requirePlatformPermission("feature_flags.manage");
+	try {
+		const reason = adminReason(form.get("reason"), form.get("confirmation"));
+		const rawWorkspace = text(form, "workspace");
+		const workspaceId = rawWorkspace ? adminUUID(rawWorkspace) : null;
+		const client = await createClient();
+		const { error } = await client.rpc("platform_set_feature_rule", {
+			p_feature: moduleCode(form.get("feature")),
+			p_workspace_id: workspaceId,
+			p_state: ruleState(form.get("state"), workspaceId !== null),
+			p_revision: ruleRevision(form.get("revision"), workspaceId ? 0 : 1),
+			p_global_revision: ruleRevision(form.get("global_revision"), 1),
+			p_reason: reason,
+			p_confirmed: true,
+		});
+		if (error) return { error: controlError(error.code) };
+		revalidatePath("/control-center", "layout");
+		revalidatePath("/app", "layout");
+		return { message: "Regra salva. A alteração foi registrada na auditoria." };
+	} catch (error) {
+		return stateError(error);
+	}
 }
 
 export async function setControlStatus(
