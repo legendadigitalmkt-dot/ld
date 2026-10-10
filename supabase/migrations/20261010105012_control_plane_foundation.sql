@@ -341,6 +341,9 @@ end $$;
 
 -- Deny suspended identities/workspaces in existing tenant policies and helpers.
 -- Service-role webhook ingestion is unchanged; suspension gates customer access.
+-- Production already grants this integrity helper to the backend. Make the
+-- permission explicit so migration rebuilds preserve assigned-owner ingestion.
+grant execute on function private.workspace_has_user(uuid,uuid) to service_role;
 create or replace function private.is_workspace_member(target_workspace uuid) returns boolean
 language sql stable security definer set search_path='' as $$
  select control_plane.workspace_active(target_workspace) and exists(select 1 from public.workspace_members wm where wm.workspace_id=target_workspace and wm.user_id=(select auth.uid()));

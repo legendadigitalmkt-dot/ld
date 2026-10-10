@@ -61,6 +61,8 @@ Status and settings changes reject stale screens. Grants, revocations, suspensio
 
 Suspension is a software access control: authenticated CRM RLS and existing RPC authorization helpers reject suspended identities/workspaces immediately. Real CRM data is not deleted, and service-role webhook ingestion remains available. `private.workspace_has_user` retains its original integrity semantics. Workspace suspension does not cancel integrations, billing, or an entire Auth identity. User suspension also prevents protected app navigation via `account_access`.
 
+The backend's existing production EXECUTE privilege on `private.workspace_has_user` is made explicit in this migration. This fixes a discrepancy in fresh migration rebuilds and preserves service-role inserts with an assigned tenant member without changing the integrity check or anonymous/client access.
+
 ## Bootstrap and activation
 
 The migration **does not promote any real identity/workspace**. The first owner requires a separate, explicit approval naming the verified workspace UUID and confirmed account UUID. No name matching or user metadata is accepted as authorization.
