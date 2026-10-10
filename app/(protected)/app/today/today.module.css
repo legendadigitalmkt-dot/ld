@@ -1,0 +1,716 @@
+.focus {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 220px;
+	gap: 32px;
+	align-items: center;
+	border: 1px solid #354569;
+	border-radius: 18px;
+	padding: 26px 28px;
+	background:
+		radial-gradient(ellipse at 80% 0%, #704bff22, transparent 60%),
+		linear-gradient(120deg, #10203a, #0b1428);
+	margin-bottom: 18px;
+	animation: enter 0.4s ease both;
+}
+.date {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: #a5b9d9;
+	font-size: 11px;
+	text-transform: capitalize;
+}
+.date svg {
+	width: 15px;
+	height: 15px;
+	color: #00d9ff;
+}
+.focus h2 {
+	font-size: 22px;
+	letter-spacing: -0.025em;
+	line-height: 1.25;
+	margin: 14px 0 9px;
+}
+.focus p {
+	font-size: 12px;
+	line-height: 1.65;
+	color: #a0b3d1;
+	margin: 0;
+	max-width: 560px;
+}
+.progress {
+	border-left: 1px solid #344562;
+	padding-left: 28px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.progress span,
+.progress small {
+	font-size: 10px;
+	color: #9bafce;
+}
+.progress strong {
+	font-size: 32px;
+	letter-spacing: -0.03em;
+}
+.progress :where(strong) small {
+	font-size: 19px;
+	color: #738aaa;
+}
+.progress progress {
+	height: 6px;
+	width: 100%;
+	border: 0;
+	border-radius: 10px;
+	overflow: hidden;
+	background: #263653;
+	accent-color: #00d9ff;
+}
+.progress progress::-webkit-progress-bar {
+	background: #263653;
+	border-radius: 10px;
+}
+.progress progress::-webkit-progress-value {
+	background: linear-gradient(90deg, #754cff, #00d9ff);
+	border-radius: 10px;
+}
+.progress progress::-moz-progress-bar {
+	background: #00d9ff;
+}
+.stats {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 12px;
+	margin: 0 0 28px;
+}
+.stats > * {
+	position: relative;
+	text-align: left;
+	background: #0d182d;
+	border: 1px solid #283956;
+	border-radius: 13px;
+	display: grid;
+	grid-template-columns: 22px 1fr;
+	align-items: center;
+	gap: 7px 10px;
+	padding: 18px;
+	color: #d7e4f7;
+	cursor: pointer;
+	text-decoration: none;
+	transition:
+		transform 0.18s,
+		border-color 0.18s,
+		background 0.18s;
+}
+.stats > *:hover {
+	transform: translateY(-2px);
+	border-color: #53709b;
+	background: #11213a;
+}
+.stats svg {
+	width: 17px;
+	height: 17px;
+	color: #7697c8;
+}
+.stats span {
+	font-size: 11px;
+}
+.stats strong {
+	grid-column: 1 / -1;
+	font-size: 25px;
+	margin-top: 3px;
+}
+.stats small {
+	grid-column: 1 / -1;
+	font-size: 10px;
+	color: #849dbf;
+}
+.stats [data-alert="true"] {
+	border-color: #946638;
+}
+.columns {
+	display: grid;
+	grid-template-columns: minmax(0, 1.65fr) minmax(300px, 1fr);
+	gap: 20px;
+	align-items: start;
+}
+.queue,
+.followups {
+	min-width: 0;
+	background: #0b1528;
+	border: 1px solid #263652;
+	border-radius: 16px;
+	padding: 22px;
+	animation: enter 0.4s 0.08s ease both;
+}
+.followups {
+	scroll-margin-top: 95px;
+}
+.sectionHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: start;
+	gap: 12px;
+	margin-bottom: 20px;
+}
+.sectionHeader h2 {
+	font-size: 17px;
+	letter-spacing: -0.025em;
+	margin: 0 0 7px;
+}
+.sectionHeader p {
+	font-size: 11px;
+	line-height: 1.6;
+	color: #8ea5c6;
+	margin: 0;
+}
+.sectionHeader > a {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	white-space: nowrap;
+	color: #93b9f1;
+	font-size: 10px;
+	margin-top: 18px;
+}
+.sectionHeader > svg {
+	color: #8caaff;
+	flex-shrink: 0;
+}
+.sectionHeader :where(a) svg {
+	width: 13px;
+	height: 13px;
+}
+.filters {
+	display: flex;
+	gap: 9px;
+	margin-bottom: 14px;
+}
+.filters select,
+.filters input {
+	background: #081225;
+	border: 1px solid #293c5c;
+	border-radius: 9px;
+	color: #d5e3f7;
+	font-size: 11px;
+	min-height: 42px;
+	width: 100%;
+}
+.filters select {
+	padding: 9px 28px 9px 10px;
+}
+.filters > label:last-child {
+	max-width: 185px;
+}
+.search {
+	position: relative;
+	flex: 1;
+	min-width: 0;
+}
+.search svg {
+	position: absolute;
+	left: 12px;
+	top: 13px;
+	width: 16px;
+	height: 16px;
+	color: #809bbb;
+}
+.search input {
+	padding: 10px 12px 10px 37px;
+}
+.tabs {
+	display: flex;
+	gap: 4px;
+	flex-wrap: wrap;
+	padding: 0;
+	border: 0;
+	margin: 0;
+	min-width: 0;
+}
+.tabs button {
+	background: transparent;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	color: #8fa6c7;
+	font-size: 10px;
+	min-height: 34px;
+	padding: 7px 11px;
+	cursor: pointer;
+	transition:
+		background 0.18s,
+		color 0.18s;
+}
+.tabs button[aria-pressed="true"] {
+	background: #243c69;
+	border-color: #46628d;
+	color: #f2f7ff;
+}
+.result {
+	font-size: 10px;
+	color: #8ea4c3;
+	line-height: 1.65;
+	margin: 14px 0;
+}
+.taskList,
+.suggestionList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.task {
+	display: flex;
+	gap: 12px;
+	align-items: start;
+	padding: 18px 0;
+	border-top: 1px solid #25344d;
+}
+.taskMarker {
+	display: grid;
+	place-items: center;
+	width: 33px;
+	height: 33px;
+	flex: 0 0 33px;
+	background: #1c2d49;
+	border: 1px solid #344968;
+	border-radius: 10px;
+	color: #9bbaeb;
+}
+.taskMarker svg {
+	width: 16px;
+	height: 16px;
+}
+.task[data-overdue="true"] .taskMarker {
+	color: #f4bc7b;
+	background: #472e211f;
+	border-color: #7b5134;
+}
+.taskContent {
+	flex: 1;
+	min-width: 0;
+}
+.taskHeading {
+	display: flex;
+	align-items: start;
+	gap: 10px;
+	justify-content: space-between;
+}
+.task h3 {
+	font-size: 12px;
+	line-height: 1.6;
+	margin: 0 0 7px;
+	overflow-wrap: anywhere;
+}
+.badge {
+	display: inline-flex;
+	white-space: nowrap;
+	font-size: 9px;
+	padding: 4px 7px;
+	border: 1px solid #35517c;
+	border-radius: 6px;
+	color: #aac6ef;
+	background: #1b315144;
+}
+.badge[data-high="true"] {
+	background: #4a352844;
+	border-color: #805b39;
+	color: #efbf8c;
+}
+.taskContext {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	font-size: 11px;
+	line-height: 1.5;
+}
+.taskContext a {
+	color: #9abced;
+	overflow-wrap: anywhere;
+}
+.taskMeta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 14px;
+	margin-top: 11px;
+	font-size: 9px;
+	color: #829bbd;
+}
+.taskMeta span {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+.taskMeta svg {
+	width: 12px;
+	height: 12px;
+}
+.taskMeta [data-overdue="true"] {
+	color: #efba85;
+}
+.task form {
+	flex-shrink: 0;
+}
+.task :where(form) button {
+	font-size: 10px;
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	min-height: 34px;
+	padding: 8px 10px;
+}
+.task :where(form) svg {
+	width: 13px;
+	height: 13px;
+}
+.empty {
+	padding: 35px 18px;
+	text-align: center;
+	border: 1px dashed #344766;
+	border-radius: 13px;
+	background: #101d332f;
+	margin-top: 12px;
+}
+.empty > svg {
+	color: #789bcc;
+	width: 27px;
+	height: 27px;
+	margin-bottom: 10px;
+}
+.empty h3 {
+	font-size: 13px;
+	margin: 0 0 9px;
+}
+.empty p {
+	font-size: 11px;
+	color: #9baece;
+	line-height: 1.7;
+	max-width: 340px;
+	margin: 0 auto 15px;
+}
+.empty a,
+.empty button {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	color: #9fc7ff;
+	background: transparent;
+	border: 0;
+	font-size: 11px;
+	cursor: pointer;
+}
+.empty :where(a) svg {
+	width: 13px;
+	height: 13px;
+}
+.more {
+	width: 100%;
+	min-height: 38px;
+	color: #b2cff5;
+	background: #152743;
+	border: 1px solid #365176;
+	border-radius: 8px;
+	font-size: 11px;
+	cursor: pointer;
+	margin-top: 12px;
+}
+.rules {
+	color: #a5b8d4;
+	background: #172741;
+	border: 1px solid #304666;
+	border-radius: 10px;
+	padding: 12px;
+	font-size: 11px;
+	line-height: 1.65;
+}
+.suggestion {
+	position: relative;
+	background: #101e35;
+	border: 1px solid #2d4263;
+	border-radius: 12px;
+	margin-top: 12px;
+	padding: 16px;
+	transition:
+		border-color 0.18s,
+		transform 0.18s;
+}
+.suggestion:hover {
+	border-color: #4b6898;
+	transform: translateY(-1px);
+}
+.suggestionTop {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 12px;
+	gap: 8px;
+}
+.number {
+	font-size: 10px;
+	letter-spacing: 0.1em;
+	color: #6f8ab5;
+}
+.contact {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	font-size: 13px;
+	font-weight: 700;
+	color: #edf4ff;
+}
+.contact svg {
+	width: 14px;
+	height: 14px;
+	color: #85a9e0;
+	flex-shrink: 0;
+}
+.source {
+	color: #8fa6c5;
+	font-size: 10px;
+	line-height: 1.65;
+	margin: 5px 0 13px;
+}
+.suggestion h3 {
+	font-size: 12px;
+	font-weight: 550;
+	line-height: 1.65;
+	color: #b9cbea;
+	margin: 12px 0 9px;
+	overflow-wrap: anywhere;
+}
+.deal {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 10px;
+	color: #98bcf4;
+	padding: 9px 0 11px;
+}
+.deal svg {
+	width: 13px;
+	height: 13px;
+}
+.existingTask {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	color: #82d8e7;
+	font-size: 10px;
+	line-height: 1.65;
+	border-top: 1px solid #2c405f;
+	padding-top: 12px;
+}
+.existingTask svg {
+	width: 13px;
+	height: 13px;
+	flex-shrink: 0;
+}
+.planner {
+	border-top: 1px solid #2c405f;
+	margin-top: 5px;
+}
+.planner summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	font-size: 11px;
+	color: #bad2ff;
+	cursor: pointer;
+	list-style: none;
+	padding: 14px 0 0;
+}
+.planner summary::-webkit-details-marker {
+	display: none;
+}
+.planner :where(summary) svg {
+	width: 15px;
+	height: 15px;
+	transition: transform 0.18s;
+}
+.planner:where([open]) :where(summary) svg {
+	transform: rotate(45deg);
+}
+.planner form {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding-top: 17px;
+	animation: enter 0.2s ease both;
+}
+.planner label {
+	font-size: 10px;
+	color: #a8bedf;
+}
+.planner input,
+.planner select {
+	width: 100%;
+	background: #09142a;
+	color: #d6e4fa;
+	border: 1px solid #3a5075;
+	border-radius: 8px;
+	min-height: 40px;
+	padding: 10px;
+	font-size: 11px;
+	min-width: 0;
+}
+.plannerFields {
+	display: grid;
+	grid-template-columns: 1fr 1.25fr;
+	gap: 10px;
+}
+.plannerFields label {
+	display: block;
+	margin: 4px 0 7px;
+}
+.planner small {
+	color: #93accd;
+	font-size: 9px;
+	line-height: 1.65;
+	margin: 4px 0;
+}
+.planner button {
+	font-size: 11px;
+	min-height: 40px;
+}
+.footerLinks {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+	border-top: 1px solid #2c405c;
+	margin-top: 18px;
+	padding-top: 16px;
+}
+.footerLinks a {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: #9dbff1;
+	font-size: 10px;
+}
+.footerLinks svg {
+	width: 13px;
+	height: 13px;
+}
+.updated {
+	font-size: 10px;
+	color: #839bbc;
+	margin: 22px 0 4px;
+	line-height: 1.65;
+}
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+.queue :focus-visible,
+.followups :focus-visible,
+.stats :focus-visible {
+	outline: 2px solid #00d9ff;
+	outline-offset: 3px;
+}
+@keyframes enter {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@media (max-width: 1100px) {
+	.columns {
+		grid-template-columns: 1fr;
+	}
+	.suggestionList {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+	}
+	.suggestion {
+		margin-top: 0;
+	}
+	.rules {
+		margin-bottom: 16px;
+	}
+}
+@media (max-width: 640px) {
+	.focus {
+		grid-template-columns: 1fr;
+		padding: 21px;
+		gap: 20px;
+	}
+	.focus h2 {
+		font-size: 20px;
+	}
+	.progress {
+		border-left: 0;
+		border-top: 1px solid #344562;
+		padding: 18px 0 0;
+	}
+	.stats {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 9px;
+	}
+	.stats > * {
+		padding: 14px;
+	}
+	.queue,
+	.followups {
+		padding: 17px;
+	}
+	.sectionHeader {
+		flex-wrap: wrap;
+	}
+	.sectionHeader > a {
+		margin: 0;
+	}
+	.filters {
+		flex-direction: column;
+	}
+	.filters > label:last-child {
+		max-width: none;
+	}
+	.suggestionList {
+		grid-template-columns: 1fr;
+	}
+	.task {
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.taskContent {
+		flex-basis: calc(100% - 45px);
+	}
+	.task form {
+		margin-left: 43px;
+	}
+	.taskHeading {
+		flex-wrap: wrap;
+		gap: 5px;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.focus,
+	.queue,
+	.followups,
+	.planner form {
+		animation: none;
+	}
+	.stats > *,
+	.suggestion,
+	.planner :where(summary) svg {
+		transition: none;
+	}
+	.stats > *:hover,
+	.suggestion:hover {
+		transform: none;
+	}
+}

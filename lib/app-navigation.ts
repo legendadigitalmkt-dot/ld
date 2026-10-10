@@ -6,6 +6,7 @@ export const appNavigation: {
 	group: string;
 	admin?: boolean;
 }[] = [
+	{ href: "/app/today", label: "Hoje", icon: "calendar", group: "Operação" },
 	{ href: "/app", label: "Visão geral", icon: "dashboard", group: "Operação" },
 	{
 		href: "/app/inbox",

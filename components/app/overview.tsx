@@ -94,8 +94,8 @@ export function OverviewView({
 			? {
 					title: `${number(s.no_followup)} leads sem próxima tarefa.`,
 					text: "Defina uma ação ligada ao contato para manter o acompanhamento visível na operação.",
-					href: "/app/contacts?status=lead",
-					link: "Organizar próximos passos",
+					href: "/app/today",
+					link: "Planejar próximos passos",
 				}
 			: s.idle
 				? {

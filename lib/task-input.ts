@@ -1,3 +1,6 @@
+export function taskReturnPath(data: FormData): "/app/today" | "/app/tasks" {
+	return data.get("returnTo") === "today" ? "/app/today" : "/app/tasks";
+}
 export function deadlineAtEndOfDay(day: string, timezone: string) {
 	if (!/^\d{4}-\d{2}-\d{2}$/.test(day))
 		throw new Error("Informe uma data válida.");

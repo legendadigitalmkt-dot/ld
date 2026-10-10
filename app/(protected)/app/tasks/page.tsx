@@ -94,6 +94,11 @@ export default async function TasksPage({
 					<h1>O próximo passo, definido.</h1>
 					<p>Crie uma tarefa, estabeleça o prazo e acompanhe a execução.</p>
 				</div>
+				<div className={styles.headerActions}>
+					<Link href="/app/today" className="button secondary">
+						Planejar hoje →
+					</Link>
+				</div>
 			</div>
 			{notice ? (
 				<p role="status" className={styles.notice}>
