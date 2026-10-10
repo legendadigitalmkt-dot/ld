@@ -83,7 +83,7 @@ The operator-only function checks the existing confirmed workspace-owner members
 
 ## Validation and deployment
 
-Apply `20261010105012_control_plane_foundation.sql` to Growth OS **only after CI passes, before deploying the new app code**. Old app code is compatible with the additive schema. New app code requires `account_access` and the other new RPCs. No new environment variable or service-role frontend key is required.
+Apply `20261010112008_control_plane_foundation.sql` to Growth OS **only after CI passes, before deploying the new app code**. Old app code is compatible with the additive schema. New app code requires `account_access` and the other new RPCs. No new environment variable or service-role frontend key is required.
 
 Local checks: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`. Build without real AI credentials. The repository already has CSS lint warnings; the changed Control Center code should introduce none.
 
@@ -94,6 +94,16 @@ After production migration, verify that real owner role assignments remain zero 
 Merge only a tested PR into `main`; verify its CI and Hostinger's connected GitHub deployment. Smoke-check login, CRM, pipeline, results, health and default-deny Control Center. Positive live MFA/admin UX validation is a separate activation step and must be reported as pending until actually performed.
 
 References: [Supabase MFA TOTP](https://supabase.com/docs/guides/auth/auth-mfa/totp), [sessions](https://supabase.com/docs/guides/auth/sessions), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security).
+
+## Verified database rollout — 2026-10-10
+
+The reviewed SQL was applied to Growth OS through the Supabase migration connector after both CI workflows passed: 68 application tests, 222 pgTAP assertions and PostgreSQL lint. Supabase recorded version `20261010112008`; the CLI-created migration file was renamed to match that authoritative production version, without changing its SQL or touching older migration history.
+
+Post-migration verification: 2 users, 1 workspace, 6 contacts, 6 opportunities, 0 tasks and the existing 1 won opportunity of R$1,500 were preserved. All eight private control tables force RLS; exposed facades remain invoker and anonymous callers cannot execute them. **Zero real platform role assignments and zero owner-workspace promotions** were present at verification; bootstrap is still pending explicit approval.
+
+Security advisors reported no ERROR and no new WARN. The existing [leaked-password-protection warning](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection) remains an Auth baseline item. The eight [RLS-enabled/no-policy INFO notices](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy) are intentional for private tables without client grants. Performance notices concern historical portal tables and unused/new indexes; no new missing-FK-index or permissive-policy warning was introduced by the control schema. Do not broaden private table access merely to silence the informational advisor.
+
+Live positive admin/MFA validation remains pending owner activation and personal TOTP verification. The PR delivery record tracks app publication and post-deploy smoke checks separately.
 
 ## Non-destructive rollback
 
