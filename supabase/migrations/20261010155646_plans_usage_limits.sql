@@ -1,6 +1,9 @@
 -- Plans v1: no commercial offer or workspace assignment is seeded.
 -- Keep backfill and trigger installation in the same transactional write fence.
 -- A busy table aborts this migration promptly; it never seeds stale stock.
+-- One DO statement makes the fence atomic even when the runner autocommits.
+do $plans_migration$
+begin
 set local lock_timeout='5s';
 lock table public.workspaces,public.contacts,public.deals,public.tasks,public.workspace_members in share row exclusive mode;
 create function control_plane.valid_plan_config(c jsonb) returns boolean
@@ -356,3 +359,5 @@ revoke all on function control_plane.valid_plan_config(jsonb),control_plane.reje
 grant execute on function control_plane.workspace_plan(uuid),control_plane.save_plan(uuid,text,text,text,text,jsonb,bigint,text,boolean),control_plane.publish_plan(uuid,bigint,text,boolean),control_plane.assign_plan(uuid,uuid,bigint,text,boolean),control_plane.plans_catalog(uuid,text,text,uuid) to authenticated;
 revoke all on function public.workspace_plan(uuid),public.platform_plans(uuid,text,text,uuid),public.platform_save_plan(uuid,text,text,text,text,jsonb,bigint,text,boolean),public.platform_publish_plan(uuid,bigint,text,boolean),public.platform_assign_plan(uuid,uuid,bigint,text,boolean) from public,anon,authenticated,service_role;
 grant execute on function public.workspace_plan(uuid),public.platform_plans(uuid,text,text,uuid),public.platform_save_plan(uuid,text,text,text,text,jsonb,bigint,text,boolean),public.platform_publish_plan(uuid,bigint,text,boolean),public.platform_assign_plan(uuid,uuid,bigint,text,boolean) to authenticated;
+end
+$plans_migration$;
