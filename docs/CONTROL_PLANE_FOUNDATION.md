@@ -105,6 +105,14 @@ Security advisors reported no ERROR and no new WARN. The existing [leaked-passwo
 
 Live positive admin/MFA validation remains pending owner activation and personal TOTP verification. The PR delivery record tracks app publication and post-deploy smoke checks separately.
 
+## MFA enrollment recovery — 2026-10-10
+
+The initial owner bootstrap was subsequently approved and completed, with `platform.owner_provisioned` audit evidence. Positive console validation still requires the owner's personal TOTP verification.
+
+An interrupted initial TOTP setup leaves an unverified factor with the fixed Control Center friendly name. A second enrollment with that name fails with `mfa_factor_name_conflict`. The gate now identifies that state and offers **Gerar novo QR code**. Only that explicit user action queries current factors, cancels incomplete TOTP entries named `Growth OS Control Center` through the authenticated MFA API and enrolls again. Page loading remains read-only. Verified authenticators, unnamed/other-flow pending factors, passwords, roles and business data are untouched. If any TOTP factor is already verified, the flow selects verification without unenrolling/enrolling anything. Cleanup failure stops enrollment; concurrent name conflicts are surfaced without automatic retries.
+
+Seven regression tests cover interrupted setup, verified-factor preservation, unrelated factors, failed lookup/cleanup, first enrollment and concurrent name conflict. No production credential is created, removed or verified by engineering smoke tests. The account owner must personally generate/scan the QR and submit the TOTP in the site. Roll back this UI fix by reverting its PR and redeploying the previous app commit (`5c5468bb7a9af4273d0e4baae70f4a0cfe97df8e`); no database migration or credential reset is needed.
+
 ## Non-destructive rollback
 
 1. Redeploy the preceding known-good app commit (`9850af0482fd55040279850efd93cdc2deef12cc`) through a revert PR and the existing Hostinger deployment. This removes app calls to the new RPCs and Control Center routes. Verify CRM/Auth/results.
