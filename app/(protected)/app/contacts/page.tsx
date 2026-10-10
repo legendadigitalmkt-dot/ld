@@ -3,6 +3,8 @@ import { randomUUID } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
 import { requireWorkspace } from "@/lib/workspace";
 import { escapeSearch, uuidPattern } from "@/lib/workspace-selection";
+import { Icon } from "@/components/ui/icons";
+import { RefreshResults } from "@/components/app/dashboard-interactions";
 import { dateTime, statusLabels } from "@/lib/operational";
 import { SubmitButton } from "@/components/app/submit-button";
 import { createContact } from "./actions";
@@ -29,6 +31,8 @@ export default async function ContactsPage({
 	);
 	const tag =
 		typeof params.tag === "string" ? params.tag.trim().slice(0, 32) : "";
+	const source =
+		typeof params.source === "string" ? params.source.trim().slice(0, 80) : "";
 	const canEdit = workspace.role !== "viewer";
 	const supabase = await createClient();
 	let query = supabase
@@ -43,23 +47,41 @@ export default async function ContactsPage({
 	if (search) query = query.ilike("name", `%${escapeSearch(search)}%`);
 	if (status !== "all") query = query.eq("status", status);
 	if (tag) query = query.contains("tags", [tag]);
+	if (source) query = query.eq("source", source);
 	const focusedContact =
 		typeof params.contact === "string" && uuidPattern.test(params.contact)
 			? params.contact
 			: "";
 	if (focusedContact) query = query.eq("id", focusedContact);
-	const {
-		data: contacts,
-		error,
-		count,
-	} = await query
-		.order("created_at", { ascending: false })
-		.order("id")
-		.range((page - 1) * 50, page * 50 - 1);
+	const [records, allContacts, leadsCount, customersCount] = await Promise.all([
+		query
+			.order("created_at", { ascending: false })
+			.order("id")
+			.range((page - 1) * 50, page * 50 - 1),
+		supabase
+			.from("contacts")
+			.select("id", { count: "exact", head: true })
+			.eq("workspace_id", workspace.id),
+		supabase
+			.from("contacts")
+			.select("id", { count: "exact", head: true })
+			.eq("workspace_id", workspace.id)
+			.eq("status", "lead"),
+		supabase
+			.from("contacts")
+			.select("id", { count: "exact", head: true })
+			.eq("workspace_id", workspace.id)
+			.eq("status", "customer"),
+	]);
+	const { data: contacts, error, count } = records;
+	if (allContacts.error || leadsCount.error || customersCount.error)
+		throw new Error("Não foi possível carregar o resumo dos contatos.");
 	if (error) throw new Error("Não foi possível carregar os contatos.");
 	const url = (next: number) =>
-		`/app/contacts?${new URLSearchParams({ q: search, status, tag, page: String(next) })}`;
+		`/app/contacts?${new URLSearchParams({ q: search, status, tag, source, ...(focusedContact ? { contact: focusedContact } : {}), page: String(next) })}`;
 	const total = count || 0;
+	const statusUrl = (next: string) =>
+		`/app/contacts?${new URLSearchParams({ q: search, tag, source, status: next })}`;
 	return (
 		<>
 			<div className={styles.pageHeader}>
@@ -70,7 +92,43 @@ export default async function ContactsPage({
 						Encontre seus contatos e defina o próximo passo do acompanhamento.
 					</p>
 				</div>
+				<div className={styles.headerActions}>
+					<RefreshResults />
+					{canEdit ? (
+						<Link href="/app/contacts?new=1#new-contact" className="button">
+							<Icon name="plus" />
+							&nbsp;Novo lead
+						</Link>
+					) : null}
+				</div>
 			</div>
+			<section
+				className={styles.crmSummary}
+				aria-label="Resumo da base de contatos"
+			>
+				{[
+					["Todos os contatos", allContacts.count || 0, "all"],
+					["Leads", leadsCount.count || 0, "lead"],
+					["Clientes", customersCount.count || 0, "customer"],
+				].map(([label, value, next]) => (
+					<Link
+						key={String(next)}
+						href={statusUrl(String(next))}
+						aria-current={status === next ? "page" : undefined}
+					>
+						<Icon name="contacts" />
+						<span>{label}</span>
+						<strong>{value}</strong>
+					</Link>
+				))}
+			</section>
+			{params.created === "1" ? (
+				<p className={styles.successNotice} role="status">
+					<Icon name="check" />
+					Lead cadastrado e oportunidade criada no pipeline.{" "}
+					<Link href="/app/pipeline">Ver funil →</Link>
+				</p>
+			) : null}
 			<form
 				method="get"
 				action="/app/contacts"
@@ -97,6 +155,33 @@ export default async function ContactsPage({
 					</select>
 				</label>
 				<label>
+					Origem
+					<select name="source" defaultValue={source}>
+						<option value="">Todas as origens</option>
+						{source &&
+						![
+							"Manual",
+							"WhatsApp",
+							"Instagram",
+							"Meta Ads",
+							"Google",
+							"Indicação",
+						].includes(source) ? (
+							<option>{source}</option>
+						) : null}
+						{[
+							"Manual",
+							"WhatsApp",
+							"Instagram",
+							"Meta Ads",
+							"Google",
+							"Indicação",
+						].map((name) => (
+							<option key={name}>{name}</option>
+						))}
+					</select>
+				</label>
+				<label>
 					Tag exata
 					<input
 						name="tag"
@@ -108,24 +193,28 @@ export default async function ContactsPage({
 				<button className="button secondary" type="submit">
 					Aplicar filtros
 				</button>
-				{search || tag || status !== "all" ? (
+				{search || tag || source || status !== "all" ? (
 					<Link href="/app/contacts" className="button secondary">
 						Limpar
 					</Link>
 				) : null}
 			</form>
 			{canEdit ? (
-				<section
+				<details
+					open={
+						params.new === "1" ||
+						(!allContacts.count && !search && !tag && !source)
+					}
 					id="new-contact"
-					className={styles.panel}
-					style={{ marginBottom: 22, scrollMarginTop: 100 }}
+					className={styles.newContactPanel}
 				>
-					<div className={styles.panelHeader}>
+					<summary>
 						<div>
-							<h2>Novo lead</h2>
-							<p>O cadastro também cria uma oportunidade no pipeline.</p>
+							<strong>Adicionar lead</strong>
+							<span>Crie o contato e sua oportunidade no funil.</span>
 						</div>
-					</div>
+						<Icon name="plus" />
+					</summary>
 					<form action={createContact} className="inline-form">
 						<input type="hidden" name="intakeKey" value={randomUUID()} />
 						<label>
@@ -160,7 +249,7 @@ export default async function ContactsPage({
 						</label>
 						<SubmitButton primary>Adicionar lead</SubmitButton>
 					</form>
-				</section>
+				</details>
 			) : null}
 			{focusedContact ? (
 				<p className={styles.notice}>
@@ -173,11 +262,14 @@ export default async function ContactsPage({
 				{Math.max(1, Math.ceil(total / 50))}
 			</p>
 			{contacts?.length ? (
-				<section className="card table-wrap">
+				<section className={`card table-wrap ${styles.contactsTable}`}>
 					<table>
+						<caption className="sr-only">
+							Contatos do workspace com os filtros selecionados
+						</caption>
 						<thead>
 							<tr>
-								<th>Contato</th>
+								<th>Contato / empresa</th>
 								<th>Origem</th>
 								<th>Status</th>
 								<th>Última interação</th>
@@ -189,7 +281,10 @@ export default async function ContactsPage({
 								<tr key={contact.id}>
 									<td>
 										<Link href={`/app/contacts/${contact.id}`}>
-											<strong>{contact.name} →</strong>
+											<span className={styles.contactAvatar}>
+												{contact.name.slice(0, 2).toUpperCase()}
+											</span>
+											<strong>{contact.name}</strong>
 										</Link>
 										{contact.company ? (
 											<>
@@ -202,9 +297,21 @@ export default async function ContactsPage({
 											{contact.phone || contact.email || "Sem canal cadastrado"}
 										</span>
 									</td>
-									<td>{contact.source || "Sem origem"}</td>
 									<td>
-										<span className="badge">
+										<span className={styles.sourceBadge}>
+											<Icon
+												name={
+													contact.source === "WhatsApp" ? "inbox" : "target"
+												}
+											/>
+											{contact.source || "Sem origem"}
+										</span>
+									</td>
+									<td>
+										<span
+											className={`badge ${styles.contactStatus}`}
+											data-status={contact.status}
+										>
 											{statusLabels[contact.status]}
 										</span>
 									</td>
@@ -234,12 +341,12 @@ export default async function ContactsPage({
 			) : (
 				<section className={styles.empty}>
 					<strong>
-						{search || tag || status !== "all"
+						{search || tag || source || status !== "all"
 							? "Nenhum contato com esses filtros."
 							: "Sua base de contatos começa aqui."}
 					</strong>
 					<p>
-						{search || tag || status !== "all"
+						{search || tag || source || status !== "all"
 							? "Ajuste a busca ou limpe os filtros."
 							: "Cadastre um lead para iniciar o acompanhamento comercial."}
 					</p>
