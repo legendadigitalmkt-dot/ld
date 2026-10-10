@@ -11,30 +11,32 @@ export function ControlNav({
 }) {
 	const pathname = usePathname();
 	return (
-		<nav className={styles.navigation} aria-label="Navegação do Control Center">
-			{["Controle", "Plataforma", "Governança"].map((group) => (
-				<div key={group}>
-					<span>{group}</span>
-					{navigation
-						.filter((item) => item.group === group)
-						.map((item) => (
-							<Link
-								key={item.href}
-								href={item.href}
-								aria-current={
-									pathname === item.href ||
-									(item.href !== "/control-center" &&
-										pathname.startsWith(`${item.href}/`))
-										? "page"
-										: undefined
-								}
-							>
-								<Icon name={item.icon} />
-								{item.label}
-							</Link>
-						))}
-				</div>
-			))}
+		<nav className={styles.nav} aria-label="Navegação do Control Center">
+			{["Controle", "Plataforma", "Governança"]
+				.filter((group) => navigation.some((item) => item.group === group))
+				.map((group) => (
+					<div key={group}>
+						<span className={styles.navGroup}>{group}</span>
+						{navigation
+							.filter((item) => item.group === group)
+							.map((item) => (
+								<Link
+									key={item.href}
+									href={item.href}
+									aria-current={
+										pathname === item.href ||
+										(item.href !== "/control-center" &&
+											pathname.startsWith(`${item.href}/`))
+											? "page"
+											: undefined
+									}
+								>
+									<Icon name={item.icon} />
+									{item.label}
+								</Link>
+							))}
+					</div>
+				))}
 		</nav>
 	);
 }

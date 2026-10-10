@@ -113,6 +113,12 @@ An interrupted initial TOTP setup leaves an unverified factor with the fixed Con
 
 Seven regression tests cover interrupted setup, verified-factor preservation, unrelated factors, failed lookup/cleanup, first enrollment and concurrent name conflict. No production credential is created, removed or verified by engineering smoke tests. The account owner must personally generate/scan the QR and submit the TOTP in the site. Roll back this UI fix by reverting its PR and redeploying the previous app commit (`5c5468bb7a9af4273d0e4baae70f4a0cfe97df8e`); no database migration or credential reset is needed.
 
+## Personal owner activation verified — 2026-10-10
+
+The account owner completed TOTP enrollment and verification personally. Production verification confirmed one verified TOTP factor, one active AAL2 session and successful `overview.viewed` audit entries. The owner's screenshot shows the real Control Center with 2 users, 1 workspace, 1 platform administrator and no suspended accounts. No MFA bypass or credential entry by engineering was used.
+
+The first live console view exposed a navigation class mismatch: `ControlNav` referenced `navigation`, but the CSS module defines `nav`; group headings also omitted `navGroup`. Those class references are corrected for both sidebar and mobile navigation, preserving existing route/permission filtering and omitting empty groups. To roll back this presentation fix, revert its PR and redeploy `6189493f310e42ca7764d038bd7008bcdf16c212`. MFA, roles, RLS, audit history and business data require no rollback.
+
 ## Non-destructive rollback
 
 1. Redeploy the preceding known-good app commit (`9850af0482fd55040279850efd93cdc2deef12cc`) through a revert PR and the existing Hostinger deployment. This removes app calls to the new RPCs and Control Center routes. Verify CRM/Auth/results.
