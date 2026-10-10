@@ -128,6 +128,7 @@ export function AppControls({
 				<button
 					type="button"
 					className={styles.searchTrigger}
+					aria-label="Buscar na operação"
 					onClick={() => setSearchOpen(true)}
 				>
 					<Icon name="search" />
