@@ -26,6 +26,7 @@ const stages: PipelineStage[] = [
 function refreshPipeline() {
   revalidatePath('/app/pipeline')
   revalidatePath('/app')
+  revalidatePath('/app/results')
   revalidatePath('/app/contacts')
 }
 

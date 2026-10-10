@@ -3,17 +3,17 @@ import { Icon, type IconName } from "@/components/ui/icons";
 import {
 	dateTime,
 	money,
+	type Overview,
 	priorityLabels,
 	stageLabels,
-	type Overview,
 } from "@/lib/operational";
+import styles from "./app.module.css";
 import {
 	ContactSources,
 	ExportResults,
 	RefreshResults,
 	RevenueChart,
 } from "./dashboard-interactions";
-import styles from "./app.module.css";
 
 function Metric({
 	label,
@@ -160,6 +160,13 @@ export function OverviewView({
 					<p>Veja o que está avançando e escolha o próximo passo.</p>
 				</div>
 				<div className={styles.headerActions}>
+					<Link
+						href={`/app/results?days=${data.days}`}
+						className="button secondary"
+					>
+						<Icon name="reports" />
+						&nbsp;Analisar resultados
+					</Link>
 					<RefreshResults />
 					<ExportResults data={data} />
 					<nav aria-label="Período dos indicadores" className={styles.periods}>

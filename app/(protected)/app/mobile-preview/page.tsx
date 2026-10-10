@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import { requireWorkspace, isWorkspaceAdmin } from "@/lib/workspace";
 import { mobilePreviewTarget, mobilePreviewWidth } from "@/lib/mobile-preview";
+import { isWorkspaceAdmin, requireWorkspace } from "@/lib/workspace";
 import styles from "./preview.module.css";
 
 // Authenticated admin-only QA surface. Frames exercise real viewport media queries.
@@ -39,6 +39,7 @@ export default async function MobilePreview({
 						}
 					>
 						<option value="today">Hoje</option>
+						<option value="results">Resultados</option>
 						<option value="start">Primeiros passos</option>
 						<option value="pipeline">Kanban</option>
 						<option value="contacts">Contatos</option>
