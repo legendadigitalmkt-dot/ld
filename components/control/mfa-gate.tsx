@@ -1,10 +1,15 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icons";
 import { createClient } from "@/lib/supabase/client";
 import { totpImage } from "@/lib/control-view";
+import {
+	ControlMfaError,
+	pendingControlTotp,
+	prepareControlTotp,
+} from "@/lib/control-mfa";
 import styles from "./control.module.css";
 type Factor = { id: string; friendly_name?: string };
 export function MfaGate() {
@@ -19,6 +24,9 @@ export function MfaGate() {
 	const [loading, setLoading] = useState(true);
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState("");
+	const [hasPending, setHasPending] = useState(false);
+	const [factorsLoaded, setFactorsLoaded] = useState(false);
+	const enrollmentBusy = useRef(false);
 	useEffect(() => {
 		let active = true;
 		const load = async () => {
@@ -35,6 +43,8 @@ export function MfaGate() {
 				const verified = data.totp.filter((f) => f.status === "verified");
 				setFactors(verified);
 				setFactorId(verified[0]?.id ?? "");
+				setHasPending(pendingControlTotp(data.all).length > 0);
+				setFactorsLoaded(true);
 			} catch {
 				if (active) setError("Não foi possível consultar seus autenticadores.");
 			} finally {
@@ -47,27 +57,35 @@ export function MfaGate() {
 		};
 	}, []);
 	async function enroll() {
+		if (enrollmentBusy.current) return;
+		enrollmentBusy.current = true;
 		setBusy(true);
 		setError("");
+		setEnrollment(null);
+		setFactorId("");
+		setCode("");
 		try {
-			const { data, error: failure } = await createClient().auth.mfa.enroll({
-				factorType: "totp",
-				friendlyName: "Growth OS Control Center",
-			});
-			if (failure || !data) {
-				setError(
-					"Não foi possível iniciar a configuração. Confira seus fatores de autenticação e tente novamente.",
-				);
+			const result = await prepareControlTotp(createClient().auth.mfa);
+			if (result.kind === "verify") {
+				setFactors(result.factors);
+				setFactorId(result.factors[0].id);
 				return;
 			}
+			const data = result.enrollment;
 			setFactorId(data.id);
+			setHasPending(true);
 			setEnrollment({
 				qr: totpImage(data.totp.qr_code),
 				secret: data.totp.secret,
 			});
-		} catch {
-			setError("Não foi possível iniciar a configuração.");
+		} catch (failure) {
+			setError(
+				failure instanceof ControlMfaError
+					? failure.message
+					: "Não foi possível iniciar a configuração.",
+			);
 		} finally {
+			enrollmentBusy.current = false;
 			setBusy(false);
 		}
 	}
@@ -114,13 +132,24 @@ export function MfaGate() {
 							Configure um autenticador, como Google Authenticator, Microsoft
 							Authenticator ou 1Password.
 						</p>
+						{hasPending ? (
+							<p>
+								Existe uma configuração incompleta. Gere um novo QR code para
+								recomeçar; os códigos da tentativa anterior deixarão de
+								funcionar.
+							</p>
+						) : null}
 						<button
 							type="button"
 							className={styles.button}
-							disabled={busy}
+							disabled={busy || !factorsLoaded}
 							onClick={enroll}
 						>
-							{busy ? "Preparando…" : "Configurar autenticador"}
+							{busy
+								? "Preparando…"
+								: hasPending
+									? "Gerar novo QR code"
+									: "Configurar autenticador"}
 						</button>
 					</>
 				) : null}
@@ -142,6 +171,18 @@ export function MfaGate() {
 							<summary>Inserir chave manualmente</summary>
 							<code className={styles.manualSecret}>{enrollment.secret}</code>
 						</details>
+						<p>
+							Se precisar recomeçar, gere outro QR code e use somente a nova
+							configuração no autenticador.
+						</p>
+						<button
+							type="button"
+							className={styles.button}
+							disabled={busy}
+							onClick={enroll}
+						>
+							Gerar novo QR code
+						</button>
 					</>
 				) : null}
 				{factorId ? (
