@@ -1,7 +1,7 @@
 import type { Overview } from "@/lib/operational";
 import { overdueResults, resultsPeriod } from "@/lib/results-view";
 import { createClient } from "@/lib/supabase/server";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { ResultsDashboard } from "./results-dashboard";
 
 export default async function ResultsPage({
@@ -9,7 +9,7 @@ export default async function ResultsPage({
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	const days = resultsPeriod((await searchParams).days);
 	const supabase = await createClient();
 	const { data, error } = await supabase.rpc("growth_overview", {
