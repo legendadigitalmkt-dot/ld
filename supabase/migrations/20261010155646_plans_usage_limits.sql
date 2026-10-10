@@ -1,4 +1,8 @@
 -- Plans v1: no commercial offer or workspace assignment is seeded.
+-- Keep backfill and trigger installation in the same transactional write fence.
+-- A busy table aborts this migration promptly; it never seeds stale stock.
+set local lock_timeout='5s';
+lock table public.workspaces,public.contacts,public.deals,public.tasks,public.workspace_members in share row exclusive mode;
 create function control_plane.valid_plan_config(c jsonb) returns boolean
 language plpgsql immutable security invoker set search_path='' as $$
 declare k text; v jsonb;
