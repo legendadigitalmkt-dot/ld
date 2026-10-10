@@ -28,6 +28,12 @@ export const appNavigation: {
 	},
 	{ href: "/app/tasks", label: "Tarefas", icon: "tasks", group: "Operação" },
 	{
+		href: "/app/start",
+		label: "Primeiros passos",
+		icon: "target",
+		group: "Workspace",
+	},
+	{
 		href: "/app/settings/members",
 		label: "Equipe",
 		icon: "team",

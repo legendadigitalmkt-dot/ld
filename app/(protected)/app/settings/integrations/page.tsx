@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { isWorkspaceAdmin, requireWorkspace } from "@/lib/workspace";
 import { whatsappFailureMessage } from "@/lib/meta/whatsapp-policy";
 import { connectWhatsApp, diagnoseWhatsApp } from "./actions";
+import { growthAIConfigured } from "@/lib/growth-ai-provider";
+import Link from "next/link";
 
 export default async function IntegrationsPage({
 	searchParams,
@@ -116,6 +118,43 @@ export default async function IntegrationsPage({
 
 			{errorMessage ? <p className="error">{errorMessage}</p> : null}
 			{message ? <p className="card">{message}</p> : null}
+			<section className="card stack" style={{ marginBottom: 16 }}>
+				<div className="section-head">
+					<h2>Growth AI · OpenAI</h2>
+					<span className="badge">
+						{growthAIConfigured()
+							? "Configuração presente"
+							: "Aguardando configuração"}
+					</span>
+				</div>
+				<p className="muted">
+					Resuma os registros do contato e prepare uma próxima ação e mensagem
+					para revisão. A geração ocorre apenas quando alguém solicita; nenhuma
+					mensagem é enviada automaticamente.
+				</p>
+				{!growthAIConfigured() ? (
+					<p className="muted">
+						Para ativar a geração por IA, configure OPENAI_API_KEY e
+						OPENAI_MODEL nas variáveis de ambiente do servidor na Hostinger e
+						publique novamente. Não use o prefixo NEXT_PUBLIC_ para a chave. O
+						resumo factual do CRM permanece disponível sem esse provedor.
+					</p>
+				) : (
+					<p className="muted">
+						A presença da configuração não confirma saldo ou acesso ao modelo. O
+						perfil do contato informa falhas do provedor e mantém o resumo do
+						CRM disponível.
+					</p>
+				)}
+				<p className="muted">
+					Cada solicitação envia um conjunto limitado de registros recentes, com
+					ocultação de e-mails, telefones e links detectados. A resposta não é
+					armazenada como nota ou enviada ao contato. Há um intervalo de 30
+					segundos entre gerações por usuário; configure também os limites de
+					uso do projeto OpenAI.
+				</p>
+				<Link href="/app/contacts">Abrir contatos e revisar o contexto →</Link>
+			</section>
 
 			<section className="card" style={{ marginBottom: 16 }}>
 				<div className="section-head">

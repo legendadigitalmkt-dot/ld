@@ -43,6 +43,14 @@ export function AppControls({
 	const menuDialog = useRef<HTMLDialogElement>(null);
 	const searchInput = useRef<HTMLInputElement>(null);
 	useEffect(() => {
+		if (!menuOpen && !searchOpen) return;
+		const previous = document.documentElement.style.overflow;
+		document.documentElement.style.overflow = "hidden";
+		return () => {
+			document.documentElement.style.overflow = previous;
+		};
+	}, [menuOpen, searchOpen]);
+	useEffect(() => {
 		const keydown = (event: KeyboardEvent) => {
 			if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
 				event.preventDefault();

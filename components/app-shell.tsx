@@ -9,6 +9,7 @@ import {
 import { roleLabels } from "@/lib/operational";
 import { Icon, GrowthMark } from "@/components/ui/icons";
 import { AppNavigation } from "@/components/app/navigation";
+import { MobileNavigation } from "@/components/app/mobile-navigation";
 import { AppControls, WorkspacePicker } from "@/components/app/controls";
 import styles from "@/components/app/app.module.css";
 
@@ -87,6 +88,7 @@ export async function AppShell({
 					{children}
 				</main>
 			</section>
+			<MobileNavigation />
 		</div>
 	);
 }

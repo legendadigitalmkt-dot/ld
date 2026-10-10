@@ -1,0 +1,282 @@
+.hero {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 22px;
+	margin: 10px 0 26px;
+}
+.kicker {
+	color: #39d8ed;
+	font-size: 10px;
+	letter-spacing: 0.13em;
+}
+.hero h1 {
+	font-size: 32px;
+	letter-spacing: -0.04em;
+	margin: 12px 0;
+}
+.hero p,
+.panel > p,
+.journey > p,
+.ready p {
+	color: #9eb2d0;
+	font-size: 13px;
+	line-height: 1.8;
+}
+.journey {
+	border: 1px solid #37436b;
+	padding: 25px;
+	border-radius: 16px;
+	background: linear-gradient(125deg, #17335488, #37245b55);
+	margin-bottom: 22px;
+}
+.progressTitle {
+	display: flex;
+	justify-content: space-between;
+	gap: 14px;
+	color: #dbe7fa;
+	font-size: 14px;
+}
+.progressTitle span {
+	color: #b6a5f1;
+	font-size: 12px;
+}
+.journey progress {
+	width: 100%;
+	height: 6px;
+	accent-color: #00d9ff;
+	border: 0;
+	border-radius: 4px;
+	margin: 20px 0;
+}
+.journey progress::-webkit-progress-bar {
+	background: #263650;
+	border-radius: 4px;
+}
+.journey progress::-webkit-progress-value {
+	background: linear-gradient(90deg, #00d9ff, #754cff);
+	border-radius: 4px;
+}
+.journey ol {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 20px;
+}
+.journey li {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	min-width: 0;
+}
+.journey li > span {
+	width: 36px;
+	height: 36px;
+	flex-shrink: 0;
+	display: grid;
+	place-items: center;
+	border: 1px solid #687997;
+	border-radius: 50%;
+	color: #c6d5ed;
+	font-size: 13px;
+}
+.journey li > .done {
+	color: #76e5c1;
+	border-color: #61dcb666;
+	background: #61dcb612;
+}
+.journey li[aria-current] > span {
+	color: #00d9ff;
+	border-color: #00d9ff;
+}
+.journey svg {
+	width: 18px;
+	height: 18px;
+}
+.journey :where(li) strong,
+.journey :where(li) small {
+	display: block;
+	font-size: 12px;
+	line-height: 1.7;
+}
+.journey :where(li) small {
+	color: #9eafd0;
+	font-size: 11px;
+}
+.journey > p {
+	font-size: 11px;
+	margin: 20px 0 0;
+}
+.layout {
+	display: grid;
+	grid-template-columns: 1fr 1.15fr;
+	align-items: start;
+	gap: 20px;
+}
+.column {
+	display: grid;
+	gap: 20px;
+	min-width: 0;
+}
+.panel {
+	border: 1px solid #293b58;
+	background: #0b1529;
+	border-radius: 15px;
+	padding: 25px;
+	min-width: 0;
+}
+.panel h2 {
+	margin: 12px 0;
+	font-size: 21px;
+	letter-spacing: -0.03em;
+}
+.panel > p {
+	margin-bottom: 24px;
+}
+.fields {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+.hint {
+	color: #97aecf;
+	font-size: 11px;
+	line-height: 1.9;
+	margin: 0;
+}
+.hint a,
+.textLink {
+	color: #9abdff;
+}
+.record {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	padding: 16px;
+	border: 1px solid #2f4566;
+	border-radius: 10px;
+	background: #111f35;
+	margin-bottom: 15px;
+}
+.record div {
+	flex: 1;
+	min-width: 0;
+}
+.record strong {
+	font-size: 13px;
+	line-height: 1.7;
+	overflow-wrap: anywhere;
+}
+.record small {
+	display: block;
+	font-size: 11px;
+	color: #97add0;
+	margin-top: 6px;
+}
+.record svg {
+	width: 18px;
+	height: 18px;
+	color: #84adf3;
+	flex-shrink: 0;
+}
+.textLink {
+	display: block;
+	font-size: 12px;
+	line-height: 1.8;
+}
+.choose {
+	margin-top: 22px;
+	border-top: 1px solid #283954;
+	padding-top: 16px;
+}
+.choose summary {
+	min-height: 44px;
+	padding: 10px 0;
+	cursor: pointer;
+	color: #b4c9e9;
+	font-size: 12px;
+}
+.choose form {
+	margin-top: 12px;
+}
+.waiting {
+	color: #8ba4c9;
+	border: 1px dashed #364968;
+	padding: 20px;
+	border-radius: 10px;
+	font-size: 12px;
+	line-height: 1.8;
+}
+.panel > .success {
+	color: #9eeccc;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+.success svg {
+	width: 18px;
+}
+.ready {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 18px;
+	margin-top: 24px;
+	border: 1px solid #63dbb655;
+	background: #63dbb60a;
+	border-radius: 15px;
+	padding: 22px;
+}
+.ready > svg {
+	width: 26px;
+	color: #8ef1c9;
+}
+.ready div {
+	flex: 1;
+	min-width: 220px;
+}
+.ready h2 {
+	font-size: 18px;
+	margin: 0;
+}
+.ready p {
+	font-size: 12px;
+	margin-bottom: 0;
+}
+@media (max-width: 900px) {
+	.layout {
+		grid-template-columns: 1fr;
+	}
+	.hero {
+		align-items: start;
+	}
+}
+@media (max-width: 680px) {
+	.hero {
+		display: grid;
+		gap: 14px;
+	}
+	.hero h1 {
+		font-size: 28px;
+	}
+	.journey,
+	.panel {
+		padding: 20px 16px;
+	}
+	.journey ol {
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+	.progressTitle {
+		flex-wrap: wrap;
+	}
+	.fields {
+		grid-template-columns: 1fr;
+	}
+	.hero a,
+	.ready a {
+		width: 100%;
+	}
+}
