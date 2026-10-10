@@ -816,6 +816,55 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+			account_access: { Args: Record<string, never>; Returns: boolean };
+			platform_context: { Args: Record<string, never>; Returns: Json };
+			platform_overview: { Args: Record<string, never>; Returns: Json };
+			platform_users: {
+				Args: { p_query?: string; p_status?: string; p_page?: number };
+				Returns: Json;
+			};
+			platform_workspaces: {
+				Args: { p_query?: string; p_status?: string; p_page?: number };
+				Returns: Json;
+			};
+			platform_audit: {
+				Args: { p_query?: string; p_page?: number };
+				Returns: Json;
+			};
+			platform_roles: { Args: Record<string, never>; Returns: Json };
+			platform_settings: { Args: Record<string, never>; Returns: Json };
+			platform_set_status: {
+				Args: {
+					p_entity: string;
+					p_id: string;
+					p_status: string;
+					p_expected_status: string;
+					p_reason: string;
+					p_confirmed: boolean;
+				};
+				Returns: undefined;
+			};
+			platform_set_role: {
+				Args: {
+					p_user: string;
+					p_role: string;
+					p_enabled: boolean;
+					p_reason: string;
+					p_confirmed: boolean;
+				};
+				Returns: undefined;
+			};
+			platform_save_settings: {
+				Args: {
+					p_revision: number;
+					p_name: string;
+					p_timezone: string;
+					p_email: string;
+					p_reason: string;
+					p_confirmed: boolean;
+				};
+				Returns: undefined;
+			};
       contact_context: { Args: { p_workspace_id: string; p_contact_id: string; p_history_page?: number }; Returns: Json }
       update_contact_profile: { Args: { p_workspace_id: string; p_contact_id: string; p_expected_updated_at: string; p_name: string; p_company: string | null; p_email: string | null; p_phone: string | null; p_source: string; p_status: Database["public"]["Enums"]["contact_status"]; p_tags: string[]; p_owner_user_id: string | null }; Returns: string }
       add_contact_note: { Args: { p_workspace_id: string; p_contact_id: string; p_body: string; p_request_id: string }; Returns: string }

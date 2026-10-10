@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireUser } from "@/lib/auth";
+import { getPlatformContext } from "@/lib/control";
 import { createClient } from "@/lib/supabase/server";
 import {
 	getAccessibleWorkspaces,
@@ -21,6 +22,7 @@ export async function AppShell({
 	children: React.ReactNode;
 }) {
 	const supabase = await createClient();
+	const control = await getPlatformContext();
 	const [user, workspaces, overdue, unread] = await Promise.all([
 		requireUser(),
 		getAccessibleWorkspaces(),
@@ -60,6 +62,11 @@ export async function AppShell({
 				</div>
 				<AppNavigation admin={isWorkspaceAdmin(workspace.role)} />
 				<div className={styles.sidebarBottom}>
+					{control.eligible ? (
+						<Link href="/control-center" className={styles.portalLink}>
+							<Icon name="shield" /> Control Center
+						</Link>
+					) : null}
 					<WorkspacePicker
 						workspace={workspace}
 						workspaces={workspaces}
@@ -73,6 +80,7 @@ export async function AppShell({
 			<section className={styles.mainArea}>
 				<header>
 					<AppControls
+						platformAccess={control.eligible}
 						key={workspace.id}
 						workspace={workspace}
 						workspaces={workspaces}
