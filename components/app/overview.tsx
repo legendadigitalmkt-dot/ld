@@ -142,6 +142,17 @@ export function OverviewView({
 					workspace autorizado.
 				</p>
 			) : null}
+			{canEdit && (!data.stats.contacts || !data.stats.open_tasks) ? (
+				<section className={styles.firstSteps}>
+					<div>
+						<strong>Seu primeiro acompanhamento, com direção.</strong>
+						<p>
+							Guie um contato até a oportunidade e a primeira tarefa com prazo.
+						</p>
+					</div>
+					<Link href="/app/start">Concluir primeiros passos →</Link>
+				</section>
+			) : null}
 			<div className={styles.pageHeader}>
 				<div>
 					<span className={styles.eyebrow}>VISÃO GERAL · {name}</span>

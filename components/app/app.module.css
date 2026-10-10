@@ -9,6 +9,38 @@
 	background: var(--os-bg);
 	color: #f7faff;
 }
+.mobileBottom {
+	display: none;
+}
+.firstSteps {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 20px;
+	margin: 0 0 24px;
+	border: 1px solid #594a9366;
+	border-radius: 13px;
+	background: linear-gradient(110deg, #754cff16, #00d9ff08);
+}
+.firstSteps strong {
+	display: block;
+	font-size: 14px;
+}
+.firstSteps p {
+	font-size: 12px;
+	color: #acbcdb;
+	line-height: 1.8;
+	margin: 8px 0 0;
+}
+.firstSteps a {
+	font-size: 12px;
+	color: #bad0ff;
+	min-height: 44px;
+	display: inline-flex;
+	align-items: center;
+}
 .appShell * {
 	box-sizing: border-box;
 }
@@ -1789,5 +1821,81 @@
 	.metric:hover,
 	.appShell :global(.button:hover) {
 		transform: none;
+	}
+}
+
+@media (max-width: 680px) {
+	.content {
+		padding-bottom: calc(100px + env(safe-area-inset-bottom));
+	}
+	.appShell .content :is(input, select, textarea) {
+		font-size: 16px;
+		min-height: 44px;
+		min-width: 0;
+	}
+	.topbar .iconButton,
+	.topbar .userAvatar,
+	.topbar .searchTrigger {
+		width: 44px;
+		min-width: 44px;
+		height: 44px;
+		flex-shrink: 0;
+	}
+	.topbar .breadcrumb {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.topbar .breadcrumb strong {
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.drawer {
+		max-height: calc(100dvh - 24px);
+		overflow-y: auto;
+		padding-bottom: calc(22px + env(safe-area-inset-bottom));
+	}
+	.drawer .iconButton {
+		width: 44px;
+		height: 44px;
+	}
+	.mobileBottom {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 30;
+		padding: 7px 10px calc(7px + env(safe-area-inset-bottom));
+		border-top: 1px solid #304461;
+		background: #081225f5;
+		backdrop-filter: blur(18px);
+	}
+	.mobileBottom a {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 5px;
+		min-height: 52px;
+		border-radius: 10px;
+		color: #a3b9db;
+		font-size: 11px;
+	}
+	.mobileBottom a[aria-current="page"] {
+		color: #6be1f4;
+		background: #00d9ff10;
+	}
+	.mobileBottom svg {
+		width: 20px;
+		height: 20px;
+	}
+	.firstSteps {
+		padding: 16px;
+	}
+	.appShell {
+		min-height: 100dvh;
 	}
 }

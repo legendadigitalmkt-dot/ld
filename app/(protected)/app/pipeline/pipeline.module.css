@@ -98,6 +98,7 @@
 	border: 1px solid #4ade8055;
 }
 .board {
+	position: relative;
 	display: grid;
 	grid-template-columns: repeat(var(--columns), minmax(245px, 1fr));
 	gap: 13px;
@@ -105,6 +106,42 @@
 	padding: 2px 2px 18px;
 	scroll-snap-type: x proximity;
 	scrollbar-color: #354974 #091426;
+	overscroll-behavior-x: contain;
+}
+.stageJump {
+	display: flex;
+	gap: 8px;
+	overflow-x: auto;
+	padding: 0 0 13px;
+	margin-bottom: 8px;
+	scroll-snap-type: x proximity;
+	scrollbar-width: thin;
+}
+.stageJump button {
+	display: flex;
+	flex-shrink: 0;
+	gap: 9px;
+	align-items: center;
+	min-height: 44px;
+	border: 1px solid #334767;
+	border-radius: 10px;
+	padding: 9px 12px;
+	background: #0c1930;
+	color: #b9ceee;
+	cursor: pointer;
+	font-size: 12px;
+	scroll-snap-align: start;
+}
+.stageJump button[aria-pressed="true"] {
+	background: #234577;
+	border-color: #6096e3;
+	color: #fff;
+}
+.stageJump span {
+	background: #ffffff12;
+	border-radius: 5px;
+	padding: 3px 5px;
+	font-size: 10px;
 }
 .column {
 	min-width: 0;
@@ -486,7 +523,44 @@
 }
 @media (max-width: 680px) {
 	.board {
-		grid-template-columns: repeat(var(--columns), minmax(80vw, 1fr));
+		grid-template-columns: repeat(
+				var(--columns),
+				minmax(min(290px, calc(100vw - 48px)), 1fr)
+			);
+		scroll-snap-type: x mandatory;
+	}
+	.stageControl select {
+		min-height: 44px;
+		font-size: 16px;
+	}
+	.valueButton,
+	.contactLink {
+		min-height: 44px;
+	}
+	.valueForm button {
+		min-height: 44px;
+		padding: 10px 14px;
+		font-size: 13px;
+	}
+	.valueForm input {
+		font-size: 16px;
+	}
+	.deal footer a {
+		min-height: 44px;
+		font-size: 11px;
+	}
+	.dealHead svg {
+		display: none;
+	}
+	.dealHead strong {
+		font-size: 14px;
+	}
+	.dealMeta {
+		flex-wrap: wrap;
+		font-size: 11px;
+	}
+	.idle {
+		font-size: 11px;
 	}
 	.toolbar {
 		padding: 12px;

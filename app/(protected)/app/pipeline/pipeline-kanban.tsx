@@ -59,6 +59,16 @@ export function PipelineKanban({
 	const [notice, setNotice] = useState("");
 	const [pending, startTransition] = useTransition();
 	const locked = useRef(false);
+	const board = useRef<HTMLElement>(null);
+	const [compact, setCompact] = useState(false);
+	const [activeColumn, setActiveColumn] = useState("new");
+	useEffect(() => {
+		const media = window.matchMedia("(pointer: coarse), (max-width: 680px)");
+		const update = () => setCompact(media.matches);
+		update();
+		media.addEventListener("change", update);
+		return () => media.removeEventListener("change", update);
+	}, []);
 	useEffect(() => {
 		setDeals(initialDeals);
 	}, [initialDeals]);
@@ -79,6 +89,18 @@ export function PipelineKanban({
 				: pipelineStages.filter((stage) => stage.id === stageFilter);
 	const openVisible = visible.filter(isOpenDeal);
 	const filtered = query.trim() !== "" || idle || stageFilter !== "open";
+	function goToColumn(id: string) {
+		const element = board.current;
+		const column = element?.querySelector<HTMLElement>(`#pipeline-stage-${id}`);
+		if (!element || !column) return;
+		element.scrollTo({
+			left: column.offsetLeft,
+			behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+				? "instant"
+				: "smooth",
+		});
+		setActiveColumn(id);
+	}
 
 	function resetFilters() {
 		setQuery("");
@@ -375,6 +397,24 @@ export function PipelineKanban({
 					{error}
 				</p>
 			) : null}
+			{view === "kanban" && visible.length ? (
+				<nav
+					className={styles.stageJump}
+					aria-label="Ir para uma etapa do Kanban"
+				>
+					{stageSet.map((stage) => (
+						<button
+							key={stage.id}
+							type="button"
+							aria-pressed={activeColumn === stage.id}
+							onClick={() => goToColumn(stage.id)}
+						>
+							{stage.label}
+							<span>{visible.filter((d) => d.stage === stage.id).length}</span>
+						</button>
+					))}
+				</nav>
+			) : null}
 			<section aria-busy={pending} aria-label="Oportunidades do funil">
 				{!visible.length ? (
 					<div className={appStyles.empty}>
@@ -404,8 +444,21 @@ export function PipelineKanban({
 						)}
 					</div>
 				) : view === "kanban" ? (
-					<div
+					<section
+						ref={board}
 						className={styles.board}
+						aria-label="Quadro Kanban com rolagem horizontal"
+						onScroll={(event) => {
+							const element = event.currentTarget;
+							const columns = Array.from(element.children) as HTMLElement[];
+							const closest = columns.sort(
+								(a, b) =>
+									Math.abs(a.offsetLeft - element.scrollLeft) -
+									Math.abs(b.offsetLeft - element.scrollLeft),
+							)[0];
+							if (closest)
+								setActiveColumn(closest.id.replace("pipeline-stage-", ""));
+						}}
 						style={{ "--columns": stageSet.length } as CSSProperties}
 					>
 						{stageSet.map((stage) => {
@@ -414,6 +467,7 @@ export function PipelineKanban({
 							return (
 								<fieldset
 									key={stage.id}
+									id={`pipeline-stage-${stage.id}`}
 									className={`${styles.column} ${dropStage === stage.id ? styles.dropTarget : ""}`}
 									style={{ "--stage-color": stage.color } as CSSProperties}
 									onDragOver={(event) => {
@@ -458,7 +512,9 @@ export function PipelineKanban({
 												key={deal.id}
 												id={`deal-${deal.id}`}
 												className={`${styles.deal} ${dragged === deal.id ? styles.dragging : ""}`}
-												draggable={canEdit && !pending && editing !== deal.id}
+												draggable={
+													canEdit && !compact && !pending && editing !== deal.id
+												}
 												onDragStart={(event) => {
 													setDragged(deal.id);
 													event.dataTransfer.effectAllowed = "move";
@@ -515,7 +571,7 @@ export function PipelineKanban({
 								</fieldset>
 							);
 						})}
-					</div>
+					</section>
 				) : view === "table" ? (
 					<div className={styles.tableWrap}>
 						<table>
@@ -629,7 +685,12 @@ export function PipelineKanban({
 			</section>
 			<p className={styles.hint}>
 				{canEdit
-					? "Arraste entre as colunas ou use o seletor de etapa em cada oportunidade. As alterações são salvas com histórico."
+					? "Arraste entre as colunas ou use o seletor de etapa em cada oportunidade. As alterações são salvas com histórico.".replace(
+							"Arraste entre as colunas",
+							compact
+								? "Deslize o quadro para ver as etapas"
+								: "Arraste entre as colunas",
+						)
 					: "Você tem acesso de leitura. Abra um contato para consultar o contexto da oportunidade."}
 			</p>
 		</>

@@ -7,6 +7,10 @@ import { uuidPattern } from "@/lib/workspace-selection";
 import { statusLabels, stageLabels, priorityLabels } from "@/lib/operational";
 import { activityLabels, type ContactContext } from "@/lib/contact-context";
 import { ProfileForm, NoteForm } from "@/components/contacts/profile-form";
+import { GrowthAssistant } from "@/components/contacts/growth-assistant";
+import { crmSuggestion, focusDeal } from "@/lib/growth-ai";
+import { growthAIConfigured } from "@/lib/growth-ai-provider";
+import { workspaceDayBounds } from "@/lib/today-view";
 import styles from "@/components/contacts/profile.module.css";
 
 export default async function ContactPage({
@@ -62,6 +66,7 @@ export default async function ContactPage({
 				: "";
 	const pages = Math.max(1, Math.ceil(stats.history / 30));
 	const noteRequestId = randomUUID();
+	const asOf = new Date().toISOString();
 	return (
 		<>
 			<header className={styles.profileHero}>
@@ -79,6 +84,14 @@ export default async function ContactPage({
 					</div>
 				</div>
 				<div className={styles.heroActions}>
+					{canEdit && !stats.tasks ? (
+						<Link
+							className="button secondary"
+							href={`/app/start?contact=${contact.id}`}
+						>
+							Concluir primeiros passos
+						</Link>
+					) : null}
 					<Link className="button secondary" href="/app/contacts">
 						← Contatos
 					</Link>
@@ -95,6 +108,7 @@ export default async function ContactPage({
 				</p>
 			) : null}
 			<nav className={styles.profileNav} aria-label="Seções do perfil">
+				<a href="#growth-ai">Growth AI</a>
 				<a href="#relacionamento">Relacionamento</a>
 				<a href="#oportunidades">Oportunidades</a>
 				<a href="#notas">Notas</a>
@@ -103,6 +117,20 @@ export default async function ContactPage({
 			</nav>
 			<div className={styles.layout}>
 				<div className={styles.column}>
+					<GrowthAssistant
+						contactId={contact.id}
+						dealId={focusDeal(context)?.id || null}
+						initial={crmSuggestion(context, asOf)}
+						configured={growthAIConfigured()}
+						canEdit={canEdit}
+						openTaskId={
+							context.tasks.find((task) => task.status === "open")?.id || null
+						}
+						day={workspaceDayBounds(asOf, workspace.timezone).day}
+						historyCount={stats.history}
+						shownHistory={context.history.length}
+						timezone={workspace.timezone}
+					/>
 					<section id="relacionamento" className={styles.panel}>
 						<h2>Contexto para o próximo passo.</h2>
 						<p>Dados do contato e situação atual do acompanhamento.</p>
