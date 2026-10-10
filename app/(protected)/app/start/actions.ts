@@ -1,4 +1,5 @@
 "use server";
+import { planLimitError } from "@/lib/plans-view";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireModule } from "@/lib/product";
@@ -41,6 +42,7 @@ export async function createActivationLead(
 	if (error || !record)
 		return {
 			error:
+				planLimitError(error?.code) ||
 				"Não foi possível criar o contato e a oportunidade. Confira sua permissão e tente novamente.",
 		};
 	revalidatePath("/app", "layout");
@@ -88,6 +90,7 @@ export async function createActivationOpportunity(
 	if (error)
 		return {
 			error:
+				planLimitError(error.code) ||
 				"Não foi possível criar a oportunidade. Confira sua permissão e tente novamente.",
 		};
 	revalidatePath("/app", "layout");
@@ -143,6 +146,7 @@ export async function createActivationTask(
 	if (error || !task)
 		return {
 			error:
+				planLimitError(error?.code) ||
 				"Não foi possível criar a tarefa. Confira sua permissão e tente novamente.",
 		};
 	revalidatePath("/app", "layout");

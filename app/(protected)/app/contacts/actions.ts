@@ -37,7 +37,9 @@ export async function createContact(formData: FormData) {
 		p_intake_key: intakeKey,
 	});
 
-	if (error) throw new Error(`Failed to create lead: ${error.message}`);
+	if (error?.code === "PGL01") redirect("/app/contacts?error=plan_limit");
+	if (error)
+		throw new Error("Não foi possível criar o contato e a oportunidade.");
 
 	revalidatePath("/app/contacts");
 	revalidatePath("/app/pipeline");

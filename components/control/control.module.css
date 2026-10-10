@@ -885,6 +885,34 @@
 		min-width: 620px;
 	}
 }
+.usageGrid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 14px;
+	margin: 22px 0;
+}
+.usageCard {
+	padding: 18px;
+	border: 1px solid #dce3ea;
+	border-radius: 16px;
+	background: #f8fafb;
+	display: grid;
+	gap: 8px;
+}
+.usageCard h3, .usageCard p { margin: 0; }
+.usageCard strong { font-size: 30px; color: #10233f; }
+.usageCard span, .usageCard p { font-size: 13px; }
+.usageCard meter { width: 100%; accent-color: #457011; }
+.usageCard[data-usage="over"], .usageCard[data-usage="full"] { border-color: #d8972f; background: #fff9ee; }
+.planList { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; margin-top: 20px; }
+.planLink { border: 1px solid #dce3ea; padding: 16px; border-radius: 14px; display: grid; gap: 8px; color: #10233f; text-decoration: none; }
+.planLink[aria-current="page"] { border-color: #53741a; background: #f2f8e9; }
+.planLink span, .planLink small { font-size: 13px; overflow-wrap: anywhere; }
+.planFields { padding: 18px; margin: 0; border: 1px solid #dce3ea; border-radius: 12px; display: grid; gap: 12px; }
+.versionPreview { border-top: 1px solid #dce3ea; padding: 16px 0; }
+.panel summary { cursor: pointer; font-weight: 600; padding: 8px 0; }
+@media (max-width: 1000px) { .usageGrid, .planList { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 600px) { .usageGrid, .planList { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: no-preference) {
 	.metric,
 	.panel,

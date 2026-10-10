@@ -17,6 +17,8 @@ export type ControlPermission =
 	| "overview.read"
 	| "product.read"
 	| "feature_flags.manage"
+	| "plans.read"
+	| "plans.write"
 	| "users.read"
 	| "users.suspend"
 	| "workspaces.read"
@@ -52,6 +54,13 @@ export const controlNavigation = [
 		label: "Product",
 		icon: "integrations",
 		permission: "product.read",
+		group: "Produto",
+	},
+	{
+		href: "/control-center/plans",
+		label: "Plans",
+		icon: "reports",
+		permission: "plans.read",
 		group: "Produto",
 	},
 	{

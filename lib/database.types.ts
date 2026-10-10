@@ -816,6 +816,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      reserve_member_slot: { Args: { p_workspace_id: string; p_email: string; p_role: Database["public"]["Enums"]["member_role"] }; Returns: string }
+      complete_member_slot: { Args: { p_reservation_id: string; p_user_id: string }; Returns: undefined }
+      cancel_member_slot: { Args: { p_reservation_id: string }; Returns: undefined }
+      workspace_plan: { Args: { p_workspace_id: string }; Returns: Json }
+      platform_plans: { Args: { p_workspace_id?: string | null; p_query?: string; p_workspace_query?: string; p_plan_id?: string | null }; Returns: Json }
+      platform_save_plan: { Args: { p_id: string | null; p_code: string; p_name: string; p_description: string; p_status: string; p_config: Json; p_revision: number; p_reason: string; p_confirmed: boolean }; Returns: string }
+      platform_publish_plan: { Args: { p_id: string; p_revision: number; p_reason: string; p_confirmed: boolean }; Returns: string }
+      platform_assign_plan: { Args: { p_workspace_id: string; p_version_id: string | null; p_revision: number; p_reason: string; p_confirmed: boolean }; Returns: undefined }
       workspace_modules: { Args: { p_workspace_id: string }; Returns: Json }
       platform_product: { Args: { p_workspace_id?: string | null; p_query?: string }; Returns: Json }
       platform_set_feature_rule: {
