@@ -11,3 +11,4 @@ out/
 data/db.json
 coverage/
 *.tsbuildinfo
+supabase/.temp/

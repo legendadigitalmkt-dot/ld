@@ -21,11 +21,13 @@ export function AppControls({
 	workspaces,
 	email,
 	notices,
+	platformAccess = false,
 }: {
 	workspace: CurrentWorkspace;
 	workspaces: CurrentWorkspace[];
 	email: string | null;
 	notices: { overdue: number; unread: number; available: boolean };
+	platformAccess?: boolean;
 }) {
 	const admin = ["owner", "admin"].includes(workspace.role);
 	const pathname = usePathname();
@@ -206,6 +208,15 @@ export function AppControls({
 					<small>{roleLabels[workspace.role]}</small>
 				</div>
 				<AppNavigation admin={admin} close={() => setMenuOpen(false)} />
+				{platformAccess ? (
+					<Link
+						href="/control-center"
+						onClick={() => setMenuOpen(false)}
+						className={styles.portalLink}
+					>
+						<Icon name="shield" /> Control Center
+					</Link>
+				) : null}
 				<WorkspacePicker
 					workspace={workspace}
 					workspaces={workspaces}
