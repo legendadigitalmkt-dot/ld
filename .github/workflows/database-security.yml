@@ -37,3 +37,6 @@ jobs:
 
       - name: Run pgTAP / RLS tests
         run: supabase test db --local
+
+      - name: Concurrent plan quota tests
+        run: bash .github/scripts/test-plan-concurrency.sh

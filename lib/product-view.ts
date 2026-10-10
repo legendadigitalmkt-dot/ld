@@ -5,7 +5,7 @@ export type RuleState = ModuleState | "inherit";
 export type ModuleAccess = {
 	enabled: boolean;
 	state: ModuleState;
-	source: "global" | "workspace" | "dependency" | "unavailable";
+	source: "global" | "workspace" | "dependency" | "unavailable" | "plan";
 };
 export type WorkspaceModules = Record<ModuleCode, ModuleAccess>;
 export const moduleLabels: Record<ModuleCode, string> = {
@@ -24,6 +24,7 @@ export const moduleSourceLabels: Record<ModuleAccess["source"], string> = {
 	workspace: "Regra do workspace",
 	dependency: "CRM desativado",
 	unavailable: "Indisponível",
+	plan: "Não incluído no plano atribuído",
 };
 export function moduleCode(value: unknown): ModuleCode {
 	if (typeof value !== "string" || !moduleCodes.includes(value as ModuleCode))

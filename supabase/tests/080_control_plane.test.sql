@@ -26,7 +26,7 @@ create function pg_temp.login_user(p_user uuid,p_aal text default 'aal2') return
  select set_config('request.jwt.claims',jsonb_build_object('sub',p_user,'session_id',p_user,'aal',p_aal,'role','authenticated')::text,true);
 $$;
 
-select is((select count(*)::int from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='control_plane' and c.relkind='r' and c.relrowsecurity and c.relforcerowsecurity),10,'all private control tables force RLS');
+select is((select count(*)::int from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='control_plane' and c.relkind='r' and c.relrowsecurity and c.relforcerowsecurity),15,'all private control tables force RLS');
 select ok(not has_table_privilege('authenticated','control_plane.platform_user_roles','SELECT,INSERT,UPDATE,DELETE'),'clients cannot read or edit role assignments directly');
 select ok(not has_table_privilege('authenticated','control_plane.admin_audit_logs','SELECT,INSERT,UPDATE,DELETE,TRUNCATE'),'clients cannot forge or erase audit records');
 select ok(not has_function_privilege('authenticated','control_plane.bootstrap_owner(uuid,uuid,text)','EXECUTE'),'bootstrap is operator only');

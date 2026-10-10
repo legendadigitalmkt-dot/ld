@@ -84,6 +84,12 @@ export const appNavigation: {
 		group: "Workspace",
 		admin: true,
 	},
+	{
+		href: "/app/settings/plan",
+		label: "Plano e consumo",
+		icon: "reports",
+		group: "Workspace",
+	},
 ];
 export function visibleAppNavigation(
 	admin: boolean,

@@ -122,6 +122,13 @@ export default async function ContactsPage({
 					</Link>
 				))}
 			</section>
+			{params.error === "plan_limit" ? (
+				<p role="alert" className={styles.notice}>
+					Limite do plano atingido.{" "}
+					<Link href="/app/settings/plan">Confira plano e consumo</Link> antes
+					de criar outro contato e oportunidade.
+				</p>
+			) : null}
 			{params.created === "1" ? (
 				<p className={styles.successNotice} role="status">
 					<Icon name="check" />

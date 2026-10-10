@@ -5,6 +5,7 @@ import { requireModule } from "@/lib/product";
 import { createClient } from "@/lib/supabase/server";
 import { readTaskInput, taskReturnPath } from "@/lib/task-input";
 import { uuidPattern } from "@/lib/workspace-selection";
+import { planLimitError } from "@/lib/plans-view";
 
 function fail(
 	message: string,
@@ -44,7 +45,8 @@ export async function createTask(formData: FormData) {
 	});
 	if (error || !data)
 		fail(
-			"Não foi possível criar a tarefa. Confira o vínculo e sua permissão no workspace.",
+			planLimitError(error?.code) ||
+				"Não foi possível criar a tarefa. Confira o vínculo e sua permissão no workspace.",
 			returnPath,
 		);
 	revalidatePath("/app", "layout");

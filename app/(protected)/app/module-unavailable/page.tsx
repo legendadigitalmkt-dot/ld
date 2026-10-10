@@ -31,7 +31,11 @@ export default async function ModuleUnavailable({
 			<p className="eyebrow">
 				{workspace.name} · {moduleLabels[code]}
 			</p>
-			<h1>Este módulo está pausado</h1>
+			<h1>
+				{modules[code].source === "plan"
+					? "Este módulo não está incluído no plano"
+					: "Este módulo está pausado"}
+			</h1>
 			<p>
 				{moduleSourceLabels[modules[code].source]}. Seus dados permanecem
 				preservados.
@@ -41,6 +45,9 @@ export default async function ModuleUnavailable({
 				deste módulo.
 			</p>
 			<div className="button-row">
+				<Link className="button secondary" href="/app/settings/plan">
+					Ver plano e consumo
+				</Link>
 				<Link className="button secondary" href="/app/settings/members">
 					Ver equipe
 				</Link>
