@@ -14,6 +14,7 @@ export function GrowthAssistant({
 	initial,
 	configured,
 	canEdit,
+	openTaskId,
 	day,
 	historyCount,
 	shownHistory,
@@ -24,6 +25,7 @@ export function GrowthAssistant({
 	initial: GrowthSuggestion;
 	configured: boolean;
 	canEdit: boolean;
+	openTaskId: string | null;
 	day: string;
 	historyCount: number;
 	shownHistory: number;
@@ -145,7 +147,14 @@ export function GrowthAssistant({
 					: copyError ||
 						"Rascunho editável. Nenhuma mensagem é enviada por esta tela. No WhatsApp, respeite a janela de atendimento ou use um template aprovado."}
 			</p>
-			{canEdit ? (
+			{openTaskId ? (
+				<Link
+					className="button secondary"
+					href={`/app/tasks?task=${openTaskId}`}
+				>
+					Revisar a tarefa já aberta →
+				</Link>
+			) : canEdit ? (
 				<details className={styles.plan}>
 					<summary>Planejar uma tarefa com esse próximo passo</summary>
 					<form action={createTask} className="stack">

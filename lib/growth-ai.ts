@@ -10,6 +10,7 @@ export type BriefMessage = {
 	direction: string;
 	body: string;
 	created_at: string;
+	delivery_status?: string | null;
 };
 export type GrowthAIState = {
 	result?: GrowthSuggestion;
@@ -156,6 +157,7 @@ export function growthAIPayload(
 		})),
 		messages: messages.slice(0, 8).map((m) => ({
 			direction: m.direction,
+			deliveryStatus: m.delivery_status || null,
 			text: redact(m.body, 600),
 			at: m.created_at,
 		})),

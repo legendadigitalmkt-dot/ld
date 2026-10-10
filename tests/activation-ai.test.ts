@@ -260,3 +260,19 @@ test("mobile preview never embeds external routes, recursion, or unvalidated IDs
 	assert.equal(mobilePreviewWidth("430"), 430);
 	assert.equal(mobilePreviewWidth("-100"), 390);
 });
+
+test("AI context preserves failed delivery instead of implying receipt", () => {
+	const payload = growthAIPayload(
+		context,
+		[
+			{
+				direction: "out",
+				body: "Proposta",
+				created_at: now,
+				delivery_status: "failed",
+			},
+		],
+		now,
+	);
+	assert.equal(payload.messages[0].deliveryStatus, "failed");
+});

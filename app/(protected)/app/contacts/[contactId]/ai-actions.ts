@@ -42,7 +42,7 @@ export async function generateContactReview(
 	const messages = ids.length
 		? await supabase
 				.from("messages")
-				.select("direction,body,created_at")
+				.select("direction,body,created_at,delivery_status")
 				.eq("workspace_id", workspace.id)
 				.in("conversation_id", ids)
 				.order("created_at", { ascending: false })

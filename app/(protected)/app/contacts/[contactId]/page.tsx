@@ -123,6 +123,9 @@ export default async function ContactPage({
 						initial={crmSuggestion(context, asOf)}
 						configured={growthAIConfigured()}
 						canEdit={canEdit}
+						openTaskId={
+							context.tasks.find((task) => task.status === "open")?.id || null
+						}
 						day={workspaceDayBounds(asOf, workspace.timezone).day}
 						historyCount={stats.history}
 						shownHistory={context.history.length}
