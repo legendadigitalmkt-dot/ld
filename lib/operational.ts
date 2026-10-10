@@ -24,11 +24,11 @@ export const statusLabels: Record<string, string> = {
 	customer: "Cliente",
 	inactive: "Inativo",
 };
-export function money(value: number) {
+export function money(value: number, fractionDigits = 0) {
 	return new Intl.NumberFormat("pt-BR", {
 		style: "currency",
 		currency: "BRL",
-		maximumFractionDigits: 0,
+		maximumFractionDigits: fractionDigits,
 	}).format(value);
 }
 export function dateTime(value: string | null, timezone: string) {

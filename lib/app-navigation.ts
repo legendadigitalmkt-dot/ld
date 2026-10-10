@@ -9,6 +9,12 @@ export const appNavigation: {
 	{ href: "/app/today", label: "Hoje", icon: "calendar", group: "Operação" },
 	{ href: "/app", label: "Visão geral", icon: "dashboard", group: "Operação" },
 	{
+		href: "/app/results",
+		label: "Resultados",
+		icon: "reports",
+		group: "Operação",
+	},
+	{
 		href: "/app/inbox",
 		label: "Inbox WhatsApp",
 		icon: "inbox",

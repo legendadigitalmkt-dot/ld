@@ -1,6 +1,7 @@
 export function mobilePreviewTarget(screen: unknown, contact: unknown) {
 	const targets: Record<string, string> = {
 		today: "/app/today",
+		results: "/app/results",
 		start: "/app/start",
 		pipeline: "/app/pipeline",
 		contacts: "/app/contacts",

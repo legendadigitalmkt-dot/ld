@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useId, useState, useTransition } from "react";
 import { Icon } from "@/components/ui/icons";
 import { money, type Overview } from "@/lib/operational";
 import styles from "./app.module.css";
@@ -72,7 +72,13 @@ export function ExportResults({ data }: { data: Overview }) {
 	);
 }
 
-export function RevenueChart({ values }: { values: Overview["revenue"] }) {
+export function RevenueChart({
+	values,
+	precision = 0,
+}: {
+	values: Overview["revenue"];
+	precision?: 0 | 2;
+}) {
 	const id = useId();
 	const [mode, setMode] = useState<"line" | "bars">("line");
 	const [active, setActive] = useState(Math.max(0, values.length - 1));
@@ -91,6 +97,7 @@ export function RevenueChart({ values }: { values: Overview["revenue"] }) {
 		.join(" ");
 	const selected = values[Math.min(active, values.length - 1)];
 	const selectedPoint = points[Math.min(active, values.length - 1)];
+	const valueLabel = (value: number) => money(value, precision);
 	const dayLabel = (day: string) => `${day.slice(8, 10)}/${day.slice(5, 7)}`;
 	return (
 		<>
@@ -116,7 +123,7 @@ export function RevenueChart({ values }: { values: Overview["revenue"] }) {
 				</fieldset>
 				<div className={styles.chartReadout} aria-live="polite">
 					<span>{dayLabel(selected.day)}</span>
-					<strong>{money(selected.value)}</strong>
+					<strong>{valueLabel(selected.value)}</strong>
 				</div>
 			</div>
 			<svg
@@ -209,7 +216,7 @@ export function RevenueChart({ values }: { values: Overview["revenue"] }) {
 					max={values.length - 1}
 					value={active}
 					onChange={(event) => setActive(Number(event.target.value))}
-					aria-valuetext={`${dayLabel(selected.day)}: ${money(selected.value)}`}
+					aria-valuetext={`${dayLabel(selected.day)}: ${valueLabel(selected.value)}`}
 				/>
 			</label>
 			<div className={styles.chartDates}>
@@ -234,7 +241,7 @@ export function RevenueChart({ values }: { values: Overview["revenue"] }) {
 							{values.map((item) => (
 								<tr key={item.day}>
 									<td>{dayLabel(item.day)}</td>
-									<td>{money(item.value)}</td>
+									<td>{valueLabel(item.value)}</td>
 								</tr>
 							))}
 						</tbody>
