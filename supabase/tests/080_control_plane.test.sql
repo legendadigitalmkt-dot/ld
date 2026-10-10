@@ -10,7 +10,7 @@ insert into auth.users(id,email,email_confirmed_at,created_at,raw_user_meta_data
  ('44444444-1010-4010-8010-101010101004','platform-candidate@ld.test',now(),now(),'{}'),
  ('55555555-1010-4010-8010-101010101005','unconfirmed@ld.test',null,now(),'{}');
 insert into auth.sessions(id,user_id,aal,created_at,updated_at) select id,id,'aal2',now(),now() from auth.users where email like '%@ld.test' and id::text like '%-1010-%';
-insert into auth.mfa_factors(id,user_id,factor_type,status,friendly_name) select id,id,'totp','verified','Synthetic pgTAP factor' from auth.users where email like '%@ld.test' and id::text like '%-1010-%';
+insert into auth.mfa_factors(id,user_id,factor_type,status,friendly_name,created_at,updated_at) select id,id,'totp','verified','Synthetic pgTAP factor',now(),now() from auth.users where email like '%@ld.test' and id::text like '%-1010-%';
 insert into public.workspaces(id,name,slug) values
  ('10000000-1010-4010-8010-101010101001','Owner Test','control-owner-test'),
  ('20000000-1010-4010-8010-101010101002','Customer Test','control-customer-test');

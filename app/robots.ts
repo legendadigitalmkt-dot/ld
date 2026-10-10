@@ -8,6 +8,8 @@ export default function robots(): MetadataRoute.Robots {
 			allow: "/",
 			disallow: [
 				"/app",
+				"/control-center",
+				"/access-paused",
 				"/onboarding",
 				"/login",
 				"/auth/",

@@ -44,7 +44,12 @@ export default async function WorkspacesPage({
 				status={filter.status}
 				placeholder="Nome, slug ou ID"
 			/>
-			<div className={styles.tableWrap}>
+			<section
+				className={styles.tableWrap}
+				aria-label="Workspaces, com rolagem horizontal"
+				// biome-ignore lint/a11y/noNoninteractiveTabindex: Focus enables keyboard scrolling of this named data table region.
+				tabIndex={0}
+			>
 				<table className={styles.table}>
 					<thead>
 						<tr>
@@ -154,7 +159,7 @@ export default async function WorkspacesPage({
 				{result.items.length === 0 ? (
 					<p className={styles.empty}>Nenhum workspace encontrado.</p>
 				) : null}
-			</div>
+			</section>
 			<Pagination
 				base="/control-center/workspaces"
 				query={filter.query}

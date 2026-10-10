@@ -400,7 +400,8 @@
 	max-width: 550px;
 }
 .table summary,
-.auditList summary {
+.auditList summary,
+.panel summary {
 	cursor: pointer;
 	font-size: 12px;
 	color: #2b6253;
