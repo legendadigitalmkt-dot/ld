@@ -1163,3 +1163,631 @@
 		animation: none;
 	}
 }
+
+/* Shared motion and interactive results. Keep the existing workspace identity. */
+.appShell {
+	background:
+		radial-gradient(ellipse at 95% 0%, #754cff0a, transparent 45%), #070f20;
+}
+.content > .pageHeader {
+	animation: os-enter 0.4s ease both;
+}
+.metricGrid {
+	animation: os-enter 0.45s 0.04s ease both;
+}
+.metric {
+	transition:
+		border-color 0.2s,
+		box-shadow 0.2s,
+		transform 0.2s;
+}
+.metric:nth-child(2)::before {
+	background: linear-gradient(90deg, #00d9ff88, transparent);
+}
+.metric:nth-child(3)::before {
+	background: linear-gradient(90deg, #754cffaa, transparent);
+}
+.metric:nth-child(4)::before {
+	background: linear-gradient(90deg, #50dec188, transparent);
+}
+.metricLink {
+	display: block;
+}
+.metricArrow {
+	position: absolute;
+	right: 15px;
+	top: 16px;
+	color: #6685b0;
+}
+.metricArrow svg {
+	width: 14px;
+	height: 14px;
+}
+.headerActions {
+	flex-wrap: wrap;
+	justify-content: flex-end;
+}
+.refreshButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 7px;
+	border: 1px solid #2c3e5b;
+	background: #101d34;
+	color: #c9daf3;
+	border-radius: 9px;
+	padding: 10px 12px;
+	font-size: 11px;
+	cursor: pointer;
+}
+.refreshButton svg {
+	width: 14px;
+	height: 14px;
+}
+.refreshButton:disabled {
+	opacity: 0.65;
+	cursor: wait;
+}
+.segmented {
+	margin: 0;
+	min-width: 0;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px;
+	background: #071224;
+	border: 1px solid #2b3d59;
+	border-radius: 9px;
+}
+.segmented button {
+	background: transparent;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	color: #93a9cc;
+	padding: 8px 12px;
+	font-size: 11px;
+	cursor: pointer;
+	transition:
+		background 0.18s,
+		color 0.18s;
+}
+.segmented button[aria-pressed="true"] {
+	color: #eff6ff;
+	background: linear-gradient(135deg, #2459b1, #46489a);
+	border-color: #6175bb66;
+	box-shadow: 0 2px 8px #0003;
+}
+.attentionStrip {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 10px;
+	margin: 17px 0;
+}
+.attentionStrip a {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 14px;
+	border: 1px solid #293853;
+	border-radius: 10px;
+	background: #0d1a30;
+	font-size: 10px;
+	color: #afc3e1;
+}
+.attentionStrip strong {
+	color: #f2f6ff;
+	font-size: 14px;
+}
+.attentionStrip svg {
+	width: 15px;
+	height: 15px;
+	flex-shrink: 0;
+	color: #87aaf2;
+}
+.attentionStrip svg:last-child {
+	margin-left: auto;
+	width: 12px;
+}
+.moreMetrics {
+	margin: 0 0 22px;
+	border: 1px solid #253653;
+	border-radius: 12px;
+	background: #0b1529;
+}
+.moreMetrics > summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	cursor: pointer;
+	padding: 14px 18px;
+	color: #a9bddb;
+	font-size: 11px;
+	list-style: none;
+}
+.moreMetrics > summary::-webkit-details-marker {
+	display: none;
+}
+.moreMetrics > summary svg {
+	width: 14px;
+	transition: transform 0.18s;
+}
+.moreMetrics[open] > summary svg {
+	transform: rotate(45deg);
+}
+.moreMetrics .compactMetrics {
+	margin: 0;
+	border-radius: 0 0 12px 12px;
+	border: 0;
+	border-top: 1px solid #20314f;
+}
+.panel {
+	background: linear-gradient(150deg, #101e344a, #0b1529 60%);
+	box-shadow: 0 5px 25px #0000000a;
+}
+.breakdownRow {
+	display: block;
+	padding: 4px 0;
+	border-radius: 7px;
+}
+.breakdownRow .barTrack {
+	display: block;
+	margin-bottom: 0;
+}
+.barFill {
+	transform-origin: left;
+	animation: os-bar 0.65s ease both;
+}
+.chart {
+	aspect-ratio: 710 / 200;
+	height: auto;
+}
+.chartControls {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 15px;
+}
+.chartReadout {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 11px;
+	color: #a8bddc;
+}
+.chartReadout strong {
+	color: #67e3f4;
+	font-size: 16px;
+	font-variant-numeric: tabular-nums;
+}
+.chartStroke {
+	stroke-dasharray: 1;
+	stroke-dashoffset: 0;
+	animation: os-chart 0.8s ease both;
+}
+.chartSlider {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	color: #879fbe;
+	font-size: 10px;
+	margin: 9px 0;
+}
+.chartSlider input {
+	flex: 1;
+	accent-color: #00cbea;
+	padding: 0;
+	height: 16px;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+}
+.dataDetails {
+	margin-top: 16px;
+	color: #9eb6d9;
+	font-size: 10px;
+}
+.dataDetails summary {
+	cursor: pointer;
+}
+.dataTable {
+	max-height: 220px;
+	overflow: auto;
+	margin-top: 12px;
+	border: 1px solid #263a59;
+	border-radius: 9px;
+}
+.dataTable th,
+.dataTable td {
+	font-size: 11px;
+}
+.sourcesLayout {
+	display: flex;
+	align-items: center;
+	gap: 25px;
+	padding: 7px 0;
+}
+.sourceDonut {
+	width: 148px;
+	height: 148px;
+	flex-shrink: 0;
+	border-radius: 50%;
+	display: grid;
+	place-items: center;
+	box-shadow: 0 0 25px #754cff10;
+}
+.sourceDonut > div {
+	display: grid;
+	place-items: center;
+	align-content: center;
+	width: 106px;
+	height: 106px;
+	border-radius: 50%;
+	background: #0b1529;
+}
+.sourceDonut strong {
+	font-size: 28px;
+	letter-spacing: -0.04em;
+}
+.sourceDonut span {
+	font-size: 9px;
+	color: #94aaca;
+	margin-top: 5px;
+}
+.sourceLegend {
+	flex: 1;
+	min-width: 0;
+	display: grid;
+	gap: 7px;
+}
+.sourceLegend a {
+	display: flex;
+	align-items: center;
+	gap: 7px;
+	color: #afc3e0;
+	padding: 8px 4px;
+	border-radius: 6px;
+	font-size: 10px;
+}
+.sourceLegend i {
+	width: 6px;
+	height: 6px;
+	flex-shrink: 0;
+	border-radius: 50%;
+}
+.sourceLegend span {
+	min-width: 0;
+	overflow-wrap: anywhere;
+}
+.sourceLegend strong {
+	margin-left: auto;
+	font-size: 11px;
+	white-space: nowrap;
+}
+.sourceLegend small {
+	color: #7894ba;
+	font-size: 9px;
+}
+.crmSummary {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 12px;
+	margin-bottom: 22px;
+}
+.crmSummary a {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	padding: 17px;
+	background: linear-gradient(130deg, #12213b, #0c182c);
+	border: 1px solid #283a58;
+	border-radius: 12px;
+	font-size: 12px;
+	color: #a3b9dc;
+}
+.crmSummary svg {
+	color: #7ca8ff;
+	width: 17px;
+	flex-shrink: 0;
+}
+.crmSummary strong {
+	margin-left: auto;
+	font-size: 22px;
+	color: #f4f8ff;
+}
+.crmSummary a[aria-current] {
+	border-color: #487fd1;
+	background: linear-gradient(130deg, #246bfd22, #0c182c);
+}
+.newContactPanel {
+	margin: 0 0 22px;
+	border: 1px solid #2b3c5a;
+	border-radius: 13px;
+	padding: 19px;
+	background: #0c182d;
+	scroll-margin-top: 100px;
+}
+.newContactPanel summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	cursor: pointer;
+	list-style: none;
+}
+.newContactPanel summary::-webkit-details-marker {
+	display: none;
+}
+.newContactPanel summary strong {
+	display: block;
+	font-size: 13px;
+}
+.newContactPanel summary span {
+	display: block;
+	color: #94aaca;
+	font-size: 11px;
+	margin-top: 6px;
+}
+.newContactPanel summary svg {
+	width: 17px;
+	color: #8ab5ff;
+	transition: transform 0.2s;
+}
+.newContactPanel[open] summary svg {
+	transform: rotate(45deg);
+}
+.newContactPanel form {
+	margin-top: 21px;
+}
+.successNotice {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 10px;
+	padding: 14px;
+	background: #4ade8010;
+	color: #9becc0;
+	border: 1px solid #4ade8044;
+	border-radius: 10px;
+	font-size: 12px;
+}
+.successNotice svg {
+	width: 16px;
+}
+.successNotice a {
+	margin-left: auto;
+}
+.contactsTable {
+	padding: 0;
+	border-color: #283c59;
+}
+.contactsTable th {
+	background: #101e35;
+	font-size: 11px;
+	padding: 17px;
+}
+.contactsTable td {
+	padding: 18px 17px;
+	font-size: 12px;
+}
+.contactsTable td:first-child > a {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	color: #dce9ff;
+}
+.contactsTable td:first-child > .muted {
+	padding-left: 38px;
+	font-size: 10px;
+}
+.contactAvatar {
+	display: inline-grid;
+	place-items: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: linear-gradient(145deg, #245ca6, #774aa5);
+	color: #deedff;
+	font-size: 9px;
+	font-weight: 750;
+	flex-shrink: 0;
+}
+.sourceBadge {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	color: #b7cce9;
+	font-size: 11px;
+}
+.sourceBadge svg {
+	width: 14px;
+	height: 14px;
+	color: #87b0ed;
+}
+.contactStatus[data-status="lead"] {
+	background: #246bfd22;
+	color: #abcaff;
+	border: 1px solid #246bfd55;
+}
+.contactStatus[data-status="customer"] {
+	background: #4ade8015;
+	color: #96edb8;
+	border: 1px solid #4ade8044;
+}
+.contactStatus[data-status="inactive"] {
+	background: #ff8da410;
+	color: #efa6b8;
+	border: 1px solid #ff8da433;
+}
+.appShell :is(a, button, input, select, summary):focus-visible {
+	outline: 2px solid #7bdff7;
+	outline-offset: 4px;
+}
+.appShell :global(.button) {
+	transition:
+		transform 0.18s,
+		box-shadow 0.18s,
+		filter 0.18s;
+}
+.navigation a,
+.refreshButton,
+.attentionStrip a,
+.sourceLegend a,
+.crmSummary a {
+	transition:
+		border-color 0.18s,
+		background 0.18s,
+		color 0.18s;
+}
+.commandDialog[open],
+.dropdown[open] .dropdownPanel {
+	animation: os-enter 0.18s ease both;
+}
+.drawer[open] {
+	animation: os-drawer 0.22s ease both;
+}
+@keyframes os-enter {
+	from {
+		opacity: 0;
+		transform: translateY(7px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+@keyframes os-bar {
+	from {
+		transform: scaleX(0);
+	}
+	to {
+		transform: scaleX(1);
+	}
+}
+@keyframes os-chart {
+	from {
+		stroke-dashoffset: 1;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+@keyframes os-drawer {
+	from {
+		opacity: 0;
+		transform: translateX(-15px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+@media (hover: hover) {
+	.metric:hover {
+		border-color: #45668e;
+		transform: translateY(-2px);
+		box-shadow: 0 10px 25px #0003;
+	}
+	.refreshButton:hover,
+	.attentionStrip a:hover,
+	.crmSummary a:hover {
+		border-color: #557bae;
+		background: #162948;
+	}
+	.sourceLegend a:hover {
+		background: #1b2e4a;
+	}
+	.breakdownRow:hover {
+		color: #fff;
+	}
+	.contactsTable tbody tr:hover {
+		background: #13243d;
+	}
+	.appShell :global(.button:hover) {
+		transform: translateY(-1px);
+		box-shadow: 0 5px 18px #246bfd25;
+		filter: brightness(1.08);
+	}
+}
+@media (max-width: 1150px) {
+	.sourcesLayout {
+		flex-direction: column;
+		gap: 15px;
+	}
+	.sourceLegend {
+		width: 100%;
+	}
+	.attentionStrip {
+		grid-template-columns: 1fr;
+		gap: 7px;
+	}
+}
+@media (max-width: 680px) {
+	.headerActions {
+		justify-content: flex-start;
+		gap: 8px;
+	}
+	.crmSummary {
+		gap: 8px;
+	}
+	.crmSummary a {
+		padding: 13px 11px;
+		gap: 6px;
+		flex-wrap: wrap;
+		font-size: 10px;
+	}
+	.crmSummary svg {
+		display: none;
+	}
+	.crmSummary strong {
+		font-size: 20px;
+	}
+	.sourcesLayout {
+		flex-direction: row;
+		gap: 17px;
+	}
+	.sourceDonut {
+		width: 125px;
+		height: 125px;
+	}
+	.sourceDonut > div {
+		width: 91px;
+		height: 91px;
+	}
+	.contactsTable table {
+		min-width: 700px;
+	}
+	.chart {
+		height: auto;
+		min-height: 160px;
+	}
+	.chartControls {
+		flex-wrap: wrap;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.content > .pageHeader,
+	.metricGrid,
+	.barFill,
+	.chartStroke,
+	.commandDialog[open],
+	.dropdown[open] .dropdownPanel,
+	.drawer[open] {
+		animation: none;
+	}
+	.metric,
+	.segmented button,
+	.moreMetrics > summary svg,
+	.newContactPanel summary svg,
+	.appShell :global(.button),
+	.navigation a,
+	.refreshButton,
+	.attentionStrip a,
+	.sourceLegend a,
+	.crmSummary a {
+		transition: none;
+	}
+	.metric:hover,
+	.appShell :global(.button:hover) {
+		transform: none;
+	}
+}

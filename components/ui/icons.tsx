@@ -24,8 +24,25 @@ export type IconName =
 	| "more"
 	| "menu"
 	| "lock"
-	| "target";
+	| "target"
+	| "plus"
+	| "refresh"
+	| "download"
+	| "edit"
+	| "grip";
 const paths: Record<IconName, string[]> = {
+	plus: ["M12 5v14", "M5 12h14"],
+	refresh: ["M20 7a9 9 0 1 0 1 8", "M20 3v5h-5"],
+	download: ["M12 3v12", "m7 10 5 5 5-5", "M4 16v5h16v-5"],
+	edit: ["m16 3 5 5-12 12-6 1 1-6L16 3Z", "m13 6 5 5"],
+	grip: [
+		"M8 5h.01",
+		"M16 5h.01",
+		"M8 12h.01",
+		"M16 12h.01",
+		"M8 19h.01",
+		"M16 19h.01",
+	],
 	arrow: ["M4 12h16", "m14 6 6 6-6 6"],
 	play: ["m9 5 11 7-11 7V5Z"],
 	check: ["m5 12 4 4L19 6"],

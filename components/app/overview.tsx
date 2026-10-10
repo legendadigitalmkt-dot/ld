@@ -7,6 +7,12 @@ import {
 	stageLabels,
 	type Overview,
 } from "@/lib/operational";
+import {
+	ContactSources,
+	ExportResults,
+	RefreshResults,
+	RevenueChart,
+} from "./dashboard-interactions";
 import styles from "./app.module.css";
 
 function Metric({
@@ -14,20 +20,27 @@ function Metric({
 	value,
 	note,
 	icon,
+	href,
 }: {
 	label: string;
 	value: string;
 	note: string;
 	icon: IconName;
+	href: string;
 }) {
 	return (
 		<article className={styles.metric}>
-			<div className={styles.metricTop}>
-				<Icon name={icon} />
-				<span>{label}</span>
-			</div>
-			<strong>{value}</strong>
-			<small>{note}</small>
+			<Link href={href} className={styles.metricLink}>
+				<div className={styles.metricTop}>
+					<Icon name={icon} />
+					<span>{label}</span>
+				</div>
+				<strong>{value}</strong>
+				<small>{note}</small>
+				<span className={styles.metricArrow}>
+					<Icon name="arrow" />
+				</span>
+			</Link>
 		</article>
 	);
 }
@@ -51,93 +64,6 @@ function Empty({
 		</div>
 	);
 }
-function RevenueChart({ values }: { values: Overview["revenue"] }) {
-	const max = Math.max(...values.map((item) => item.value), 1);
-	const points = values.map((item, index) => [
-		40 + (index / Math.max(values.length - 1, 1)) * 650,
-		175 - (item.value / max) * 155,
-	]);
-	const path = points
-		.map(
-			([x, y], index) => `${index ? "L" : "M"} ${x.toFixed(2)} ${y.toFixed(2)}`,
-		)
-		.join(" ");
-	const dayLabel = (day: string) => `${day.slice(8, 10)}/${day.slice(5, 7)}`;
-	return (
-		<>
-			<svg
-				className={styles.chart}
-				viewBox="0 0 710 200"
-				role="img"
-				aria-label="Valor dos negócios ganhos por dia. Consulte o total no título deste gráfico."
-			>
-				<title>Negócios ganhos por dia</title>
-				<defs>
-					<linearGradient id="os-revenue-gradient" x1="0" y1="0" x2="0" y2="1">
-						<stop offset="0%" stopColor="#246bfd" stopOpacity=".25" />
-						<stop offset="100%" stopColor="#246bfd" stopOpacity="0" />
-					</linearGradient>
-				</defs>
-				{[20, 97.5, 175].map((y) => (
-					<line
-						key={y}
-						x1="40"
-						y1={y}
-						x2="690"
-						y2={y}
-						className={styles.chartGrid}
-					/>
-				))}
-				<text x="0" y="24" className={styles.chartLabel}>
-					{new Intl.NumberFormat("pt-BR", { notation: "compact" }).format(max)}
-				</text>
-				<text x="0" y="178" className={styles.chartLabel}>
-					0
-				</text>
-				<path
-					d={`${path} L 690 175 L 40 175 Z`}
-					fill="url(#os-revenue-gradient)"
-				/>
-				<path
-					d={path}
-					fill="none"
-					stroke="#00d9ff"
-					strokeWidth="2.5"
-					strokeLinejoin="round"
-				/>
-			</svg>
-			<div className={styles.chartDates}>
-				<span>{dayLabel(values[0].day)}</span>
-				<span>{dayLabel(values[Math.floor(values.length / 2)].day)}</span>
-				<span>{dayLabel(values[values.length - 1].day)}</span>
-			</div>
-			<div className={styles.legend}>
-				<i />
-				Valor registrado nos negócios ganhos · não representa recebimento
-				financeiro
-			</div>
-			<details className={styles.footerNote}>
-				<summary>Consultar valores por dia</summary>
-				<table>
-					<thead>
-						<tr>
-							<th>Dia</th>
-							<th>Valor ganho</th>
-						</tr>
-					</thead>
-					<tbody>
-						{values.map((item) => (
-							<tr key={item.day}>
-								<td>{dayLabel(item.day)}</td>
-								<td>{money(item.value)}</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</details>
-		</>
-	);
-}
 
 export function OverviewView({
 	data,
@@ -157,7 +83,6 @@ export function OverviewView({
 		new Intl.NumberFormat("pt-BR").format(value);
 	const period = `Últimos ${data.days} dias`;
 	const maxStage = Math.max(...data.stages.map((item) => item.count), 1);
-	const maxSource = Math.max(...data.sources.map((item) => item.count), 1);
 	const next = s.overdue
 		? {
 				title: `${number(s.overdue)} tarefas precisam ser retomadas.`,
@@ -224,6 +149,8 @@ export function OverviewView({
 					<p>Veja o que está avançando e escolha o próximo passo.</p>
 				</div>
 				<div className={styles.headerActions}>
+					<RefreshResults />
+					<ExportResults data={data} />
 					<nav aria-label="Período dos indicadores" className={styles.periods}>
 						<Link
 							href="/app?days=30"
@@ -238,7 +165,7 @@ export function OverviewView({
 							90 dias
 						</Link>
 					</nav>
-					<Link href="/app/contacts#new-contact" className="button">
+					<Link href="/app/contacts?new=1#new-contact" className="button">
 						<Icon name="contacts" />
 						&nbsp;{canEdit ? "Novo lead" : "Ver contatos"}
 					</Link>
@@ -253,18 +180,21 @@ export function OverviewView({
 					value={number(s.leads)}
 					note={`${number(s.contacts)} contatos no workspace`}
 					icon="contacts"
+					href="/app/contacts?status=lead"
 				/>
 				<Metric
 					label="Pipeline aberto"
 					value={money(s.pipeline)}
 					note="Valor das oportunidades ainda abertas"
 					icon="pipeline"
+					href="/app/pipeline"
 				/>
 				<Metric
 					label="Valor ganho"
 					value={money(s.won)}
 					note={`${s.won_count} negócios ganhos · ${data.days} dias`}
 					icon="reports"
+					href="/app/pipeline?stage=won&view=table"
 				/>
 				<Metric
 					label="Conversão de fechamentos"
@@ -275,20 +205,41 @@ export function OverviewView({
 					}
 					note="Ganhos ÷ (ganhos + perdidos) no período"
 					icon="target"
+					href="/app/pipeline?stage=all&view=table"
 				/>
 			</section>
-			<section
-				aria-label="Indicadores complementares"
-				className={styles.compactMetrics}
-			>
-				{compact.map(([label, value, note]) => (
-					<article className={styles.compactMetric} key={label}>
-						<span>{label}</span>
-						<strong>{value}</strong>
-						<small>{note}</small>
-					</article>
-				))}
-			</section>
+			<div className={styles.attentionStrip}>
+				<Link href="/app/tasks?status=overdue">
+					<Icon name="clock" />
+					<strong>{s.overdue}</strong> tarefas atrasadas <Icon name="arrow" />
+				</Link>
+				<Link href="/app/pipeline?idle=1">
+					<Icon name="pipeline" />
+					<strong>{s.idle}</strong> oportunidades sem atividade há 24h+{" "}
+					<Icon name="arrow" />
+				</Link>
+				<Link href="/app/inbox">
+					<Icon name="inbox" />
+					<strong>{s.unread}</strong> conversas não lidas <Icon name="arrow" />
+				</Link>
+			</div>
+			<details className={styles.moreMetrics}>
+				<summary>
+					Mais indicadores da operação <Icon name="plus" />
+				</summary>
+				<section
+					aria-label="Indicadores complementares"
+					className={styles.compactMetrics}
+				>
+					{compact.map(([label, value, note]) => (
+						<article className={styles.compactMetric} key={label}>
+							<span>{label}</span>
+							<strong>{value}</strong>
+							<small>{note}</small>
+						</article>
+					))}
+				</section>
+			</details>
 			<div className={styles.dashboardGrid}>
 				<section className={styles.panel}>
 					<div className={styles.panelHeader}>
@@ -300,7 +251,7 @@ export function OverviewView({
 						</div>
 						<strong>{money(s.won)}</strong>
 					</div>
-					{data.revenue.some((item) => item.value > 0) ? (
+					{data.revenue.length ? (
 						<RevenueChart values={data.revenue} />
 					) : (
 						<Empty
@@ -321,7 +272,11 @@ export function OverviewView({
 					</div>
 					<div className={styles.breakdown}>
 						{data.stages.map((item) => (
-							<div key={item.stage} className={styles.breakdownRow}>
+							<Link
+								href={`/app/pipeline?stage=${item.stage}`}
+								key={item.stage}
+								className={styles.breakdownRow}
+							>
 								<div>
 									<span>{stageLabels[item.stage]}</span>
 									<small>
@@ -334,7 +289,7 @@ export function OverviewView({
 										style={{ width: `${(item.count / maxStage) * 100}%` }}
 									/>
 								</div>
-							</div>
+							</Link>
 						))}
 					</div>
 				</section>
@@ -493,22 +448,7 @@ export function OverviewView({
 						</div>
 					</div>
 					{data.sources.length ? (
-						<div className={styles.breakdown}>
-							{data.sources.map((item) => (
-								<div key={item.name} className={styles.breakdownRow}>
-									<div>
-										<span>{item.name}</span>
-										<small>{item.count} contatos</small>
-									</div>
-									<div className={styles.barTrack}>
-										<span
-											className={styles.barFill}
-											style={{ width: `${(item.count / maxSource) * 100}%` }}
-										/>
-									</div>
-								</div>
-							))}
-						</div>
+						<ContactSources sources={data.sources} />
 					) : (
 						<Empty
 							title="Nenhum contato novo neste período."
@@ -519,9 +459,9 @@ export function OverviewView({
 			</div>
 			<p className={styles.footerNote}>
 				Dados do workspace atual · atualizado em{" "}
-				{dateTime(data.as_of, timezone)} ({timezone}). Indicadores do período e
-				da situação atual estão identificados em cada card. A priorização usa
-				regras; Growth AI continua em desenvolvimento.
+				{dateTime(data.as_of, timezone)} ({timezone}). O período e a situação
+				atual estão identificados em cada indicador. O forecast é uma estimativa
+				comercial.
 			</p>
 		</>
 	);
