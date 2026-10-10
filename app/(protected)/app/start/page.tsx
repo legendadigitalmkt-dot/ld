@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { randomUUID } from "node:crypto";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { createClient } from "@/lib/supabase/server";
 import { uuidPattern } from "@/lib/workspace-selection";
 import type { ContactContext } from "@/lib/contact-context";
@@ -21,7 +21,7 @@ export default async function StartPage({
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	const params = await searchParams;
 	const supabase = await createClient();
 	const { data: contacts, error } = await supabase

@@ -74,6 +74,95 @@
 	display: grid;
 	gap: 20px;
 }
+.featureGrid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 20px;
+}
+.featureCard {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+.featureTitle {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+}
+.featureTitle h2 {
+	margin: 0;
+}
+.featureState {
+	border-radius: 100px;
+	padding: 6px 10px;
+	font-size: 11px;
+	font-weight: 700;
+	background: #f1f3f6;
+	color: #536171;
+}
+.featureState[data-state="enabled"] {
+	background: #e7f5e2;
+	color: #315528;
+}
+.featureState[data-state="beta"] {
+	background: #eeebfa;
+	color: #554284;
+}
+.capabilities {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 7px;
+	padding: 0;
+	list-style: none;
+	margin: 0 0 20px;
+}
+.capabilities li {
+	background: #f2f5f8;
+	border: 1px solid var(--control-line);
+	border-radius: 6px;
+	padding: 5px 8px;
+	font-size: 11px;
+}
+.scopeNotice {
+	background: #f5f8fb;
+	border-left: 3px solid #7590a8;
+	border-radius: 6px;
+	padding: 16px;
+	margin-top: 18px;
+}
+.scopeNotice p {
+	margin-bottom: 0;
+}
+.ruleEditor {
+	border-top: 1px solid var(--control-line);
+	margin-top: auto;
+	padding-top: 16px;
+}
+.ruleEditor summary {
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 700;
+	padding: 10px 0;
+}
+.ruleEditor summary:hover {
+	color: #315528;
+}
+.ruleTime {
+	font-size: 11px;
+	margin-bottom: 0;
+}
+@media (max-width: 1200px) {
+	.featureGrid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+@media (max-width: 700px) {
+	.featureGrid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
 .navGroup {
 	display: block;
 	margin: 0 12px 8px;

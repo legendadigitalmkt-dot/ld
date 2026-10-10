@@ -12,14 +12,15 @@ import {
   subscribeWhatsAppBusinessAccount,
 } from '@/lib/meta/whatsapp'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { isWorkspaceAdmin, requireWorkspace } from '@/lib/workspace'
+import { isWorkspaceAdmin } from '@/lib/workspace'
+import { requireModule } from '@/lib/product'
 
 function fail(message: string): never {
   redirect(`/app/settings/integrations?error=${encodeURIComponent(message)}`)
 }
 
 export async function diagnoseWhatsApp(formData: FormData) {
-  const workspace = await requireWorkspace()
+  const workspace = await requireModule('whatsapp')
   if (!isWorkspaceAdmin(workspace.role)) fail('Somente owners e admins podem executar o diagnóstico.')
 
   const wabaId = String(formData.get('wabaId') || '').trim()
@@ -34,7 +35,7 @@ export async function diagnoseWhatsApp(formData: FormData) {
 }
 
 export async function connectWhatsApp(formData: FormData) {
-  const [user, workspace] = await Promise.all([requireUser(), requireWorkspace()])
+  const [user, workspace] = await Promise.all([requireUser(), requireModule('whatsapp')])
   if (!isWorkspaceAdmin(workspace.role)) fail('Somente owners e admins podem conectar o WhatsApp.')
 
   const wabaId = String(formData.get('wabaId') || '').trim()

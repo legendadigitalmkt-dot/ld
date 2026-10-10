@@ -1,5 +1,5 @@
 "use server";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { requireUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { uuidPattern } from "@/lib/workspace-selection";
@@ -15,7 +15,7 @@ export async function generateContactReview(
 	_previous: GrowthAIState,
 	data: FormData,
 ): Promise<GrowthAIState> {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("growth_ai");
 	const user = await requireUser();
 	const contactId = String(data.get("contactId") || "");
 	if (!uuidPattern.test(contactId))

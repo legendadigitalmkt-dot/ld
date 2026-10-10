@@ -3,7 +3,7 @@ import { uuidPattern } from "@/lib/workspace-selection";
 import { pipelineStages, type PipelineDeal } from "@/lib/pipeline-view";
 import { PipelineKanban } from "./pipeline-kanban";
 import { createClient } from "@/lib/supabase/server";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { RefreshResults } from "@/components/app/dashboard-interactions";
 import { Icon } from "@/components/ui/icons";
 import styles from "@/components/app/app.module.css";
@@ -18,7 +18,7 @@ export default async function PipelinePage({
 		typeof params.deal === "string" && uuidPattern.test(params.deal)
 			? params.deal
 			: "";
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	const supabase = await createClient();
 	let query = supabase
 		.from("deals")

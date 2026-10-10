@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import type { Overview } from "@/lib/operational";
 import {
 	buildFollowupSuggestions,
@@ -14,7 +14,7 @@ export default async function TodayPage({
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	const params = await searchParams;
 	const supabase = await createClient();
 	const asOf = new Date().toISOString();

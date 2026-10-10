@@ -15,6 +15,8 @@ export type PlatformRole = (typeof platformRoles)[number];
 export type ControlPermission =
 	| "platform.access"
 	| "overview.read"
+	| "product.read"
+	| "feature_flags.manage"
 	| "users.read"
 	| "users.suspend"
 	| "workspaces.read"
@@ -44,6 +46,13 @@ export const controlNavigation = [
 		icon: "dashboard",
 		permission: "overview.read",
 		group: "Controle",
+	},
+	{
+		href: "/control-center/product",
+		label: "Product",
+		icon: "integrations",
+		permission: "product.read",
+		group: "Produto",
 	},
 	{
 		href: "/control-center/users",

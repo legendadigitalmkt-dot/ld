@@ -1,6 +1,6 @@
 import { OverviewView } from "@/components/app/overview";
 import { createClient } from "@/lib/supabase/server";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import type { Overview } from "@/lib/operational";
 
 export default async function DashboardPage({
@@ -8,7 +8,7 @@ export default async function DashboardPage({
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	const params = await searchParams;
 	const days = params.days === "90" ? 90 : 30;
 	const supabase = await createClient();

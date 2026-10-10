@@ -816,6 +816,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      workspace_modules: { Args: { p_workspace_id: string }; Returns: Json }
+      platform_product: { Args: { p_workspace_id?: string | null; p_query?: string }; Returns: Json }
+      platform_set_feature_rule: {
+        Args: { p_feature: string; p_workspace_id: string | null; p_state: string; p_revision: number; p_global_revision: number; p_reason: string; p_confirmed: boolean }
+        Returns: undefined
+      }
 			account_access: { Args: Record<string, never>; Returns: boolean };
 			platform_context: { Args: Record<string, never>; Returns: Json };
 			platform_overview: { Args: Record<string, never>; Returns: Json };

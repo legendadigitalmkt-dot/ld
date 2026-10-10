@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { randomUUID } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { uuidPattern } from "@/lib/workspace-selection";
 import { statusLabels, stageLabels, priorityLabels } from "@/lib/operational";
 import { activityLabels, type ContactContext } from "@/lib/contact-context";
@@ -10,6 +10,7 @@ import { ProfileForm, NoteForm } from "@/components/contacts/profile-form";
 import { GrowthAssistant } from "@/components/contacts/growth-assistant";
 import { crmSuggestion, focusDeal } from "@/lib/growth-ai";
 import { growthAIConfigured } from "@/lib/growth-ai-provider";
+import { getWorkspaceModules } from "@/lib/product";
 import { workspaceDayBounds } from "@/lib/today-view";
 import styles from "@/components/contacts/profile.module.css";
 
@@ -20,7 +21,8 @@ export default async function ContactPage({
 	params: Promise<{ contactId: string }>;
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
+	const modules = await getWorkspaceModules(workspace.id);
 	const { contactId } = await params;
 	const query = await searchParams;
 	if (!uuidPattern.test(contactId)) notFound();
@@ -108,7 +110,7 @@ export default async function ContactPage({
 				</p>
 			) : null}
 			<nav className={styles.profileNav} aria-label="Seções do perfil">
-				<a href="#growth-ai">Growth AI</a>
+				{modules.growth_ai.enabled ? <a href="#growth-ai">Growth AI</a> : null}
 				<a href="#relacionamento">Relacionamento</a>
 				<a href="#oportunidades">Oportunidades</a>
 				<a href="#notas">Notas</a>
@@ -117,20 +119,22 @@ export default async function ContactPage({
 			</nav>
 			<div className={styles.layout}>
 				<div className={styles.column}>
-					<GrowthAssistant
-						contactId={contact.id}
-						dealId={focusDeal(context)?.id || null}
-						initial={crmSuggestion(context, asOf)}
-						configured={growthAIConfigured()}
-						canEdit={canEdit}
-						openTaskId={
-							context.tasks.find((task) => task.status === "open")?.id || null
-						}
-						day={workspaceDayBounds(asOf, workspace.timezone).day}
-						historyCount={stats.history}
-						shownHistory={context.history.length}
-						timezone={workspace.timezone}
-					/>
+					{modules.growth_ai.enabled ? (
+						<GrowthAssistant
+							contactId={contact.id}
+							dealId={focusDeal(context)?.id || null}
+							initial={crmSuggestion(context, asOf)}
+							configured={growthAIConfigured()}
+							canEdit={canEdit}
+							openTaskId={
+								context.tasks.find((task) => task.status === "open")?.id || null
+							}
+							day={workspaceDayBounds(asOf, workspace.timezone).day}
+							historyCount={stats.history}
+							shownHistory={context.history.length}
+							timezone={workspace.timezone}
+						/>
+					) : null}
 					<section id="relacionamento" className={styles.panel}>
 						<h2>Contexto para o próximo passo.</h2>
 						<p>Dados do contato e situação atual do acompanhamento.</p>

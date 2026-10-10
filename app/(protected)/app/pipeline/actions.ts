@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { requireWorkspace } from '@/lib/workspace'
+import { requireModule } from "@/lib/product";
 
 export type PipelineStage =
   | 'new'
@@ -31,7 +31,7 @@ function refreshPipeline() {
 }
 
 export async function moveDealStageAction(dealId: string, stage: PipelineStage) {
-  const workspace = await requireWorkspace()
+  const workspace = await requireModule("crm")
 
   if (workspace.role === 'viewer') {
     return { ok: false as const, error: 'Seu papel não permite alterar oportunidades.' }
@@ -55,7 +55,7 @@ export async function moveDealStageAction(dealId: string, stage: PipelineStage) 
 }
 
 export async function updateDealValueAction(dealId: string, value: number) {
-  const workspace = await requireWorkspace()
+  const workspace = await requireModule("crm")
 
   if (workspace.role === 'viewer') {
     return { ok: false as const, error: 'Seu papel não permite alterar oportunidades.' }

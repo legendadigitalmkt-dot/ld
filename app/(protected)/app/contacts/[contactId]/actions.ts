@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { createClient } from "@/lib/supabase/server";
 import { readContactInput, readContactNote } from "@/lib/contact-input";
 import { uuidPattern } from "@/lib/workspace-selection";
@@ -20,7 +20,7 @@ export async function saveContact(
 	_previous: ContactActionState,
 	form: FormData,
 ): Promise<ContactActionState> {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	const id = contactId(form);
 	if (!id || workspace.role === "viewer")
 		return { error: "Sua conta não pode alterar esse contato." };
@@ -65,7 +65,7 @@ export async function addNote(
 	_previous: ContactActionState,
 	form: FormData,
 ): Promise<ContactActionState> {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	const id = contactId(form);
 	if (!id || workspace.role === "viewer")
 		return { error: "Sua conta não pode adicionar notas." };

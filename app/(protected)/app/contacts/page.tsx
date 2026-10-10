@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { randomUUID } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { escapeSearch, uuidPattern } from "@/lib/workspace-selection";
 import { Icon } from "@/components/ui/icons";
 import { RefreshResults } from "@/components/app/dashboard-interactions";
@@ -15,7 +15,7 @@ export default async function ContactsPage({
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	const params = await searchParams;
 	const search =
 		typeof params.q === "string" ? params.q.trim().slice(0, 80) : "";

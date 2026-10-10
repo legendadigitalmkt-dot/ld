@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { uuidPattern } from "@/lib/workspace-selection";
 import { dateTime, priorityLabels } from "@/lib/operational";
 import { SubmitButton } from "@/components/app/submit-button";
@@ -12,7 +12,7 @@ export default async function TasksPage({
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("crm");
 	const params = await searchParams;
 	const view =
 		typeof params.status === "string" &&

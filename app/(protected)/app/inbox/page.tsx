@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { requireWorkspace } from "@/lib/workspace";
+import { requireModule } from "@/lib/product";
 import { InboxComposer, InboxLiveRefresh } from "@/components/inbox/composer";
 import { getCurrentWhatsAppConnection } from "@/lib/meta/whatsapp-connection";
 import { getApprovedWhatsAppTemplates } from "@/lib/meta/whatsapp";
@@ -27,7 +27,7 @@ export default async function InboxPage({
 }: {
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-	const workspace = await requireWorkspace();
+	const workspace = await requireModule("whatsapp");
 	const params = await searchParams;
 	const requestedConversation =
 		typeof params.conversation === "string" ? params.conversation : null;
