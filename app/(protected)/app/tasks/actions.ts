@@ -3,22 +3,27 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireWorkspace } from "@/lib/workspace";
 import { createClient } from "@/lib/supabase/server";
-import { readTaskInput } from "@/lib/task-input";
+import { readTaskInput, taskReturnPath } from "@/lib/task-input";
 import { uuidPattern } from "@/lib/workspace-selection";
 
-function fail(message: string): never {
-	redirect(`/app/tasks?error=${encodeURIComponent(message)}`);
+function fail(
+	message: string,
+	path: "/app/tasks" | "/app/today" = "/app/tasks",
+): never {
+	redirect(`${path}?error=${encodeURIComponent(message)}`);
 }
 export async function createTask(formData: FormData) {
+	const returnPath = taskReturnPath(formData);
 	const workspace = await requireWorkspace();
 	if (workspace.role === "viewer")
-		fail("Sua conta permite apenas visualizar tarefas.");
+		fail("Sua conta permite apenas visualizar tarefas.", returnPath);
 	let input: ReturnType<typeof readTaskInput>;
 	try {
 		input = readTaskInput(formData, workspace.timezone);
 	} catch (error) {
 		fail(
 			error instanceof Error ? error.message : "Confira os dados da tarefa.",
+			returnPath,
 		);
 	}
 	const contactId = String(formData.get("contactId") || "");
@@ -27,7 +32,7 @@ export async function createTask(formData: FormData) {
 		(contactId && !uuidPattern.test(contactId)) ||
 		(dealId && !uuidPattern.test(dealId))
 	)
-		fail("O vínculo da tarefa não é válido.");
+		fail("O vínculo da tarefa não é válido.", returnPath);
 	const supabase = await createClient();
 	const { data, error } = await supabase.rpc("create_workspace_task", {
 		p_workspace_id: workspace.id,
@@ -40,26 +45,33 @@ export async function createTask(formData: FormData) {
 	if (error || !data)
 		fail(
 			"Não foi possível criar a tarefa. Confira o vínculo e sua permissão no workspace.",
+			returnPath,
 		);
 	revalidatePath("/app", "layout");
-	redirect("/app/tasks?message=created");
+	redirect(`${returnPath}?message=created`);
 }
 export async function setTaskStatus(formData: FormData) {
+	const returnPath = taskReturnPath(formData);
 	const workspace = await requireWorkspace();
 	if (workspace.role === "viewer")
-		fail("Sua conta permite apenas visualizar tarefas.");
+		fail("Sua conta permite apenas visualizar tarefas.", returnPath);
 	const taskId = String(formData.get("taskId") || "");
 	const status = String(formData.get("status") || "");
 	if (!uuidPattern.test(taskId) || (status !== "open" && status !== "done"))
-		fail("A alteração solicitada não é válida.");
+		fail("A alteração solicitada não é válida.", returnPath);
 	const supabase = await createClient();
 	const { error } = await supabase.rpc("set_workspace_task_status", {
 		p_workspace_id: workspace.id,
 		p_task_id: taskId,
 		p_status: status,
 	});
-	if (error) fail("Não foi possível atualizar essa tarefa no workspace atual.");
+	if (error)
+		fail(
+			"Não foi possível atualizar essa tarefa no workspace atual.",
+			returnPath,
+		);
 	revalidatePath("/app", "layout");
+	if (returnPath === "/app/today") redirect(`/app/today?message=${status}`);
 	const requested = String(formData.get("returnStatus") || "");
 	const view = ["open", "done", "overdue", "all"].includes(requested)
 		? requested

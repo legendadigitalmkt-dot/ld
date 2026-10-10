@@ -29,8 +29,10 @@ export type IconName =
 	| "refresh"
 	| "download"
 	| "edit"
-	| "grip";
+	| "grip"
+	| "calendar";
 const paths: Record<IconName, string[]> = {
+	calendar: ["M4 5h16v16H4z", "M8 3v4", "M16 3v4", "M4 10h16", "m8 15 2 2 5-4"],
 	plus: ["M12 5v14", "M5 12h14"],
 	refresh: ["M20 7a9 9 0 1 0 1 8", "M20 3v5h-5"],
 	download: ["M12 3v12", "m7 10 5 5 5-5", "M4 16v5h16v-5"],
