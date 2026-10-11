@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requirePlatformPermission } from "@/lib/control";
 import {
 	controlQuery,
@@ -111,6 +112,13 @@ export default async function WorkspacesPage({
 												</dd>
 											</div>
 										</dl>
+										{context.permissions.includes("users.read") ? (
+											<p>
+												<Link href={`/control-center/workspaces/${w.id}`}>
+													Consultar membros →
+												</Link>
+											</p>
+										) : null}
 										{context.permissions.includes("workspaces.suspend") &&
 										w.workspace_type === "customer" ? (
 											<>

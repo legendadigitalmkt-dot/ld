@@ -829,6 +829,14 @@ export type Database = {
 				Args: { p_query?: string; p_status?: string; p_page?: number };
 				Returns: Json;
 			};
+			platform_users_filtered: {
+				Args: { p_query?: string; p_status?: string; p_page?: number; p_workspace_id?: string | null };
+				Returns: Json;
+			};
+			platform_workspace_members: {
+				Args: { p_workspace_id: string; p_page?: number };
+				Returns: Json;
+			};
 			platform_workspaces: {
 				Args: { p_query?: string; p_status?: string; p_page?: number };
 				Returns: Json;

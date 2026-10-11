@@ -1,5 +1,5 @@
 import { ControlTime } from "./ui";
-import type { AdminAudit } from "@/lib/control-view";
+import { controlRoleLabels, type AdminAudit } from "@/lib/control-view";
 import styles from "./control.module.css";
 export function AuditList({
 	items,
@@ -28,6 +28,23 @@ export function AuditList({
 					<details>
 						<summary>Ver motivo e alteração</summary>
 						<dl className={styles.facts}>
+							<div>
+								<dt>Papéis do ator no momento da ação</dt>
+								<dd>
+									{item.actor_roles === null
+										? "Não registrados à época"
+										: item.actor_roles
+												.map((r) => controlRoleLabels[r] ?? r)
+												.join(" · ") || "Sem papel de plataforma"}
+								</dd>
+							</div>
+							<div>
+								<dt>Workspace da ação</dt>
+								<dd>
+									{item.workspace_id ??
+										"Consulta geral ou contexto não registrado"}
+								</dd>
+							</div>
 							<div>
 								<dt>ID da entidade</dt>
 								<dd>{item.entity_id ?? "Consulta geral"}</dd>

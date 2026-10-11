@@ -68,6 +68,7 @@ export function Pagination({
 	size,
 	query,
 	status,
+	workspace,
 }: {
 	base: string;
 	page: number;
@@ -75,10 +76,11 @@ export function Pagination({
 	size: number;
 	query: string;
 	status?: string;
+	workspace?: string | null;
 }) {
 	const pages = Math.max(1, Math.ceil(total / size));
 	const url = (p: number) =>
-		`${base}?${new URLSearchParams({ page: String(p), q: query, ...(status ? { status } : {}) })}`;
+		`${base}?${new URLSearchParams({ page: String(p), q: query, ...(status ? { status } : {}), ...(workspace ? { workspace } : {}) })}`;
 	return (
 		<nav className={styles.pagination} aria-label="Paginação">
 			<span>

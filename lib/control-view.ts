@@ -1,3 +1,5 @@
+import type { Database } from "./database.types";
+
 export const platformRoles = [
 	"platform_owner",
 	"super_admin",
@@ -127,6 +129,26 @@ export function adminReason(value: unknown, confirmation: unknown) {
 		throw new Error("Informe um motivo com 10 a 500 caracteres.");
 	return reason;
 }
+export function controlUsersQuery(
+	params: Record<string, string | string[] | undefined>,
+) {
+	const raw =
+		typeof params.workspace === "string"
+			? params.workspace.trim()
+			: params.workspace;
+	let workspace: string | null = null;
+	let invalidWorkspace = false;
+	if (raw !== undefined && raw !== "") {
+		try {
+			workspace = adminUUID(
+				typeof raw === "string" ? raw.trim() : raw,
+			).toLowerCase();
+		} catch {
+			invalidWorkspace = true;
+		}
+	}
+	return { ...controlQuery(params), workspace, invalidWorkspace };
+}
 export function adminUUID(value: unknown) {
 	if (
 		typeof value !== "string" ||
@@ -153,6 +175,8 @@ export type AdminAudit = {
 	actor: string | null;
 	actor_id: string | null;
 	actor_type: "admin" | "system";
+	actor_roles: PlatformRole[] | null;
+	workspace_id: string | null;
 	action: string;
 	entity_type: string;
 	entity_id: string | null;
@@ -194,6 +218,21 @@ export type ControlPage<T> = {
 	total: number;
 	page: number;
 	page_size: number;
+};
+export type ControlUsersPage = ControlPage<ControlUser> & {
+	workspace_choices: { id: string; name: string }[];
+	workspace_choices_truncated: boolean;
+};
+export type ControlMembersPage = ControlPage<{
+	id: string;
+	email: string | null;
+	name: string | null;
+	role: Database["public"]["Enums"]["member_role"];
+}> & {
+	workspace: Pick<
+		ControlWorkspace,
+		"id" | "name" | "slug" | "status" | "workspace_type" | "created_at"
+	>;
 };
 export type ControlSettings = {
 	display_name: string;

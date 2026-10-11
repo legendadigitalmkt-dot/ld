@@ -6,6 +6,7 @@ import {
 	assignableRole,
 	controlNavigation,
 	controlQuery,
+	controlUsersQuery,
 	platformRoles,
 	totpImage,
 } from "../lib/control-view.ts";
@@ -72,6 +73,30 @@ test("navigation is filtered by distinct permissions rather than workspace admin
 		)?.permission,
 		"roles.read",
 	);
+});
+test("workspace user filters retain an exact UUID and mark malformed input instead of widening it", () => {
+	const uuid = "84678515-f1a9-4b59-804a-ef96207801fc";
+	assert.deepEqual(
+		controlUsersQuery({
+			workspace: uuid.toUpperCase(),
+			q: " Ana ",
+			status: "active",
+			page: "2",
+		}),
+		{
+			query: "Ana",
+			status: "active",
+			page: 2,
+			workspace: uuid,
+			invalidWorkspace: false,
+		},
+	);
+	for (const workspace of ["all", "short", `${uuid};select`, [uuid, uuid]]) {
+		assert.equal(controlUsersQuery({ workspace }).invalidWorkspace, true);
+	}
+	assert.equal(controlUsersQuery({ workspace: "" }).invalidWorkspace, false);
+	assert.equal(controlUsersQuery({ workspace: "   " }).invalidWorkspace, false);
+	assert.equal(controlUsersQuery({}).workspace, null);
 });
 test("TOTP QR data stays embedded and rejects network URLs", () => {
 	const svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0"/></svg>';
