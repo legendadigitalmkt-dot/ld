@@ -130,7 +130,10 @@ export function adminReason(value: unknown, confirmation: unknown) {
 export function controlUsersQuery(
 	params: Record<string, string | string[] | undefined>,
 ) {
-	const raw = params.workspace;
+	const raw =
+		typeof params.workspace === "string"
+			? params.workspace.trim()
+			: params.workspace;
 	let workspace: string | null = null;
 	let invalidWorkspace = false;
 	if (raw !== undefined && raw !== "") {

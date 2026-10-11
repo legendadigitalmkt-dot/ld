@@ -95,6 +95,7 @@ test("workspace user filters retain an exact UUID and mark malformed input inste
 		assert.equal(controlUsersQuery({ workspace }).invalidWorkspace, true);
 	}
 	assert.equal(controlUsersQuery({ workspace: "" }).invalidWorkspace, false);
+	assert.equal(controlUsersQuery({ workspace: "   " }).invalidWorkspace, false);
 	assert.equal(controlUsersQuery({}).workspace, null);
 });
 test("TOTP QR data stays embedded and rejects network URLs", () => {

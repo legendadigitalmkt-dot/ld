@@ -84,4 +84,4 @@ Auditoria concluída antes da implementação. Correções, migration/versioname
 - Settings oferece General/Product/Security/Integrations com âncoras, mantendo somente os campos gerais existentes editáveis e links dependentes de permissão. Não configura novos providers ou billing.
 - Migration única atômica em bloco DO; mantém funções antigas e adiciona apenas duas facades públicas invoker autenticadas, sem concessões diretas de tabela. Nenhuma role/permissão de usuário real alterada.
 
-Validação local: 79 testes de aplicação, typecheck e build passaram. Novos arquivos TS sem avisos de lint; 197 avisos globais preexistentes. Nova suíte pgTAP: 35 assertions com fixtures sintéticas descartadas. Resultado do banco/CI ainda pendente; não equivale a smoke autenticado em produção.
+Validação local: 79 testes de aplicação, typecheck e build passaram. Novos arquivos TS sem avisos de lint; 197 avisos globais preexistentes. Nova suíte pgTAP: 36 assertions com fixtures sintéticas descartadas. Resultado do banco/CI ainda pendente; não equivale a smoke autenticado em produção.

@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(35);
+select plan(36);
 -- Synthetic, rollback-only fixtures. Never run this suite on a hosted project.
 insert into auth.users(id,email,email_confirmed_at,created_at) values
  ('11111111-1111-4111-8111-111111111001','p0-owner@foundation-gap.test',now(),now()),
@@ -74,10 +74,11 @@ select is(jsonb_array_length(public.platform_users_filtered()->'workspace_choice
 select throws_ok($$select public.platform_workspace_members('20000000-1111-4111-8111-111111111002')$$,'42501',null,'users.read alone cannot disclose workspace roster');
 reset role;
 select ok(exists(select 1 from control_plane.admin_audit_logs where action='workspace.viewed' and actor_user_id='11111111-1111-4111-8111-111111111001' and workspace_id='20000000-1111-4111-8111-111111111002' and actor_roles=array['platform_owner']::text[]),'workspace view snapshots actual actor roles and target UUID');
+select ok(exists(select 1 from control_plane.admin_audit_logs where action='users.listed' and workspace_id='20000000-1111-4111-8111-111111111002'),'filtered user consultation records workspace context');
 insert into control_plane.platform_user_roles(user_id,role_code) values ('11111111-1111-4111-8111-111111111001','viewer');
 set local role authenticated;
 select pg_temp.login_user('11111111-1111-4111-8111-111111111001');
-select public.platform_users_filtered();
+do $$ begin perform public.platform_users_filtered(); end $$;
 reset role;
 delete from control_plane.platform_user_roles where user_id='11111111-1111-4111-8111-111111111001' and role_code='viewer';
 select ok(exists(select 1 from control_plane.admin_audit_logs where action='users.listed' and actor_roles=array['platform_owner','viewer']::text[]),'historical role snapshot survives role removal');

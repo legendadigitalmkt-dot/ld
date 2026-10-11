@@ -9,7 +9,7 @@ language plpgsql security definer set search_path='' as $$
 begin
  if (select auth.uid()) is null then raise exception 'Ator ausente.' using errcode='42501'; end if;
  insert into control_plane.admin_audit_logs(actor_user_id,actor_type,session_id,action,entity_type,entity_id,before_data,after_data,reason,actor_roles,workspace_id)
- values ((select auth.uid()),'admin',nullif(auth.jwt()->>'session_id','')::uuid,p_action,p_entity_type,p_entity_id,p_before,p_after,control_plane.valid_reason(p_reason),coalesce((select array_agg(role_code order by role_code) from control_plane.platform_user_roles where user_id=(select auth.uid())),array[]::text[]),case when p_entity_type='workspace' then p_entity_id::uuid else null end);
+ values ((select auth.uid()),'admin',nullif(auth.jwt()->>'session_id','')::uuid,p_action,p_entity_type,p_entity_id,p_before,p_after,control_plane.valid_reason(p_reason),coalesce((select array_agg(role_code order by role_code) from control_plane.platform_user_roles where user_id=(select auth.uid())),array[]::text[]),case when p_entity_type='workspace' then p_entity_id::uuid else nullif(p_after->>'workspace_id','')::uuid end);
 end $$;
 
 create or replace function control_plane.audit_items(p_limit integer) returns jsonb
