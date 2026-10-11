@@ -84,4 +84,14 @@ Auditoria concluída antes da implementação. Correções, migration/versioname
 - Settings oferece General/Product/Security/Integrations com âncoras, mantendo somente os campos gerais existentes editáveis e links dependentes de permissão. Não configura novos providers ou billing.
 - Migration única atômica em bloco DO; mantém funções antigas e adiciona apenas duas facades públicas invoker autenticadas, sem concessões diretas de tabela. Nenhuma role/permissão de usuário real alterada.
 
-Validação local: 79 testes de aplicação, typecheck e build passaram. Novos arquivos TS sem avisos de lint; 197 avisos globais preexistentes. Nova suíte pgTAP: 36 assertions com fixtures sintéticas descartadas. Resultado do banco/CI ainda pendente; não equivale a smoke autenticado em produção.
+Validação local: 79 testes de aplicação, typecheck e build passaram. Novos arquivos TS sem avisos de lint; 197 avisos globais preexistentes. Nova suíte pgTAP: 36 assertions com fixtures sintéticas descartadas. Banco e CI aprovados: 327 assertions pgTAP em 11 suítes, além dos 79 testes de aplicação (406 no total). Isso não equivale a smoke autenticado em produção.
+
+### Validação e migration aplicadas — 11/10/2026
+
+Migration registrada pelo Supabase: 20261011193316_control_foundation_p0_gaps.sql. Aplicada somente após ambos os workflows do head accf44523432e924785caddacc65a686dd5abb43 passarem: aplicação [38168303567](https://github.com/legendadigitalmkt-dot/ld/actions/runs/38168303567), banco [38168303557](https://github.com/legendadigitalmkt-dot/ld/actions/runs/38168303557). Arquivo alinhado ao timestamp real para impedir reaplicação futura. O CI revalida o head final depois deste alinhamento.
+
+Pós-migration: todas as contagens de negócio preservadas (2 usuários / 1 workspace / 1 membro / 6 contatos / 6 oportunidades / 0 tarefas / 36 atividades). Os 41 registros históricos de auditoria mantêm campos novos NULL, sem backfill fictício. Owner estrutural, role e um TOTP verificado preservados. Dez tabelas com RLS forçado, zero grants diretos; duas novas facades invoker, search_path vazio, EXECUTE somente autenticado. Advisors mantêm os avisos anteriores, sem ERROR/WARN novo. Planos continuam ausentes; PR #26 não aplicado.
+
+PR/registro final de main CI, publicação Hostinger e smoke: [#27](https://github.com/legendadigitalmkt-dot/ld/pull/27). A release esperada é control-foundation-p0-v1. Até ser comprovado no registro da publicação, não considerar smoke concluído. Smoke privado positivo/login/logout e bloqueio de usuário comum dependem de sessões pessoais reais; o navegador do agente apresentou login sem sessão. Não executar suspensões, alterações de papéis, mensagens ou criação de tenants reais para produzir evidência.
+
+Próximo milestone: encaminhar ao HQ a validação do aceite P0 antes de definir avanço. Não retomar planos, billing, inteligência ou automação automaticamente.
