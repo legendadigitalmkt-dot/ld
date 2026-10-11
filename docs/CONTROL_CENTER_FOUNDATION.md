@@ -75,3 +75,13 @@ Rollback do app por PR de revert/CI/deploy para e31bddf9b00d638d0795b579624ee22c
 ## Registro da entrega
 
 Auditoria concluída antes da implementação. Correções, migration/versionamento, PR/commit, CI e smoke atuais serão registrados aqui após validação. Aceite integral depende da comprovação das rotas privadas, login/logout e isolamento com sessões reais; não declarar concluído por health 200 ou fixtures apenas.
+
+### Correções implementadas após a matriz
+
+- Users usa platform_users_filtered com workspace UUID opcional, interseção de busca/status, paginação de 25 e filtro preservado nos links. Entrada de workspace inválida não dispara consulta ampla. Sugestões limitadas a 100, incluindo seleção atual; nomes só com workspaces.read. Contrato platform_users anterior permanece funcional.
+- /control-center/workspaces/[id] consulta nomes/e-mails/papéis reais com paginação de 25 através de platform_workspace_members. Exige workspaces.read e users.read simultaneamente no servidor e no banco. Não abre dados de CRM, não assume identidade de cliente nem altera vínculo. Consulta registra workspace.viewed.
+- Auditoria recebe actor_roles text[] como snapshot de todos os papéis atuais (equivalente multi-role ao actor_role solicitado), e workspace_id UUID como contexto opcional. Valores antigos permanecem NULL; a UI os identifica como desconhecidos. UUID/atores são snapshots sem FK que apagaria atribuição histórica; proteção append-only e grants permanecem.
+- Settings oferece General/Product/Security/Integrations com âncoras, mantendo somente os campos gerais existentes editáveis e links dependentes de permissão. Não configura novos providers ou billing.
+- Migration única atômica em bloco DO; mantém funções antigas e adiciona apenas duas facades públicas invoker autenticadas, sem concessões diretas de tabela. Nenhuma role/permissão de usuário real alterada.
+
+Validação local: 79 testes de aplicação, typecheck e build passaram. Novos arquivos TS sem avisos de lint; 197 avisos globais preexistentes. Nova suíte pgTAP: 35 assertions com fixtures sintéticas descartadas. Resultado do banco/CI ainda pendente; não equivale a smoke autenticado em produção.

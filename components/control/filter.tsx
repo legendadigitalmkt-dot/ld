@@ -5,11 +5,13 @@ export function ControlFilter({
 	status,
 	base,
 	placeholder = "Nome, e-mail ou ID",
+	children,
 }: {
 	query: string;
 	status?: string;
 	base: string;
 	placeholder?: string;
+	children?: React.ReactNode;
 }) {
 	return (
 		<form className={styles.filters} action={base}>
@@ -33,6 +35,7 @@ export function ControlFilter({
 					</select>
 				</label>
 			) : null}
+			{children}
 			<button type="submit" className={styles.button}>
 				Filtrar
 			</button>

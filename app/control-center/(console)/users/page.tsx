@@ -1,9 +1,8 @@
 import { requirePlatformPermission } from "@/lib/control";
 import {
-	controlQuery,
+	controlUsersQuery,
 	controlRoleLabels,
-	type ControlPage,
-	type ControlUser,
+	type ControlUsersPage,
 } from "@/lib/control-view";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -22,16 +21,28 @@ export default async function UsersPage({
 	searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
 	const context = await requirePlatformPermission("users.read");
-	const filter = controlQuery(await searchParams);
+	const filter = controlUsersQuery(await searchParams);
 	const client = await createClient();
-	const { data, error } = await client.rpc("platform_users", {
-		p_query: filter.query,
-		p_status: filter.status,
-		p_page: filter.page,
-	});
-	if (error || !data)
+	const { data, error } = filter.invalidWorkspace
+		? { data: null, error: null }
+		: await client.rpc("platform_users_filtered", {
+				p_query: filter.query,
+				p_status: filter.status,
+				p_page: filter.page,
+				p_workspace_id: filter.workspace,
+			});
+	if (error || (!data && !filter.invalidWorkspace))
 		throw new Error("Não foi possível carregar os cadastros.");
-	const result = data as unknown as ControlPage<ControlUser>;
+	const result: ControlUsersPage = filter.invalidWorkspace
+		? {
+				items: [],
+				total: 0,
+				page: 1,
+				page_size: 25,
+				workspace_choices: [],
+				workspace_choices_truncated: false,
+			}
+		: (data as unknown as ControlUsersPage);
 	return (
 		<>
 			<ControlHeading
@@ -43,7 +54,38 @@ export default async function UsersPage({
 				base="/control-center/users"
 				query={filter.query}
 				status={filter.status}
-			/>
+			>
+				<label>
+					Workspace
+					<input
+						name="workspace"
+						defaultValue={filter.workspace ?? ""}
+						list="control-workspace-options"
+						maxLength={36}
+						placeholder="Todos os workspaces"
+					/>
+					<datalist id="control-workspace-options">
+						{result.workspace_choices.map((w) => (
+							<option key={w.id} value={w.id} label={w.name} />
+						))}
+					</datalist>
+					<small>
+						Selecione um workspace ou informe seu ID. Em branco, consulta todos.
+					</small>
+				</label>
+			</ControlFilter>
+			{filter.invalidWorkspace ? (
+				<p role="alert" className={styles.notice}>
+					Identificador de workspace inválido. Corrija o filtro; nenhum cadastro
+					foi consultado.
+				</p>
+			) : null}
+			{result.workspace_choices_truncated ? (
+				<p className={styles.notice}>
+					A lista sugere os primeiros 100 workspaces e inclui o selecionado.
+					Para outro workspace, informe seu ID.
+				</p>
+			) : null}
 			<section
 				className={styles.tableWrap}
 				aria-label="Cadastros de usuários, com rolagem horizontal"
@@ -176,6 +218,7 @@ export default async function UsersPage({
 				base="/control-center/users"
 				query={filter.query}
 				status={filter.status}
+				workspace={filter.workspace}
 				page={result.page}
 				total={result.total}
 				size={result.page_size}

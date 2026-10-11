@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { requirePlatformPermission } from "@/lib/control";
 import type { ControlSettings } from "@/lib/control-view";
 import { createClient } from "@/lib/supabase/server";
@@ -19,8 +20,21 @@ export default async function SettingsPage() {
 				title="Settings"
 				description="Configurações gerais da plataforma, com controle de versão e auditoria. Credenciais permanecem na infraestrutura."
 			/>
-			<section className={styles.panel}>
-				<h2>Identidade e suporte</h2>
+			<nav
+				className={styles.permissionList}
+				aria-label="Seções de configurações"
+			>
+				<Link href="#general">General</Link>
+				<Link href="#product">Product</Link>
+				<Link href="#security">Security</Link>
+				<Link href="#integrations">Integrations</Link>
+			</nav>
+			<section id="general" className={styles.panel}>
+				<h2>General</h2>
+				<p>
+					Identidade da plataforma, suporte e fuso dos registros
+					administrativos.
+				</p>
 				{context.permissions.includes("system.settings") ? (
 					<AdminActionForm
 						key={settings.revision}
@@ -88,8 +102,29 @@ export default async function SettingsPage() {
 					/>
 				</p>
 			</section>
-			<section className={styles.panel}>
-				<h2>Ambientes separados</h2>
+			<section id="product" className={styles.panel}>
+				<h2>Product</h2>
+				<p>
+					O catálogo de módulos já disponível tem permissões próprias. Preços,
+					assinaturas e checkout aguardam os próximos marcos aprovados.
+				</p>
+				{context.permissions.includes("product.read") ? (
+					<Link href="/control-center/product">
+						Consultar módulos e disponibilidade →
+					</Link>
+				) : (
+					<p>
+						Seu papel permite consultar apenas esta fundação de configurações.
+					</p>
+				)}
+			</section>
+			<section id="security" className={styles.panel}>
+				<h2>Security</h2>
+				<p>
+					O Control Center exige sessão válida, MFA verificado e permissões
+					atuais. Senhas, fatores de autenticação e chaves não são editados
+					nesta tela.
+				</p>
 				<dl className={styles.facts}>
 					<div>
 						<dt>Portal institucional</dt>
@@ -104,6 +139,21 @@ export default async function SettingsPage() {
 						<dd>MFA obrigatório e permissões verificadas no banco</dd>
 					</div>
 				</dl>
+			</section>
+			<section id="integrations" className={styles.panel}>
+				<h2>Integrations</h2>
+				<p>
+					Conexões pertencem a cada workspace. Credenciais ficam na
+					infraestrutura; esta fundação permite consultar os estados já
+					cadastrados e não configura novos provedores.
+				</p>
+				{context.permissions.includes("workspaces.read") ? (
+					<Link href="/control-center/workspaces">
+						Consultar inventário por workspace →
+					</Link>
+				) : (
+					<p>O inventário requer permissão de leitura de workspaces.</p>
+				)}
 			</section>
 		</>
 	);
