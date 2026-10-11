@@ -18,10 +18,10 @@ insert into public.workspaces(id,name,slug) values
 insert into public.workspace_members(workspace_id,user_id,role) values
  ('10000000-1111-4111-8111-111111111001','11111111-1111-4111-8111-111111111001','owner'),
  ('10000000-1111-4111-8111-111111111001','33333333-1111-4111-8111-111111111003','viewer'),
- ('10000000-1111-4111-8111-111111111001','44444444-1111-4111-8111-111111111004','agent'),
+ ('10000000-1111-4111-8111-111111111001','44444444-1111-4111-8111-111111111004','support'),
  ('20000000-1111-4111-8111-111111111002','22222222-1111-4111-8111-111111111002','owner'),
  ('30000000-1111-4111-8111-111111111003','22222222-1111-4111-8111-111111111002','owner');
-insert into public.workspace_members(workspace_id,user_id,role) select '20000000-1111-4111-8111-111111111002',id,'agent' from auth.users where email like 'member-%@foundation-gap.test';
+insert into public.workspace_members(workspace_id,user_id,role) select '20000000-1111-4111-8111-111111111002',id,'sales' from auth.users where email like 'member-%@foundation-gap.test';
 insert into public.contacts(workspace_id,name) values
  ('10000000-1111-4111-8111-111111111001','Owner private contact'),
  ('20000000-1111-4111-8111-111111111002','Customer private contact');

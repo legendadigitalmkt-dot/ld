@@ -1,3 +1,5 @@
+import type { Database } from "./database.types";
+
 export const platformRoles = [
 	"platform_owner",
 	"super_admin",
@@ -225,7 +227,7 @@ export type ControlMembersPage = ControlPage<{
 	id: string;
 	email: string | null;
 	name: string | null;
-	role: "owner" | "admin" | "agent" | "viewer";
+	role: Database["public"]["Enums"]["member_role"];
 }> & {
 	workspace: Pick<
 		ControlWorkspace,
