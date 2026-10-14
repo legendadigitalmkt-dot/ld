@@ -2,7 +2,15 @@
 
 **Legenda Digital — AI Growth Operating System**
 
-This repository is the product codebase for LD Growth OS. The active production-foundation work lives on `feat/production-foundation`.
+Este repositório contém o software Growth OS: CRM, pipeline, WhatsApp, tarefas, workspaces e resultados comerciais. Fonte oficial: `legendadigitalmkt-dot/ld`; branch de produção: `main`; domínio atual: https://app.legendadigital.com.br/.
+
+**Este repositório não contém o Portal Legenda Digital.** O Portal usa `legendadigitalmkt-dot/legenda-digital-portal`, `legendadigital.com.br` e Supabase `yltnjgngkomelfltdyky`. Nenhuma sessão, service role, tabela operacional ou dataset de analytics é compartilhado automaticamente.
+
+Growth OS usa o Supabase próprio `cknlzuinwcdupdxilzcf` (nome hosted: **LD Growth OS Dev**, região São Paulo), que atende a aplicação atual; não há staging hosted adicional confirmado. Tabelas editoriais antigas nesse banco são legado preservado da migração, sem uso encontrado no runtime SaaS; não apagá-las nem tratá-las como fonte do Portal.
+
+Ordem HQ de 14/10/2026: **expansão congelada enquanto o Portal é finalizado**. Somente incidentes P0 de segurança, integridade, indisponibilidade, WhatsApp de produção ou Auth autorizam correção operacional. Não migrar domínio, iniciar billing/agentes/automação ou implementar SSO neste ciclo.
+
+Limites, ambientes, deploy e pendências: [docs/PRODUCT_BOUNDARIES.md](docs/PRODUCT_BOUNDARIES.md). Não copiar `.env`, Auth ou dados entre produtos. O restante do README descreve a foundation e os critérios de segurança; não equivale à aprovação de lançamento comercial.
 
 ## Production Foundation stack
 
